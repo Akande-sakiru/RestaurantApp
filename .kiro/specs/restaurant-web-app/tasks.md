@@ -21,7 +21,7 @@ Full-stack restaurant SPA built on Laravel 12 + React 19 + Inertia.js v2. Implem
     - Create `2024_01_01_000006_create_reservations_table.php`: `id`, `user_id` (FK → users), `reservation_number` (unique string), `reserved_date` (date), `reserved_time` (time), `party_size` (unsigned tinyint), `status` (enum: pending|confirmed|cancelled|completed, default pending), `special_requests` (nullable text), `timestamps`
     - _Requirements: 5.1, 6.1, 7.1, 9.1_
 
-  - [-] 1.3 Update the User model and create Category, MenuItem, Order, OrderItem, and Reservation models
+  - [x] 1.3 Update the User model and create Category, MenuItem, Order, OrderItem, and Reservation models
     - Update `app/Models/User.php`: add `HasRoles`, `SoftDeletes` traits; set `$fillable` to `['name', 'email', 'phone', 'password', 'is_active']`; add `is_active` and `email_verified_at` casts; add `orders()` HasMany and `reservations()` HasMany relationships
     - Create `app/Models/Category.php` with `HasFactory`; `$fillable = ['name', 'slug', 'sort_order']`; `menuItems()` HasMany relationship
     - Create `app/Models/MenuItem.php` with `HasFactory`, `SoftDeletes`; `$fillable` and `$casts` per design; `category()` BelongsTo, `orderItems()` HasMany; `getImageUrlAttribute()` accessor using `Storage::url()`
@@ -36,12 +36,12 @@ Full-stack restaurant SPA built on Laravel 12 + React 19 + Inertia.js v2. Implem
     - Update `DatabaseSeeder.php` to call `RolesAndPermissionsSeeder` and `AdminUserSeeder`
     - _Requirements: 3.1, 3.2, 3.3_
 
-  - [ ] 1.5 Register Spatie middleware aliases and configure bootstrap/app.php
+  - [x] 1.5 Register Spatie middleware aliases and configure bootstrap/app.php
     - In `bootstrap/app.php`, register `role` and `permission` middleware aliases pointing to Spatie's `RoleMiddleware` and `PermissionMiddleware`
     - Ensure `HandleInertiaRequests` middleware is registered in the web middleware stack
     - _Requirements: 3.2, 3.3, 3.4_
 
-  - [ ] 1.6 Create model factories for all new models
+  - [x] 1.6 Create model factories for all new models
     - Create `CategoryFactory.php`, `MenuItemFactory.php`, `OrderFactory.php`, `OrderItemFactory.php`, `ReservationFactory.php`
     - Update `UserFactory.php` to include `is_active`, `phone` fields
     - _Requirements: (testing infrastructure)_

@@ -46,15 +46,15 @@ class MenuItemController extends Controller
     /**
      * Show the edit form.
      */
-    public function edit(MenuItem $menuItem)
-    {
-        $categories = Category::all();
+    // public function edit(MenuItem $menuItem)
+    // {
+    //     $categories = Category::all();
 
-        return Inertia::render('Admin/MenuItems/Edit', [
-            'menuItem' => $menuItem,
-            'categories' => $categories,
-        ]);
-    }
+    //     return Inertia::render('Admin/MenuItems/Edit', [
+    //         'menuItem' => $menuItem,
+    //         'categories' => $categories,
+    //     ]);
+    // }
 
     /**
      * Store a new menu item.

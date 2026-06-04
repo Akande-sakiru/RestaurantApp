@@ -1,77 +1,77 @@
-import { motion } from 'framer-motion';
-import { Link, router } from '@inertiajs/react';
-import { Plus, Edit2, Trash2, Search, Filter, Eye, EyeOff } from 'lucide-react';
-import { useState } from 'react';
-import AdminLayout from '../../../Layouts/AdminLayout';
-import Button from '../../../Components/UI/Button';
-import Input from '../../../Components/UI/Input';
-import { Card, CardBody, CardHeader } from '../../../Components/UI/Card';
-import Badge from '../../../Components/UI/Badge';
+import { motion } from "framer-motion";
+import { Link, router } from "@inertiajs/react";
+import { Plus, Edit2, Trash2, Search, Filter, Eye, EyeOff } from "lucide-react";
+import { useState } from "react";
+import AdminLayout from "../../../Layouts/AdminLayout";
+import Button from "../../../Components/UI/Button";
+import Input from "../../../Components/UI/Input";
+import { Card, CardBody, CardHeader } from "../../../Components/UI/Card";
+import Badge from "../../../Components/UI/Badge";
 
 // Mock data
 const mockMenuItems = [
     {
         id: 1,
-        name: 'Classic Smash Burger',
-        category: 'Burgers',
+        name: "Classic Smash Burger",
+        category: "Burgers",
         price: 14.99,
         is_available: true,
         image_path: null,
-        created_at: '2024-05-20',
+        created_at: "2024-05-20",
     },
     {
         id: 2,
-        name: 'Margherita Royale',
-        category: 'Pizza',
+        name: "Margherita Royale",
+        category: "Pizza",
         price: 19.99,
         is_available: true,
         image_path: null,
-        created_at: '2024-05-21',
+        created_at: "2024-05-21",
     },
     {
         id: 3,
-        name: 'Nashville Hot Chicken',
-        category: 'Fried Chicken',
+        name: "Nashville Hot Chicken",
+        category: "Fried Chicken",
         price: 12.99,
         is_available: false,
         image_path: null,
-        created_at: '2024-05-22',
+        created_at: "2024-05-22",
     },
     {
         id: 4,
-        name: 'Mediterranean Wrap',
-        category: 'Wraps',
+        name: "Mediterranean Wrap",
+        category: "Wraps",
         price: 11.99,
         is_available: true,
         image_path: null,
-        created_at: '2024-05-23',
+        created_at: "2024-05-23",
     },
     {
         id: 5,
-        name: 'Chocolate Lava Cake',
-        category: 'Desserts',
+        name: "Chocolate Lava Cake",
+        category: "Desserts",
         price: 8.99,
         is_available: true,
         image_path: null,
-        created_at: '2024-05-24',
+        created_at: "2024-05-24",
     },
     {
         id: 6,
-        name: 'Carbonara Pasta',
-        category: 'Pasta',
+        name: "Carbonara Pasta",
+        category: "Pasta",
         price: 15.99,
         is_available: true,
         image_path: null,
-        created_at: '2024-05-25',
+        created_at: "2024-05-25",
     },
 ];
 
 export default function MenuItemsIndex({ menuItems = mockMenuItems }) {
-    const [searchTerm, setSearchTerm] = useState('');
-    const [filterCategory, setFilterCategory] = useState('all');
+    const [searchTerm, setSearchTerm] = useState("");
+    const [filterCategory, setFilterCategory] = useState("all");
 
     // Handle both paginated object and array formats
-    const items = Array.isArray(menuItems) ? menuItems : (menuItems?.data || []);
+    const items = Array.isArray(menuItems) ? menuItems : menuItems?.data || [];
 
     const filteredItems = items.filter((item) => {
         const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase());
@@ -102,7 +102,7 @@ export default function MenuItemsIndex({ menuItems = mockMenuItems }) {
     };
 
     const handleDelete = (id) => {
-        if (confirm('Are you sure you want to delete this menu item?')) {
+        if (confirm("Are you sure you want to delete this menu item?")) {
             router.delete(`/admin/menu-items/${id}`);
         }
     };
@@ -129,7 +129,9 @@ export default function MenuItemsIndex({ menuItems = mockMenuItems }) {
                     className="flex items-center justify-between"
                 >
                     <div>
-                        <h1 className="text-3xl font-bold text-gray-900">Menu Items</h1>
+                        <h1 className="text-3xl font-bold text-gray-900">
+                            Menu Items
+                        </h1>
                         <p className="text-gray-600 mt-1">
                             Manage your restaurant menu and items
                         </p>
@@ -158,7 +160,9 @@ export default function MenuItemsIndex({ menuItems = mockMenuItems }) {
                             <div className="text-3xl font-bold text-orange-500">
                                 {items.length}
                             </div>
-                            <p className="text-sm text-gray-600 mt-1">Total Items</p>
+                            <p className="text-sm text-gray-600 mt-1">
+                                Total Items
+                            </p>
                         </CardBody>
                     </Card>
                     <Card hover={false}>
@@ -166,7 +170,9 @@ export default function MenuItemsIndex({ menuItems = mockMenuItems }) {
                             <div className="text-3xl font-bold text-orange-600">
                                 {items.filter((i) => i.is_available).length}
                             </div>
-                            <p className="text-sm text-gray-600 mt-1">Available</p>
+                            <p className="text-sm text-gray-600 mt-1">
+                                Available
+                            </p>
                         </CardBody>
                     </Card>
                     <Card hover={false}>
@@ -174,7 +180,9 @@ export default function MenuItemsIndex({ menuItems = mockMenuItems }) {
                             <div className="text-3xl font-bold text-red-500">
                                 {items.filter((i) => !i.is_available).length}
                             </div>
-                            <p className="text-sm text-gray-600 mt-1">Unavailable</p>
+                            <p className="text-sm text-gray-600 mt-1">
+                                Unavailable
+                            </p>
                         </CardBody>
                     </Card>
                     <Card hover={false}>
@@ -182,7 +190,9 @@ export default function MenuItemsIndex({ menuItems = mockMenuItems }) {
                             <div className="text-3xl font-bold text-orange-500">
                                 {new Set(items.map((i) => i.category)).size}
                             </div>
-                            <p className="text-sm text-gray-600 mt-1">Categories</p>
+                            <p className="text-sm text-gray-600 mt-1">
+                                Categories
+                            </p>
                         </CardBody>
                     </Card>
                 </motion.div>
@@ -210,7 +220,7 @@ export default function MenuItemsIndex({ menuItems = mockMenuItems }) {
                         >
                             {categories.map((cat) => (
                                 <option key={cat} value={cat}>
-                                    {cat === 'all' ? 'All Categories' : cat}
+                                    {cat === "all" ? "All Categories" : cat}
                                 </option>
                             ))}
                         </select>
@@ -361,7 +371,8 @@ export default function MenuItemsIndex({ menuItems = mockMenuItems }) {
                                         No items found
                                     </h3>
                                     <p className="text-gray-600">
-                                        Try adjusting your search or filter criteria
+                                        Try adjusting your search or filter
+                                        criteria
                                     </p>
                                 </motion.div>
                             )}

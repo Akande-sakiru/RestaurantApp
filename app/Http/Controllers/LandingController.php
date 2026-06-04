@@ -45,8 +45,9 @@ class LandingController extends Controller
                 'id' => $item->id,
                 'name' => $item->name,
                 'description' => $item->description,
-                'price' => $item->price,
-                'image_url' => $item->image_url ?? '/images/amala.jpg', // Fallback to test image
+                'price' => (float) $item->price,
+                'image_url' => $item->image_url ?? '/images/amala.jpg',
+                'is_available' => (bool) $item->is_available,
                 'category' => [
                     'id' => $item->category->id,
                     'name' => $item->category->name,

@@ -13,7 +13,7 @@ export default function EditMenuItem({ menuItem, categories = [] }) {
         image: null,
         is_available: menuItem.is_available || true,
         sort_order: menuItem.sort_order || 0,
-        _method: "GET",
+        _method: "PATCH",
     });
 
     const [previewImage, setPreviewImage] = useState(

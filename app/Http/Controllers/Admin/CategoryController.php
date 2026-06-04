@@ -38,12 +38,14 @@ class CategoryController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|unique:categories,name',
             'description' => 'nullable|string|max:500',
+            'sort_order' => 'required|integer',
         ]);
 
         Category::create([
             'name' => $validated['name'],
             'slug' => Str::slug($validated['name']),
             'description' => $validated['description'] ?? null,
+            'sort_order' => $validated['sort_order'],
         ]);
 
         return redirect()->route('admin.categories.index')->with('success', 'Category created successfully');
@@ -57,12 +59,15 @@ class CategoryController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|unique:categories,name,' . $category->id,
             'description' => 'nullable|string|max:500',
+            'sort_order' => 'required|integer',
+
         ]);
 
         $category->update([
             'name' => $validated['name'],
             'slug' => Str::slug($validated['name']),
             'description' => $validated['description'] ?? null,
+            'sort_order' => $validated['sort_order'],
         ]);
 
         return redirect()->route('admin.categories.index')->with('success', 'Category updated successfully');

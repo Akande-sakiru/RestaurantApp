@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateMenuItemRequest;
 use App\Jobs\ProcessMenuItemImage;
 use App\Models\Category;
 use App\Models\MenuItem;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 
@@ -59,6 +60,16 @@ class MenuItemController extends Controller
         return redirect()->route('admin.menu-items.index')->with('success', 'Menu item created successfully');
     }
 
+    public function edit(MenuItem $menuItem)
+    {
+        $categories = Category::all();
+
+        return Inertia::render('Admin/MenuItems/Edit', [
+            'menuItem' => $menuItem,
+            'categories' => $categories,
+        ]);
+    }
+
     /**
      * Update a menu item.
      */
@@ -70,7 +81,7 @@ class MenuItemController extends Controller
         if ($request->hasFile('image')) {
             // Delete old image if exists
             if ($menuItem->image_path) {
-                \Storage::disk('public')->delete($menuItem->image_path);
+                Storage::disk('public')->delete($menuItem->image_path);
             }
             $imagePath = $request->file('image')->store('menu-images', 'public');
         }

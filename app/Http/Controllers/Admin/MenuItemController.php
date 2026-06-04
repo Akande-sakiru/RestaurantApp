@@ -76,7 +76,7 @@ class MenuItemController extends Controller
             'price' => $validated['price'],
             'image_path' => $imagePath,
             'is_available' => $validated['is_available'] ?? true,
-            'sort_order' => $validated['sort_order']
+            'sort_order' => $validated['sort_order'] ?? 0,
         ]);
 
         if ($imagePath) {
@@ -110,7 +110,7 @@ class MenuItemController extends Controller
             'price' => $validated['price'],
             'image_path' => $imagePath,
             'is_available' => $validated['is_available'] ?? true,
-            'sort_order' => $validated['sort_order']
+            'sort_order' => $validated['sort_order'] ?? $menuItem->sort_order ?? 0,
         ]);
 
         if ($request->hasFile('image') && $imagePath) {

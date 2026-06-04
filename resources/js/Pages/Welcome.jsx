@@ -57,6 +57,19 @@ export default function Welcome({
         },
     };
 
+    // Format hours object to string if needed
+    const formatHours = (hours) => {
+        if (typeof hours === 'string') {
+            return hours;
+        }
+        if (typeof hours === 'object' && hours !== null) {
+            return Object.entries(hours)
+                .map(([day, time]) => `${day.charAt(0).toUpperCase() + day.slice(1)}: ${time}`)
+                .join(' | ');
+        }
+        return 'Hours not available';
+    };
+
     const defaultInfo = {
         name: 'Restaurant',
         tagline: 'Experience culinary excellence',
@@ -65,6 +78,11 @@ export default function Welcome({
         phone: '(555) 123-4567',
         ...restaurantInfo,
     };
+
+    // Format hours if it's an object
+    if (defaultInfo.hours && typeof defaultInfo.hours === 'object') {
+        defaultInfo.hours = formatHours(defaultInfo.hours);
+    }
 
     return (
         <GuestLayout>
@@ -335,27 +353,19 @@ export default function Welcome({
                                 All Items
                             </h3>
                             <p className="text-center text-sm text-gray-500">
-                                50 items
+                                {featuredItems.length} items
                             </p>
                         </motion.div>
 
-                        {/* Other Categories */}
-                        {[
-                            { name: 'Burgers', count: '18 items', emoji: '🍔' },
-                            { name: 'Pizza', count: '12 items', emoji: '🍕' },
-                            { name: 'Fried Chicken', count: '15 items', emoji: '🍗' },
-                            { name: 'Wraps', count: '10 items', emoji: '🌯' },
-                            { name: 'Desserts', count: '8 items', emoji: '🍰' },
-                        ].map((category, index) => (
+                        {/* Other Categories - Display real categories from database */}
+                        {categories && categories.length > 0 && categories.map((category) => (
                             <motion.div
-                                key={category.name}
+                                key={category.id}
                                 variants={itemVariants}
                                 whileHover={{ scale: 1.05, y: -10 }}
                                 whileTap={{ scale: 0.95 }}
                                 onClick={() =>
-                                    router.visit(
-                                        `/menu?category=${category.name.toLowerCase()}`
-                                    )
+                                    router.visit(`/menu?category=${category.id}`)
                                 }
                                 className="cursor-pointer group"
                             >
@@ -365,7 +375,7 @@ export default function Welcome({
                                         whileHover={{ rotate: -5 }}
                                     >
                                         <span className="text-5xl">
-                                            {category.emoji}
+                                            🍽️
                                         </span>
                                     </motion.div>
                                     <motion.div
@@ -382,7 +392,7 @@ export default function Welcome({
                                     {category.name}
                                 </h3>
                                 <p className="text-center text-sm text-gray-500">
-                                    {category.count}
+                                    {category.menu_items_count || 0} items
                                 </p>
                             </motion.div>
                         ))}
@@ -434,23 +444,29 @@ export default function Welcome({
                         >
                             All
                         </motion.button>
-                        {[
-                            'Burgers',
-                            'Pizza',
-                            'Fried Chicken',
-                            'Wraps',
-                            'Desserts',
-                            'Pasta',
-                        ].map((category) => (
-                            <motion.button
-                                key={category}
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                                className="px-6 py-2 bg-white text-gray-700 rounded-full font-semibold border-2 border-gray-200 hover:border-orange-500 hover:text-orange-500 transition-all"
-                            >
-                                {category}
-                            </motion.button>
-                        ))}
+                        {categories && categories.length > 0 ? (
+                            categories.map((category) => (
+                                <motion.button
+                                    key={category.id}
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                    className="px-6 py-2 bg-white text-gray-700 rounded-full font-semibold border-2 border-gray-200 hover:border-orange-500 hover:text-orange-500 transition-all"
+                                >
+                                    {category.name}
+                                </motion.button>
+                            ))
+                        ) : (
+                            ['Burgers', 'Pizza', 'Fried Chicken', 'Wraps', 'Desserts', 'Pasta'].map((category) => (
+                                <motion.button
+                                    key={category}
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                    className="px-6 py-2 bg-white text-gray-700 rounded-full font-semibold border-2 border-gray-200 hover:border-orange-500 hover:text-orange-500 transition-all"
+                                >
+                                    {category}
+                                </motion.button>
+                            ))
+                        )}
                     </motion.div>
 
                     {/* Featured Items Grid */}
@@ -546,7 +562,7 @@ export default function Welcome({
                                             <div className="flex items-center justify-between">
                                                 <div>
                                                     <p className="text-2xl font-bold text-orange-500">
-                                                        ₦{(item.price).toFixed(2)}
+                                                        ₦{parseFloat(item.price).toFixed(2)}
                                                     </p>
                                                     <div className="flex items-center space-x-1 mt-1">
                                                         <span className="text-yellow-400">★</span>

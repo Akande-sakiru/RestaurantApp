@@ -1,21 +1,21 @@
-import { Link, usePage } from '@inertiajs/react';
-import { motion } from 'framer-motion';
-import { Menu, X, Search } from 'lucide-react';
-import { useState } from 'react';
-import Button from '../Components/UI/Button';
+import { Link, usePage } from "@inertiajs/react";
+import { motion } from "framer-motion";
+import { Menu, X, Search } from "lucide-react";
+import { useState } from "react";
+import Button from "../Components/UI/Button";
 
 export default function GuestLayout({ children }) {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const { auth } = usePage().props;
 
     const navItems = [
-        { label: 'Home', href: '/' },
-        { label: 'About', href: '#about' },
-        { label: 'Menu', href: '/menu' },
-       
-        { label: 'Reservation', href: '/reservations/create' },
-        { label: 'Reviews', href: '#reviews' },
-        { label: 'Contact', href: '#contact' },
+        { label: "Home", href: "/" },
+        { label: "About", href: "#about" },
+        { label: "Menu", href: "/menu" },
+
+        { label: "Reservation", href: "/reservations/create" },
+        { label: "Reviews", href: "#reviews" },
+        { label: "Contact", href: "#contact" },
     ];
 
     return (
@@ -29,10 +29,30 @@ export default function GuestLayout({ children }) {
                         <span>📍 42 Flower Street, NY</span>
                     </div>
                     <div className="flex items-center space-x-4">
-                        <a href="#" className="hover:text-orange-500 transition-colors">f</a>
-                        <a href="#" className="hover:text-orange-500 transition-colors">t</a>
-                        <a href="#" className="hover:text-orange-500 transition-colors">in</a>
-                        <a href="#" className="hover:text-orange-500 transition-colors">ig</a>
+                        <a
+                            href="#"
+                            className="hover:text-orange-500 transition-colors"
+                        >
+                            f
+                        </a>
+                        <a
+                            href="#"
+                            className="hover:text-orange-500 transition-colors"
+                        >
+                            t
+                        </a>
+                        <a
+                            href="#"
+                            className="hover:text-orange-500 transition-colors"
+                        >
+                            in
+                        </a>
+                        <a
+                            href="#"
+                            className="hover:text-orange-500 transition-colors"
+                        >
+                            ig
+                        </a>
                     </div>
                 </div>
             </div>
@@ -42,7 +62,10 @@ export default function GuestLayout({ children }) {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-center h-20">
                         {/* Logo */}
-                        <Link href="/" className="flex items-center space-x-2 flex-shrink-0">
+                        <Link
+                            href="/"
+                            className="flex items-center space-x-2 flex-shrink-0"
+                        >
                             <motion.div
                                 whileHover={{ scale: 1.05 }}
                                 className="w-12 h-12 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center text-white font-bold text-xl shadow-lg"
@@ -50,8 +73,12 @@ export default function GuestLayout({ children }) {
                                 S
                             </motion.div>
                             <div>
-                                <h1 className="text-xl font-bold text-gray-900">Sarah</h1>
-                                <p className="text-xs text-gray-500">Fast Food & Restaurant</p>
+                                <h1 className="text-xl font-bold text-gray-900">
+                                    Sarah
+                                </h1>
+                                <p className="text-xs text-gray-500">
+                                    Fast Food & Restaurant
+                                </p>
                             </div>
                         </Link>
 
@@ -88,7 +115,7 @@ export default function GuestLayout({ children }) {
                                     </Button>
                                 </Link>
                             ) : (
-                                <Link href="/orders">
+                                <Link href="/admin/dashboard">
                                     <Button
                                         variant="primary"
                                         size="md"
@@ -176,7 +203,10 @@ export default function GuestLayout({ children }) {
                             <h4 className="font-semibold mb-4">Quick Links</h4>
                             <ul className="space-y-2 text-gray-400">
                                 <li>
-                                    <Link href="/menu" className="hover:text-white transition-colors">
+                                    <Link
+                                        href="/menu"
+                                        className="hover:text-white transition-colors"
+                                    >
                                         Menu
                                     </Link>
                                 </li>

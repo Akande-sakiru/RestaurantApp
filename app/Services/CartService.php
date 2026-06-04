@@ -4,8 +4,7 @@ namespace App\Services;
 
 use App\Models\MenuItem;
 use App\Models\User;
-use Illuminate\Redis\Connections\Connection;
-use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Cache;
 
 class CartService
 {
@@ -21,19 +20,7 @@ class CartService
      */
     public function get(User $user): array
     {
-        try {
-            $raw = Redis::hgetall($this->key($user));
-
-            if (empty($raw)) {
-                return [];
-            }
-
-            return array_values(
-                array_map(fn(string $json) => json_decode($json, true), $raw)
-            );
-        } catch (\Throwable $e) {
-            return [];
-        }
+        return Cache::get($this->key($user), []);
     }
 
     /**
@@ -41,31 +28,26 @@ class CartService
      */
     public function add(User $user, MenuItem $item, int $qty, ?string $notes): void
     {
-        try {
-            $key = $this->key($user);
-             
-            $field = (string) $item->id;
+        $key = $this->key($user);
+        $items = Cache::get($key, []);
 
-            $existing = Redis::hget($key, $field);
-//  dd($existing); 
-            if ($existing !== null && $existing !== false) {
-                $entry = json_decode($existing, true);
-                $entry['quantity'] += $qty;
-            } else {
-                $entry = [
-                    'id' => $item->id,
-                    'name' => $item->name,
-                    'price' => (float) $item->price,
-                    'quantity' => $qty,
-                    'notes' => $notes,
-                ];
-            }
-// dd($entry);
-            Redis::hset($key, $field, json_encode($entry));
-            Redis::expire($key, self::TTL);
-        } catch (\Throwable $e) {
-            // If Redis is unavailable, silently fail
+        $itemId = (string) $item->id;
+
+        if (isset($items[$itemId])) {
+            $items[$itemId]['quantity'] += $qty;
+        } else {
+            $items[$itemId] = [
+                'id' => $item->id,
+                'name' => $item->name,
+                'price' => (float) $item->price,
+                'quantity' => $qty,
+                'notes' => $notes,
+            ];
         }
+        // dd($items);
+
+
+        Cache::put($key, $items, self::TTL);
     }
 
     /**
@@ -73,29 +55,23 @@ class CartService
      */
     public function update(User $user, MenuItem $item, int $qty): void
     {
-        try {
-            if ($qty === 0) {
-                $this->remove($user, $item);
-                return;
-            }
-
-            $key = $this->key($user);
-            $field = (string) $item->id;
-
-            $existing = Redis::hget($key, $field);
-
-            if ($existing === null || $existing === false) {
-                return;
-            }
-
-            $entry = json_decode($existing, true);
-            $entry['quantity'] = $qty;
-
-            Redis::hset($key, $field, json_encode($entry));
-            Redis::expire($key, self::TTL);
-        } catch (\Throwable $e) {
-            // If Redis is unavailable, silently fail
+        if ($qty === 0) {
+            $this->remove($user, $item);
+            return;
         }
+
+        $key = $this->key($user);
+        $items = Cache::get($key, []);
+
+        $itemId = (string) $item->id;
+
+        if (!isset($items[$itemId])) {
+            return;
+        }
+
+        $items[$itemId]['quantity'] = $qty;
+
+        Cache::put($key, $items, self::TTL);
     }
 
     /**
@@ -103,17 +79,16 @@ class CartService
      */
     public function remove(User $user, MenuItem $item): void
     {
-        try {
-            $key = $this->key($user);
+        $key = $this->key($user);
+        $items = Cache::get($key, []);
 
-            Redis::hdel($key, (string) $item->id);
+        $itemId = (string) $item->id;
+        unset($items[$itemId]);
 
-            // Refresh TTL only if the cart still has items.
-            if (Redis::hlen($key) > 0) {
-                Redis::expire($key, self::TTL);
-            }
-        } catch (\Throwable $e) {
-            // If Redis is unavailable, silently fail
+        if (empty($items)) {
+            Cache::forget($key);
+        } else {
+            Cache::put($key, $items, self::TTL);
         }
     }
 
@@ -122,11 +97,7 @@ class CartService
      */
     public function clear(User $user): void
     {
-        try {
-            Redis::del($this->key($user));
-        } catch (\Throwable $e) {
-            // If Redis is unavailable, silently fail
-        }
+        Cache::forget($this->key($user));
     }
 
     /**
@@ -134,12 +105,7 @@ class CartService
      */
     public function count(User $user): int
     {
-        try {
-            return (int) Redis::hlen($this->key($user));
-        } catch (\Throwable $e) {
-            // If Redis is unavailable, return 0
-            return 0;
-        }
+        return count(Cache::get($this->key($user), []));
     }
 
     /**
@@ -147,28 +113,23 @@ class CartService
      */
     public function subtotal(User $user): float
     {
-        try {
-            $values = Redis::hvals($this->key($user));
+        $items = Cache::get($this->key($user), []);
 
-            if (empty($values)) {
-                return 0.0;
-            }
-
-            $total = 0.0;
-
-            foreach ($values as $json) {
-                $entry = json_decode($json, true);
-                $total += (float) $entry['price'] * (int) $entry['quantity'];
-            }
-
-            return round($total, 2);
-        } catch (\Throwable $e) {
+        if (empty($items)) {
             return 0.0;
         }
+
+        $total = 0.0;
+
+        foreach ($items as $entry) {
+            $total += (float) $entry['price'] * (int) $entry['quantity'];
+        }
+
+        return round($total, 2);
     }
 
     /**
-     * Return the Redis hash key for the given user's cart.
+     * Return the cache key for the given user's cart.
      */
     private function key(User $user): string
     {

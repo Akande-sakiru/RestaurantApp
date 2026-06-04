@@ -1,14 +1,11 @@
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingCart, AlertCircle, Plus, Minus, Check } from 'lucide-react';
-import Button from '../UI/Button';
-import Badge from '../UI/Badge';
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ShoppingCart, AlertCircle, Plus, Minus, Check } from "lucide-react";
+import { router } from "@inertiajs/react";
+import Button from "../UI/Button";
+import Badge from "../UI/Badge";
 
-export default function MenuItemCard({
-    item,
-    onAddToCart,
-    isLoading = false,
-}) {
+export default function MenuItemCard({ item, onAddToCart, isLoading = false }) {
     const [quantity, setQuantity] = useState(1);
     const [isExpanded, setIsExpanded] = useState(false);
 
@@ -31,7 +28,7 @@ export default function MenuItemCard({
         onAddToCart(item.id, quantity);
         setQuantity(1);
         setIsExpanded(false);
-        route.post('/cart', { menu_item_id: item.id, quantity });
+        router.post("/cart", { menu_item_id: item.id, quantity });
     };
 
     const containerVariants = {
@@ -148,7 +145,9 @@ export default function MenuItemCard({
                     {/* Price Display */}
                     <div className="mb-4">
                         <div className="flex items-baseline gap-1">
-                            <span className="text-sm text-gray-500">Price:</span>
+                            <span className="text-sm text-gray-500">
+                                Price:
+                            </span>
                             <span className="text-3xl font-bold text-orange-500">
                                 ₦{parseFloat(item.price).toFixed(2)}
                             </span>
@@ -161,7 +160,7 @@ export default function MenuItemCard({
                             <motion.div
                                 key="collapsed"
                                 initial={{ opacity: 0, height: 0 }}
-                                animate={{ opacity: 1, height: 'auto' }}
+                                animate={{ opacity: 1, height: "auto" }}
                                 exit={{ opacity: 0, height: 0 }}
                                 transition={{ duration: 0.2 }}
                             >
@@ -183,7 +182,7 @@ export default function MenuItemCard({
                             <motion.div
                                 key="expanded"
                                 initial={{ opacity: 0, height: 0 }}
-                                animate={{ opacity: 1, height: 'auto' }}
+                                animate={{ opacity: 1, height: "auto" }}
                                 exit={{ opacity: 0, height: 0 }}
                                 transition={{ duration: 0.2 }}
                                 className="space-y-3"
@@ -227,7 +226,7 @@ export default function MenuItemCard({
                                     {/* Quantity Note */}
                                     <p className="text-xs text-gray-500 mt-2 text-center">
                                         {quantity === 1
-                                            ? 'Just this one'
+                                            ? "Just this one"
                                             : `${quantity} items`}
                                     </p>
                                 </div>
@@ -249,7 +248,9 @@ export default function MenuItemCard({
                                     <Button
                                         variant="primary"
                                         size="md"
-                                        disabled={!item.is_available || isLoading}
+                                        disabled={
+                                            !item.is_available || isLoading
+                                        }
                                         isLoading={isLoading}
                                         onClick={handleAddToCart}
                                         className="w-full flex items-center justify-center gap-2"

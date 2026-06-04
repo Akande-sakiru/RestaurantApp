@@ -1,9 +1,9 @@
 /**
  * CartExample.jsx
- * 
+ *
  * Complete example showing how to integrate CartDrawer, CartItem, and CartSummary
  * together in a menu or products page with full cart functionality.
- * 
+ *
  * This component demonstrates:
  * - Managing cart state
  * - Adding/removing items
@@ -12,11 +12,11 @@
  * - Integrating with menu items
  */
 
-import { useState } from 'react';
-import { motion } from 'framer-motion';
-import CartDrawer from './CartDrawer';
-import Button from '../UI/Button';
-import { ShoppingCart } from 'lucide-react';
+import { useState } from "react";
+import { motion } from "framer-motion";
+import CartDrawer from "./CartDrawer";
+import Button from "../UI/Button";
+import { ShoppingCart } from "lucide-react";
 
 /**
  * Example cart context/state management pattern
@@ -32,7 +32,7 @@ export function useCart() {
                 return prevItems.map((ci) =>
                     ci.id === item.id
                         ? { ...ci, quantity: ci.quantity + 1 }
-                        : ci
+                        : ci,
                 );
             }
             return [...prevItems, { ...item, quantity: 1 }];
@@ -45,15 +45,15 @@ export function useCart() {
         } else {
             setCartItems((prevItems) =>
                 prevItems.map((item) =>
-                    item.id === itemId ? { ...item, quantity } : item
-                )
+                    item.id === itemId ? { ...item, quantity } : item,
+                ),
             );
         }
     };
 
     const removeItem = (itemId) => {
         setCartItems((prevItems) =>
-            prevItems.filter((item) => item.id !== itemId)
+            prevItems.filter((item) => item.id !== itemId),
         );
     };
 
@@ -109,7 +109,7 @@ function MenuItem({ item, onAddToCart }) {
                 </p>
                 <div className="flex items-center justify-between">
                     <p className="text-xl font-bold text-orange-500">
-                        ₦{item.price.toFixed(2)}
+                        ₦{item.price}
                     </p>
                     <Button
                         variant="primary"
@@ -142,45 +142,45 @@ export default function CartExample() {
     const menuItems = [
         {
             id: 1,
-            name: 'Deluxe Burger',
-            description: 'Juicy beef patty with fresh toppings',
+            name: "Deluxe Burger",
+            description: "Juicy beef patty with fresh toppings",
             price: 12.99,
-            category: { name: 'Burgers' },
+            category: { name: "Burgers" },
         },
         {
             id: 2,
-            name: 'Margherita Pizza',
-            description: 'Classic pizza with mozzarella and basil',
+            name: "Margherita Pizza",
+            description: "Classic pizza with mozzarella and basil",
             price: 14.99,
-            category: { name: 'Pizza' },
+            category: { name: "Pizza" },
         },
         {
             id: 3,
-            name: 'Fried Chicken Combo',
-            description: 'Crispy chicken pieces with sides',
+            name: "Fried Chicken Combo",
+            description: "Crispy chicken pieces with sides",
             price: 11.99,
-            category: { name: 'Chicken' },
+            category: { name: "Chicken" },
         },
         {
             id: 4,
-            name: 'Fresh Veggie Wrap',
-            description: 'Nutritious wrap with fresh vegetables',
+            name: "Fresh Veggie Wrap",
+            description: "Nutritious wrap with fresh vegetables",
             price: 9.99,
-            category: { name: 'Wraps' },
+            category: { name: "Wraps" },
         },
         {
             id: 5,
-            name: 'Chocolate Cake',
-            description: 'Rich and decadent dessert',
+            name: "Chocolate Cake",
+            description: "Rich and decadent dessert",
             price: 6.99,
-            category: { name: 'Desserts' },
+            category: { name: "Desserts" },
         },
         {
             id: 6,
-            name: 'Loaded Fries',
-            description: 'Crispy fries with cheese and toppings',
+            name: "Loaded Fries",
+            description: "Crispy fries with cheese and toppings",
             price: 7.99,
-            category: { name: 'Sides' },
+            category: { name: "Sides" },
         },
     ];
 
@@ -193,9 +193,7 @@ export default function CartExample() {
                 className="bg-white shadow sticky top-0 z-40"
             >
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
-                    <h1 className="text-2xl font-bold text-gray-900">
-                        Menu
-                    </h1>
+                    <h1 className="text-2xl font-bold text-gray-900">Menu</h1>
                     <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
@@ -251,10 +249,7 @@ export default function CartExample() {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: index * 0.1 }}
                         >
-                            <MenuItem
-                                item={item}
-                                onAddToCart={addToCart}
-                            />
+                            <MenuItem item={item} onAddToCart={addToCart} />
                         </motion.div>
                     ))}
                 </motion.div>
@@ -274,16 +269,16 @@ export default function CartExample() {
 
 /**
  * Usage in your actual application:
- * 
+ *
  * 1. Import the useCart hook:
  *    import { useCart } from './Components/Cart/CartExample';
- * 
+ *
  * 2. Use it in your component:
  *    const { cartItems, isCartOpen, setIsCartOpen, ... } = useCart();
- * 
+ *
  * 3. Import and use CartDrawer:
  *    import CartDrawer from './Components/Cart/CartDrawer';
- * 
+ *
  * 4. Render the drawer:
  *    <CartDrawer
  *      isOpen={isCartOpen}

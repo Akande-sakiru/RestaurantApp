@@ -1,28 +1,27 @@
-import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Trash2, Plus, Minus, ShoppingCart } from 'lucide-react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { router } from '@inertiajs/react';
-import CustomerLayout from '../../Layouts/CustomerLayout';
-import Button from '../../Components/UI/Button';
-import Input from '../../Components/UI/Input';
-import Select from '../../Components/UI/Select';
-import Textarea from '../../Components/UI/Textarea';
-import { Card, CardBody, CardHeader, CardFooter } from '../../Components/UI/Card';
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { Trash2, Plus, Minus, ShoppingCart } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { router } from "@inertiajs/react";
+import CustomerLayout from "../../Layouts/CustomerLayout";
+import Button from "../../Components/UI/Button";
+import Input from "../../Components/UI/Input";
+import Select from "../../Components/UI/Select";
+import Textarea from "../../Components/UI/Textarea";
+import { Card, CardBody, CardHeader } from "../../Components/UI/Card";
 
 const checkoutSchema = z.object({
-    type: z.enum(['dine-in', 'takeaway', 'delivery']),
+    type: z.enum(["dine-in", "takeaway", "delivery"]),
     delivery_address: z.string().optional(),
     table_number: z.string().optional(),
     notes: z.string().optional(),
 });
 
 export default function CartIndex({ cartItems = [], subtotal = 0 }) {
-    const [items, setItems] = useState(cartItems);
+    const items = Array.isArray(cartItems) ? cartItems : [];
     const [isProcessing, setIsProcessing] = useState(false);
-    const [orderType, setOrderType] = useState('dine-in');
 
     const {
         register,
@@ -32,11 +31,11 @@ export default function CartIndex({ cartItems = [], subtotal = 0 }) {
     } = useForm({
         resolver: zodResolver(checkoutSchema),
         defaultValues: {
-            type: 'dine-in',
+            type: "dine-in",
         },
     });
 
-    const selectedType = watch('type');
+    const selectedType = watch("type");
 
     const handleUpdateQuantity = (itemId, newQuantity) => {
         if (newQuantity === 0) {
@@ -52,14 +51,14 @@ export default function CartIndex({ cartItems = [], subtotal = 0 }) {
     };
 
     const handleClearCart = () => {
-        if (confirm('Are you sure you want to clear your cart?')) {
-            router.delete('/cart');
+        if (confirm("Are you sure you want to clear your cart?")) {
+            router.delete("/cart");
         }
     };
 
     const onSubmit = (data) => {
         setIsProcessing(true);
-        router.post('/orders', data, {
+        router.post("/orders", data, {
             onFinish: () => setIsProcessing(false),
         });
     };
@@ -96,7 +95,10 @@ export default function CartIndex({ cartItems = [], subtotal = 0 }) {
                     animate={{ opacity: 1, y: 0 }}
                     className="text-center py-16"
                 >
-                    <ShoppingCart size={64} className="mx-auto text-gray-300 mb-4" />
+                    <ShoppingCart
+                        size={64}
+                        className="mx-auto text-gray-300 mb-4"
+                    />
                     <h2 className="text-3xl font-bold text-gray-900 mb-2">
                         Your cart is empty
                     </h2>
@@ -106,7 +108,7 @@ export default function CartIndex({ cartItems = [], subtotal = 0 }) {
                     <Button
                         variant="primary"
                         size="lg"
-                        onClick={() => router.visit('/menu')}
+                        onClick={() => router.visit("/menu")}
                     >
                         Continue Shopping
                     </Button>
@@ -129,8 +131,8 @@ export default function CartIndex({ cartItems = [], subtotal = 0 }) {
                             Shopping Cart
                         </h1>
                         <p className="text-gray-600">
-                            {items.length} item{items.length !== 1 ? 's' : ''} in
-                            your cart
+                            {items.length} item{items.length !== 1 ? "s" : ""}{" "}
+                            in your cart
                         </p>
                     </motion.div>
 
@@ -154,7 +156,8 @@ export default function CartIndex({ cartItems = [], subtotal = 0 }) {
                                             </h3>
                                             {item.customization_notes && (
                                                 <p className="text-sm text-gray-600 mt-1">
-                                                    Note: {item.customization_notes}
+                                                    Note:{" "}
+                                                    {item.customization_notes}
                                                 </p>
                                             )}
                                         </div>
@@ -166,7 +169,7 @@ export default function CartIndex({ cartItems = [], subtotal = 0 }) {
                                                     onClick={() =>
                                                         handleUpdateQuantity(
                                                             item.id,
-                                                            item.quantity - 1
+                                                            item.quantity - 1,
                                                         )
                                                     }
                                                     className="p-2 hover:bg-gray-100"
@@ -180,7 +183,7 @@ export default function CartIndex({ cartItems = [], subtotal = 0 }) {
                                                     onClick={() =>
                                                         handleUpdateQuantity(
                                                             item.id,
-                                                            item.quantity + 1
+                                                            item.quantity + 1,
                                                         )
                                                     }
                                                     className="p-2 hover:bg-gray-100"
@@ -192,7 +195,10 @@ export default function CartIndex({ cartItems = [], subtotal = 0 }) {
                                             {/* Price */}
                                             <div className="text-right min-w-24">
                                                 <p className="text-sm text-gray-600">
-                                                    ₦{item.menu_item_price.toFixed(2)}
+                                                    ₦
+                                                    {item.menu_item_price.toFixed(
+                                                        2,
+                                                    )}
                                                     each
                                                 </p>
                                                 <p className="font-bold text-orange-500">
@@ -277,39 +283,39 @@ export default function CartIndex({ cartItems = [], subtotal = 0 }) {
                                     {/* Order Type */}
                                     <Select
                                         label="Order Type"
-                                        {...register('type')}
+                                        {...register("type")}
                                         options={[
                                             {
-                                                value: 'dine-in',
-                                                label: 'Dine In',
+                                                value: "dine-in",
+                                                label: "Dine In",
                                             },
                                             {
-                                                value: 'takeaway',
-                                                label: 'Takeaway',
+                                                value: "takeaway",
+                                                label: "Takeaway",
                                             },
                                             {
-                                                value: 'delivery',
-                                                label: 'Delivery',
+                                                value: "delivery",
+                                                label: "Delivery",
                                             },
                                         ]}
                                         error={errors.type?.message}
                                     />
 
                                     {/* Conditional Fields */}
-                                    {selectedType === 'dine-in' && (
+                                    {selectedType === "dine-in" && (
                                         <Input
                                             label="Table Number"
                                             placeholder="e.g., 5"
-                                            {...register('table_number')}
+                                            {...register("table_number")}
                                             error={errors.table_number?.message}
                                         />
                                     )}
 
-                                    {selectedType === 'delivery' && (
+                                    {selectedType === "delivery" && (
                                         <Input
                                             label="Delivery Address"
                                             placeholder="Enter your address"
-                                            {...register('delivery_address')}
+                                            {...register("delivery_address")}
                                             error={
                                                 errors.delivery_address?.message
                                             }
@@ -321,7 +327,7 @@ export default function CartIndex({ cartItems = [], subtotal = 0 }) {
                                         label="Special Requests"
                                         placeholder="Any special requests?"
                                         rows={3}
-                                        {...register('notes')}
+                                        {...register("notes")}
                                         error={errors.notes?.message}
                                     />
 

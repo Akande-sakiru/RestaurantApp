@@ -13,7 +13,20 @@ class MenuController extends Controller
         $menuItems = MenuItem::with('category')
             ->where('is_available', true)
             ->orderBy('sort_order')
-            ->get();
+            ->get()
+            ->map(fn($item) => [
+                'id' => $item->id,
+                'name' => $item->name,
+                'slug' => $item->slug,
+                'description' => $item->description,
+                'price' => (float) $item->price,
+                'image_url' => $item->image_url ?? '/images/amala.jpg', // Fallback to test image
+                'category' => [
+                    'id' => $item->category->id,
+                    'name' => $item->category->name,
+                    'slug' => $item->category->slug,
+                ],
+            ]);
 
         $categories = Category::orderBy('sort_order')->get();
 

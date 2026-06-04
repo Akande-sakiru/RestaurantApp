@@ -9,6 +9,28 @@ use Inertia\Inertia;
 class LandingController extends Controller
 {
     /**
+     * Map category names to emojis and images
+     */
+    private function getCategoryImage(string $categoryName): string
+    {
+        $categoryImages = [
+            'appetizers' => '/images/amala.jpg',
+            'sosa' => '/images/amala.jpg',
+            'drinks' => '/images/amala.jpg',
+            'desserts' => '/images/amala.jpg',
+            'burgers' => '/images/amala.jpg',
+            'pizza' => '/images/amala.jpg',
+            'fried chicken' => '/images/amala.jpg',
+            'wraps' => '/images/amala.jpg',
+            'pasta' => '/images/amala.jpg',
+            'salads' => '/images/amala.jpg',
+        ];
+
+        $lowerName = strtolower($categoryName);
+        return $categoryImages[$lowerName] ?? '/images/amala.jpg';
+    }
+
+    /**
      * Show the landing page with featured menu items.
      */
     public function index()
@@ -24,7 +46,7 @@ class LandingController extends Controller
                 'name' => $item->name,
                 'description' => $item->description,
                 'price' => $item->price,
-                'image_url' => $item->image_url,
+                'image_url' => $item->image_url ?? '/images/amala.jpg', // Fallback to test image
                 'category' => [
                     'id' => $item->category->id,
                     'name' => $item->category->name,
@@ -39,6 +61,7 @@ class LandingController extends Controller
                 'name' => $category->name,
                 'slug' => $category->slug,
                 'menu_items_count' => $category->menu_items_count,
+                'image_url' => $this->getCategoryImage($category->name),
             ]);
 
         $restaurantInfo = [

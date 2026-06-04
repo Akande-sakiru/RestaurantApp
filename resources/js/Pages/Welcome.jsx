@@ -374,9 +374,15 @@ export default function Welcome({
                                         className="w-full aspect-square rounded-2xl bg-gray-100 flex items-center justify-center overflow-hidden shadow-md hover:shadow-lg transition-shadow"
                                         whileHover={{ rotate: -5 }}
                                     >
-                                        <span className="text-5xl">
-                                            🍽️
-                                        </span>
+                                        {category.image_url ? (
+                                            <img
+                                                src={category.image_url}
+                                                alt={category.name}
+                                                className="w-full h-full object-cover"
+                                            />
+                                        ) : (
+                                            <span className="text-5xl">🍽️</span>
+                                        )}
                                     </motion.div>
                                     <motion.div
                                         initial={{ opacity: 0 }}
@@ -499,7 +505,7 @@ export default function Welcome({
                                                 />
                                             ) : (
                                                 <div className="w-full h-full bg-gradient-to-br from-orange-100 to-orange-50 flex items-center justify-center text-6xl">
-                                                
+                                                    🍽️
                                                 </div>
                                             )}
 

@@ -115,7 +115,7 @@ class MenuItemController extends Controller
             dispatch(new ProcessMenuItemImage($menuItem))->onQueue('default');
         }
 
-        return back()->with('success', 'Menu item updated successfully');
+        return redirect()->route('admin.menu-items.index')->with('success', 'Menu item updated successfully');
     }
 
     /**

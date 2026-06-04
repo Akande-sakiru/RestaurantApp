@@ -149,7 +149,7 @@ export default function MenuItemCard({
                         <div className="flex items-baseline gap-1">
                             <span className="text-sm text-gray-500">Price:</span>
                             <span className="text-3xl font-bold text-orange-500">
-                                ₦{item.price.toFixed(2)}
+                                ₦{(item.price).toFixed(2)}
                             </span>
                         </div>
                     </div>

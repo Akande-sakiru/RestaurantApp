@@ -327,7 +327,7 @@ export default function OrdersIndex({ orders = mockOrders }) {
                                                     </td>
                                                     <td className="py-4 px-4">
                                                         <p className="font-bold text-orange-500">
-                                                            ${order.total.toFixed(2)}
+                                                            ${parseFloat(order.total).toFixed(2)}
                                                         </p>
                                                     </td>
                                                     <td className="py-4 px-4">

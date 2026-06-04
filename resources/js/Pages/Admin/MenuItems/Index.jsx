@@ -74,15 +74,12 @@ export default function MenuItemsIndex({ menuItems = mockMenuItems }) {
     const items = Array.isArray(menuItems) ? menuItems : menuItems?.data || [];
 
     const filteredItems = items.filter((item) => {
-        const matchesSearch = item.name
-            .toLowerCase()
-            .includes(searchTerm.toLowerCase());
-        const matchesCategory =
-            filterCategory === "all" || item.category === filterCategory;
+        const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesCategory = filterCategory === 'all' || item.category?.name === filterCategory;
         return matchesSearch && matchesCategory;
     });
 
-    const categories = ["all", ...new Set(items.map((item) => item.category))];
+    const categories = ['all', ...new Set(items.map((item) => item.category?.name).filter(Boolean))];
 
     const containerVariants = {
         hidden: { opacity: 0 },
@@ -266,139 +263,100 @@ export default function MenuItemsIndex({ menuItems = mockMenuItems }) {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {filteredItems.map(
-                                                (item, index) => (
-                                                    <motion.tr
-                                                        key={item.id}
-                                                        variants={itemVariants}
-                                                        whileHover={{
-                                                            backgroundColor:
-                                                                "#f9fafb",
-                                                        }}
-                                                        className="border-b border-gray-100 last:border-b-0 transition-colors"
-                                                    >
-                                                        <td className="py-4 px-4">
-                                                            <div className="flex items-center space-x-3">
-                                                                <div className="w-12 h-12 bg-gradient-to-br from-orange-100 to-orange-50 rounded-lg flex items-center justify-center text-xl">
-                                                                    🍽️
-                                                                </div>
-                                                                <div>
-                                                                    <p className="font-semibold text-gray-900">
-                                                                        {
-                                                                            item.name
-                                                                        }
-                                                                    </p>
-                                                                    <p className="text-xs text-gray-500">
-                                                                        {new Date(
-                                                                            item.created_at,
-                                                                        ).toLocaleDateString()}
-                                                                    </p>
-                                                                </div>
+                                            {filteredItems.map((item, index) => (
+                                                <motion.tr
+                                                    key={item.id}
+                                                    variants={itemVariants}
+                                                    whileHover={{ backgroundColor: '#f9fafb' }}
+                                                    className="border-b border-gray-100 last:border-b-0 transition-colors"
+                                                >
+                                                    <td className="py-4 px-4">
+                                                        <div className="flex items-center space-x-3">
+                                                            <div className="w-12 h-12 bg-gradient-to-br from-orange-100 to-orange-50 rounded-lg flex items-center justify-center text-xl">
+                                                                🍽️
                                                             </div>
-                                                        </td>
-                                                        <td className="py-4 px-4">
-                                                            <Badge variant="default">
-                                                                {item.category}
-                                                            </Badge>
-                                                        </td>
-                                                        <td className="py-4 px-4">
-                                                            <p className="font-semibold text-orange-500">
-                                                                ₦{item.price}
-                                                            </p>
-                                                        </td>
-                                                        <td className="py-4 px-4">
-                                                            <Badge
-                                                                variant={
+                                                            <div>
+                                                                <p className="font-semibold text-gray-900">
+                                                                    {item.name}
+                                                                </p>
+                                                                <p className="text-xs text-gray-500">
+                                                                    {new Date(
+                                                                        item.created_at
+                                                                    ).toLocaleDateString()}
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td className="py-4 px-4">
+                                                        <Badge variant="default">
+                                                            {item.category?.name || 'Uncategorized'}
+                                                        </Badge>
+                                                    </td>
+                                                    <td className="py-4 px-4">
+                                                        <p className="font-semibold text-orange-500">
+                                                            ₦{parseFloat(item.price).toFixed(2)}
+                                                        </p>
+                                                    </td>
+                                                    <td className="py-4 px-4">
+                                                        <Badge
+                                                            variant={
+                                                                item.is_available
+                                                                    ? 'success'
+                                                                    : 'danger'
+                                                            }
+                                                        >
+                                                            {item.is_available
+                                                                ? 'Available'
+                                                                : 'Unavailable'}
+                                                        </Badge>
+                                                    </td>
+                                                    <td className="py-4 px-4 text-right">
+                                                        <div className="flex items-center justify-end space-x-2">
+                                                            <motion.button
+                                                                whileHover={{ scale: 1.1 }}
+                                                                whileTap={{ scale: 0.95 }}
+                                                                onClick={() =>
+                                                                    handleToggleAvailability(
+                                                                        item.id,
+                                                                        item.is_available
+                                                                    )
+                                                                }
+                                                                className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                                                                title={
                                                                     item.is_available
-                                                                        ? "success"
-                                                                        : "danger"
+                                                                        ? 'Mark unavailable'
+                                                                        : 'Mark available'
                                                                 }
                                                             >
-                                                                {item.is_available
-                                                                    ? "Available"
-                                                                    : "Unavailable"}
-                                                            </Badge>
-                                                        </td>
-                                                        <td className="py-4 px-4 text-right">
-                                                            <div className="flex items-center justify-end space-x-2">
+                                                                {item.is_available ? (
+                                                                    <Eye size={18} />
+                                                                ) : (
+                                                                    <EyeOff size={18} />
+                                                                )}
+                                                            </motion.button>
+                                                            <Link href={`/admin/menu-items/${item.id}/edit`}>
                                                                 <motion.button
-                                                                    whileHover={{
-                                                                        scale: 1.1,
-                                                                    }}
-                                                                    whileTap={{
-                                                                        scale: 0.95,
-                                                                    }}
-                                                                    onClick={() =>
-                                                                        handleToggleAvailability(
-                                                                            item.id,
-                                                                            item.is_available,
-                                                                        )
-                                                                    }
-                                                                    className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                                                                    title={
-                                                                        item.is_available
-                                                                            ? "Mark unavailable"
-                                                                            : "Mark available"
-                                                                    }
+                                                                    whileHover={{ scale: 1.1 }}
+                                                                    whileTap={{ scale: 0.95 }}
+                                                                    className="p-2 text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
                                                                 >
-                                                                    {item.is_available ? (
-                                                                        <Eye
-                                                                            size={
-                                                                                18
-                                                                            }
-                                                                        />
-                                                                    ) : (
-                                                                        <EyeOff
-                                                                            size={
-                                                                                18
-                                                                            }
-                                                                        />
-                                                                    )}
+                                                                    <Edit2 size={18} />
                                                                 </motion.button>
-                                                                <Link
-                                                                    href={`/admin/menu-items/${item.id}/edit`}
-                                                                >
-                                                                    <motion.button
-                                                                        whileHover={{
-                                                                            scale: 1.1,
-                                                                        }}
-                                                                        whileTap={{
-                                                                            scale: 0.95,
-                                                                        }}
-                                                                        className="p-2 text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
-                                                                    >
-                                                                        <Edit2
-                                                                            size={
-                                                                                18
-                                                                            }
-                                                                        />
-                                                                    </motion.button>
-                                                                </Link>
-                                                                <motion.button
-                                                                    whileHover={{
-                                                                        scale: 1.1,
-                                                                    }}
-                                                                    whileTap={{
-                                                                        scale: 0.95,
-                                                                    }}
-                                                                    onClick={() =>
-                                                                        handleDelete(
-                                                                            item.id,
-                                                                        )
-                                                                    }
-                                                                    className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                                                                >
-                                                                    <Trash2
-                                                                        size={
-                                                                            18
-                                                                        }
-                                                                    />
-                                                                </motion.button>
-                                                            </div>
-                                                        </td>
-                                                    </motion.tr>
-                                                ),
-                                            )}
+                                                            </Link>
+                                                            <motion.button
+                                                                whileHover={{ scale: 1.1 }}
+                                                                whileTap={{ scale: 0.95 }}
+                                                                onClick={() =>
+                                                                    handleDelete(item.id)
+                                                                }
+                                                                className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                                            >
+                                                                <Trash2 size={18} />
+                                                            </motion.button>
+                                                        </div>
+                                                    </td>
+                                                </motion.tr>
+                                            ))}
                                         </tbody>
                                     </table>
                                 </div>

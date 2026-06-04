@@ -62,7 +62,7 @@ export default function CartItem({
                             {item.name}
                         </h4>
                         <p className="text-xs text-gray-500 mt-1">
-                            ₦{item.price.toFixed(2)} each
+                            ₦{item.price} each
                         </p>
                     </div>
                     <motion.button

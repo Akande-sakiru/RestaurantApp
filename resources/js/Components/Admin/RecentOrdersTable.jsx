@@ -98,7 +98,7 @@ export default function RecentOrdersTable({ orders = [] }) {
                                     </td>
                                     <td className="px-6 py-4">
                                         <span className="font-semibold text-orange-600">
-                                            ₦{order.total.toFixed(2)}
+                                            ₦{order.total}
                                         </span>
                                     </td>
                                     <td className="px-6 py-4">

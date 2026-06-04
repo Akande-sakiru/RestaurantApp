@@ -12,7 +12,7 @@ export default function GuestLayout({ children }) {
         { label: 'Home', href: '/' },
         { label: 'About', href: '#about' },
         { label: 'Menu', href: '/menu' },
-        { label: 'Chefs', href: '#chefs' },
+       
         { label: 'Reservation', href: '/reservations/create' },
         { label: 'Reviews', href: '#reviews' },
         { label: 'Contact', href: '#contact' },

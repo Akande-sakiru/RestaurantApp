@@ -46,15 +46,15 @@ class MenuItemController extends Controller
     /**
      * Show the edit form.
      */
-    // public function edit(MenuItem $menuItem)
-    // {
-    //     $categories = Category::all();
+    public function edit(MenuItem $menuItem)
+    {
+        $categories = Category::all();
 
-    //     return Inertia::render('Admin/MenuItems/Edit', [
-    //         'menuItem' => $menuItem,
-    //         'categories' => $categories,
-    //     ]);
-    // }
+        return Inertia::render('Admin/MenuItems/Edit', [
+            'menuItem' => $menuItem,
+            'categories' => $categories,
+        ]);
+    }
 
     /**
      * Store a new menu item.
@@ -85,15 +85,15 @@ class MenuItemController extends Controller
         return redirect()->route('admin.menu-items.index')->with('success', 'Menu item created successfully');
     }
 
-    public function edit(MenuItem $menuItem)
-    {
-        $categories = Category::all();
+    // public function edit(MenuItem $menuItem)
+    // {
+    //     $categories = Category::all();
 
-        return Inertia::render('Admin/MenuItems/Edit', [
-            'menuItem' => $menuItem,
-            'categories' => $categories,
-        ]);
-    }
+    //     return Inertia::render('Admin/MenuItems/Edit', [
+    //         'menuItem' => $menuItem,
+    //         'categories' => $categories,
+    //     ]);
+    // }
 
     /**
      * Update a menu item.

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ShoppingCart, AlertCircle, Plus, Minus, Check } from "lucide-react";
+import { router } from "@inertiajs/react";
 import Button from "../UI/Button";
 import Badge from "../UI/Badge";
 
@@ -27,7 +28,7 @@ export default function MenuItemCard({ item, onAddToCart, isLoading = false }) {
         onAddToCart(item.id, quantity);
         setQuantity(1);
         setIsExpanded(false);
-        route.post("/cart", { menu_item_id: item.id, quantity });
+        router.post("/cart", { menu_item_id: item.id, quantity });
     };
 
     const containerVariants = {

@@ -23,8 +23,19 @@ class CartController extends Controller
         $cartItems = $this->cartService->get($user);
         $subtotal = $this->cartService->subtotal($user);
 
+        // Transform cart items to match frontend expectations
+        $transformedItems = array_values(array_map(function ($item) {
+            return [
+                'id' => $item['id'],
+                'menu_item_name' => $item['name'],
+                'customization_notes' => $item['notes'],
+                'menu_item_price' => $item['price'],
+                'quantity' => $item['quantity'],
+            ];
+        }, $cartItems));
+
         return Inertia::render('Cart/Index', [
-            'cartItems' => $cartItems,
+            'cartItems' => $transformedItems,
             'subtotal' => $subtotal,
         ]);
     }
@@ -35,7 +46,7 @@ class CartController extends Controller
     public function store(Request $request)
     {
         $user = $request->user();
-        
+
 
         $validated = $request->validate([
             'menu_item_id' => 'required|exists:menu_items,id',
@@ -48,8 +59,18 @@ class CartController extends Controller
         if (!$item->is_available) {
             return back()->withErrors(['menu_item_id' => 'This item is not currently available.']);
         }
-//
+        //
         $this->cartService->add($user, $item, $validated['quantity'], $validated['notes'] ?? null);
+
+        // // $this->index(Request $request);
+
+        // $cartItems = $this->cartService->get($user);
+        // $subtotal = $this->cartService->subtotal($user);
+
+        // return Inertia::render('Cart/Index', [
+        //     'cartItems' => $cartItems,
+        //     'subtotal' => $subtotal,
+        // ]);
 
         // Return with redirect to the same page (for Inertia)
         return redirect()->route('cart.index')->with('success', 'Item added to cart');

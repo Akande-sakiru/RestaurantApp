@@ -44,6 +44,8 @@ class CartService
                 'notes' => $notes,
             ];
         }
+        // dd($items);
+
 
         Cache::put($key, $items, self::TTL);
     }

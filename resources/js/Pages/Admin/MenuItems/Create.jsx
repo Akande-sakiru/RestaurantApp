@@ -1,8 +1,8 @@
-import { useForm, Link } from '@inertiajs/react';
+import { useForm, Link, usePage } from '@inertiajs/react';
 import { motion } from 'framer-motion';
 import AdminLayout from '../../../Layouts/AdminLayout';
 import { ArrowLeft, Upload } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function CreateMenuItem({ categories = [] }) {
     const { data, setData, post, processing, errors } = useForm({
@@ -14,8 +14,13 @@ export default function CreateMenuItem({ categories = [] }) {
         is_available: true,
         sort_order: 0,
     });
-
+    const [currentCategories, setCurrentCategories] = useState(categories);
     const [previewImage, setPreviewImage] = useState(null);
+
+    // Reload categories when component mounts or when categories prop changes
+    useEffect(() => {
+        setCurrentCategories(categories);
+    }, [categories]);
 
     const handleImageChange = (e) => {
         const file = e.target.files?.[0];
@@ -210,7 +215,7 @@ export default function CreateMenuItem({ categories = [] }) {
                                         required
                                     >
                                         <option value="">Select a category</option>
-                                        {categories.map((category) => (
+                                        {currentCategories.map((category) => (
                                             <option
                                                 key={category.id}
                                                 value={category.id}

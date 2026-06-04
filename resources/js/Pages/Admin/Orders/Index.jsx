@@ -91,7 +91,10 @@ export default function OrdersIndex({ orders = mockOrders }) {
     const [filterStatus, setFilterStatus] = useState('all');
     const [filterType, setFilterType] = useState('all');
 
-    const filteredOrders = orders.filter((order) => {
+    // Handle both paginated object and array formats
+    const ordersList = Array.isArray(orders) ? orders : (orders?.data || []);
+
+    const filteredOrders = ordersList.filter((order) => {
         const matchesSearch =
             order.order_number.toLowerCase().includes(searchTerm.toLowerCase()) ||
             order.customer_name.toLowerCase().includes(searchTerm.toLowerCase());

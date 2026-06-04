@@ -66,7 +66,10 @@ export default function UsersIndex({ users = mockUsers }) {
     const [filterRole, setFilterRole] = useState('all');
     const [filterStatus, setFilterStatus] = useState('all');
 
-    const filteredUsers = users.filter((user) => {
+    // Handle both paginated object and array formats
+    const usersList = Array.isArray(users) ? users : (users?.data || []);
+
+    const filteredUsers = usersList.filter((user) => {
         const matchesSearch =
             user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
             user.email.toLowerCase().includes(searchTerm.toLowerCase());
@@ -106,10 +109,10 @@ export default function UsersIndex({ users = mockUsers }) {
         router.patch(`/admin/users/${userId}/role`, { role: newRole });
     };
 
-    const activeCount = users.filter((u) => u.is_active).length;
-    const customerCount = users.filter((u) => u.role === 'customer').length;
-    const adminCount = users.filter((u) => u.role === 'admin').length;
-    const totalOrders = users.reduce((sum, u) => sum + u.orders, 0);
+    const activeCount = usersList.filter((u) => u.is_active).length;
+    const customerCount = usersList.filter((u) => u.role === 'customer').length;
+    const adminCount = usersList.filter((u) => u.role === 'admin').length;
+    const totalOrders = usersList.reduce((sum, u) => sum + u.orders, 0);
 
     return (
         <AdminLayout>

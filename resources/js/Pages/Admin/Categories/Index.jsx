@@ -20,7 +20,10 @@ const mockCategories = [
 export default function CategoriesIndex({ categories = mockCategories }) {
     const [searchTerm, setSearchTerm] = useState('');
 
-    const filteredCategories = categories.filter((cat) =>
+    // Handle both paginated object and array formats
+    const categoriesList = Array.isArray(categories) ? categories : (categories?.data || []);
+
+    const filteredCategories = categoriesList.filter((cat) =>
         cat.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
@@ -50,7 +53,7 @@ export default function CategoriesIndex({ categories = mockCategories }) {
         }
     };
 
-    const totalItems = categories.reduce((sum, cat) => sum + cat.items_count, 0);
+    const totalItems = categoriesList.reduce((sum, cat) => sum + (cat.menu_items_count || 0), 0);
 
     return (
         <AdminLayout>
@@ -93,7 +96,7 @@ export default function CategoriesIndex({ categories = mockCategories }) {
                     <Card hover={false}>
                         <CardBody className="text-center">
                             <div className="text-3xl font-bold text-orange-500">
-                                {categories.length}
+                                {categoriesList.length}
                             </div>
                             <p className="text-sm text-gray-600 mt-1">Total Categories</p>
                         </CardBody>
@@ -107,7 +110,7 @@ export default function CategoriesIndex({ categories = mockCategories }) {
                     <Card hover={false}>
                         <CardBody className="text-center">
                             <div className="text-3xl font-bold text-red-500">
-                                {(totalItems / categories.length).toFixed(1)}
+                                {(totalItems / categoriesList.length).toFixed(1)}
                             </div>
                             <p className="text-sm text-gray-600 mt-1">Avg Items/Category</p>
                         </CardBody>
@@ -154,7 +157,7 @@ export default function CategoriesIndex({ categories = mockCategories }) {
 
                                     <div className="bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg p-3 mb-4">
                                         <p className="text-sm font-semibold text-orange-900">
-                                            {category.items_count} items
+                                            {category.menu_items_count || 0} items
                                         </p>
                                     </div>
 

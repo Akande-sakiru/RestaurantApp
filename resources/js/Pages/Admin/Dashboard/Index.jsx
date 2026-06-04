@@ -66,7 +66,7 @@ export default function AdminDashboard({
                     />
                     <StatsCard
                         title="Total Revenue"
-                        value={`$${todayRevenue.toFixed(2)}`}
+                        value={`₦${todayRevenue.toFixed(2)}`}
                         icon={TrendingUp}
                         color="orange"
                         trend="+8% from yesterday"
@@ -141,7 +141,7 @@ export default function AdminDashboard({
                                             </div>
                                             <div className="text-right">
                                                 <p className="font-bold text-orange-500">
-                                                    ${order.total?.toFixed(2)}
+                                                    ₦{order.total?.toFixed(2)}
                                                 </p>
                                                 <Badge
                                                     variant={

@@ -39,7 +39,7 @@ class OrderConfirmed extends Notification implements ShouldQueue
             ->line('Your order has been confirmed!')
             ->line('Order Number: ' . $this->order->order_number)
             ->line('Order Type: ' . ucfirst($this->order->type))
-            ->line('Total Amount: $' . number_format($this->order->total, 2))
+            ->line('Total Amount: ₦' . number_format($this->order->total, 2))
             ->line('Current Status: ' . ucfirst($this->order->status))
             ->action('View Order', url(route('orders.show', $this->order, absolute: false)))
             ->line('Thank you for your order!');

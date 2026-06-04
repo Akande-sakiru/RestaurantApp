@@ -84,7 +84,7 @@ export default function ShowOrder({ order }) {
                                 <span className="text-sm text-gray-600">Total</span>
                             </div>
                             <p className="font-semibold text-lg text-orange-600">
-                                ${parseFloat(order.total).toFixed(2)}
+                                ₦{parseFloat(order.total).toFixed(2)}
                             </p>
                         </div>
                     </motion.div>

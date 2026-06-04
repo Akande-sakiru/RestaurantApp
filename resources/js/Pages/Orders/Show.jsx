@@ -298,13 +298,13 @@ export default function OrderShow({ order = mockOrders[0] }) {
                                 <div className="flex justify-between text-gray-600">
                                     <span>Subtotal</span>
                                     <span>
-                                        ${parseFloat(order.subtotal).toFixed(2)}
+                                        ₦{parseFloat(order.subtotal).toFixed(2)}
                                     </span>
                                 </div>
                                 <div className="flex justify-between text-gray-600">
                                     <span>Tax</span>
                                     <span>
-                                        $
+                                        ₦
                                         {(
                                             parseFloat(order.total) -
                                             parseFloat(order.subtotal)
@@ -314,7 +314,7 @@ export default function OrderShow({ order = mockOrders[0] }) {
                                 <div className="flex justify-between text-lg font-bold text-gray-900 pt-2 border-t border-gray-200">
                                     <span>Total</span>
                                     <span className="text-orange-500">
-                                        ${parseFloat(order.total).toFixed(2)}
+                                        ₦{parseFloat(order.total).toFixed(2)}
                                     </span>
                                 </div>
                             </div>

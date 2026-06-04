@@ -127,7 +127,7 @@ export default function OrdersIndex({ orders = mockOrders }) {
         router.patch(`/admin/orders/${orderId}/status`, { status: newStatus });
     };
 
-    const totalRevenue = filteredOrders.reduce((sum, order) => sum + order.total, 0);
+    const totalRevenue = filteredOrders.reduce((sum, order) => sum + parseFloat(order.total), 0);
     const completedCount = filteredOrders.filter((o) => o.status === 'completed').length;
     const pendingCount = filteredOrders.filter((o) => o.status === 'pending').length;
 
@@ -167,7 +167,7 @@ export default function OrdersIndex({ orders = mockOrders }) {
                     <Card hover={false}>
                         <CardBody className="text-center">
                             <div className="text-3xl font-bold text-orange-600">
-                                ${totalRevenue.toFixed(2)}
+                                ₦{totalRevenue.toFixed(2)}
                             </div>
                             <p className="text-sm text-gray-600 mt-1">Revenue</p>
                         </CardBody>
@@ -327,7 +327,7 @@ export default function OrdersIndex({ orders = mockOrders }) {
                                                     </td>
                                                     <td className="py-4 px-4">
                                                         <p className="font-bold text-orange-500">
-                                                            ${parseFloat(order.total).toFixed(2)}
+                                                            ₦{parseFloat(order.total).toFixed(2)}
                                                         </p>
                                                     </td>
                                                     <td className="py-4 px-4">

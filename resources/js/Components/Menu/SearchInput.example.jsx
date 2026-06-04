@@ -148,7 +148,7 @@ export function RealTimeSearchExample() {
                     <div key={item.id} className="p-4 border rounded-lg hover:shadow-md transition">
                         <h3 className="font-semibold text-gray-900">{item.name}</h3>
                         <p className="text-sm text-gray-600">{item.description}</p>
-                        <p className="text-orange-600 font-semibold mt-2">${item.price}</p>
+                        <p className="text-orange-600 font-semibold mt-2">₦{item.price}</p>
                     </div>
                 ))}
             </div>

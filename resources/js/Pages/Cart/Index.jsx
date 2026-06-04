@@ -199,7 +199,7 @@ export default function CartIndex({ cartItems = [], subtotal = 0 }) {
                                                     each
                                                 </p>
                                                 <p className="font-bold text-orange-500">
-                                                    $
+                                                    ₦
                                                     {(
                                                         item.menu_item_price *
                                                         item.quantity
@@ -258,16 +258,16 @@ export default function CartIndex({ cartItems = [], subtotal = 0 }) {
                                 <div className="space-y-2 pb-4 border-b border-gray-200">
                                     <div className="flex justify-between text-gray-600">
                                         <span>Subtotal</span>
-                                        <span>${subtotal.toFixed(2)}</span>
+                                        <span>₦{subtotal.toFixed(2)}</span>
                                     </div>
                                     <div className="flex justify-between text-gray-600">
                                         <span>Tax (10%)</span>
-                                        <span>${tax.toFixed(2)}</span>
+                                        <span>₦{tax.toFixed(2)}</span>
                                     </div>
                                     <div className="flex justify-between text-lg font-bold text-gray-900">
                                         <span>Total</span>
                                         <span className="text-orange-500">
-                                            ${finalTotal.toFixed(2)}
+                                            ₦{finalTotal.toFixed(2)}
                                         </span>
                                     </div>
                                 </div>

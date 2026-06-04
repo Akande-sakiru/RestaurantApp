@@ -249,7 +249,7 @@ export default function EditMenuItem({ menuItem, categories = [] }) {
 
                                 <div className="space-y-2">
                                     <label className="block text-sm font-semibold text-gray-700">
-                                        Price ($) *
+                                        Price (₦) *
                                     </label>
                                     <input
                                         type="number"

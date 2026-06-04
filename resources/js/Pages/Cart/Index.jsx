@@ -195,10 +195,7 @@ export default function CartIndex({ cartItems = [], subtotal = 0 }) {
                                             {/* Price */}
                                             <div className="text-right min-w-24">
                                                 <p className="text-sm text-gray-600">
-                                                    ₦
-                                                    {item.menu_item_price.toFixed(
-                                                        2,
-                                                    )}
+                                                    ₦{item.menu_item_price}
                                                     each
                                                 </p>
                                                 <p className="font-bold text-orange-500">

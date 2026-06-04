@@ -28,7 +28,11 @@ class MenuController extends Controller
                 ],
             ]);
 
-        $categories = Category::orderBy('sort_order')->get();
+        $categories = Category::orderBy('sort_order')->get()->map(fn($category) => [
+            'id' => $category->id,
+            'name' => $category->name,
+            'slug' => $category->slug,
+        ]);
 
         return Inertia::render('Menu/Index', [
             'menuItems' => $menuItems,

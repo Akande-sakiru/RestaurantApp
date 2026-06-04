@@ -59,8 +59,8 @@ Route::middleware(['auth', 'verified', 'role:admin'])
         Route::get('/menu-items', [\App\Http\Controllers\Admin\MenuItemController::class, 'index'])->name('menu-items.index');
         Route::get('/menu-items/create', [\App\Http\Controllers\Admin\MenuItemController::class, 'create'])->name('menu-items.create');
         Route::post('/menu-items', [\App\Http\Controllers\Admin\MenuItemController::class, 'store'])->name('menu-items.store');
-        Route::get('/menu-items/{menuItem}/edit', [\App\Http\Controllers\Admin\MenuItemController::class, 'edit'])->name('menu-items.edit');
-        Route::patch('/menu-items/{menuItem}', [\App\Http\Controllers\Admin\MenuItemController::class, 'update'])->name('menu-items.update');
+        Route::get('/menu-items/{menuItem}/edit', [\App\Http\Controllers\Admin\MenuItemController::class, 'update'])->name('menu-items.edit');
+        // Route::patch('/menu-items/{menuItem}', [\App\Http\Controllers\Admin\MenuItemController::class, 'update'])->name('menu-items.update');
         Route::delete('/menu-items/{menuItem}', [\App\Http\Controllers\Admin\MenuItemController::class, 'destroy'])->name('menu-items.destroy');
         Route::patch('/menu-items/{id}/toggle-availability', function ($id) {
             return back();

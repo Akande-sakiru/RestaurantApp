@@ -1,144 +1,62 @@
 <?php
 
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\LandingController;
+use App\Http\Controllers\MenuController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProfileController;
-use Illuminate\Foundation\Application;
+use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\Admin;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
-Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
-});
+// Public routes
+Route::get('/', [LandingController::class, 'index'])->name('home');
+Route::get('/menu', [MenuController::class, 'index'])->name('menu.index');
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Auth routes (Breeze)
+require __DIR__ . '/auth.php';
 
-// Guest Routes
-Route::get('/menu', function () {
-    return Inertia::render('Menu/Index');
-})->name('menu.index');
+// Customer routes
+Route::middleware(['auth', 'verified', 'role:customer|admin'])->group(function () {
+    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+    Route::post('/cart', [CartController::class, 'store'])->name('cart.store');
+    Route::patch('/cart/{menuItem}', [CartController::class, 'update'])->name('cart.update');
+    Route::delete('/cart/{menuItem}', [CartController::class, 'destroy'])->name('cart.destroy');
+    Route::delete('/cart', [CartController::class, 'clear'])->name('cart.clear');
 
-Route::get('/category/{id}', function ($id) {
-    return Inertia::render('Category/Show', ['category' => ['id' => $id, 'name' => 'Category']]);
-})->name('category.show');
+    Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
 
-// Customer Routes
-Route::middleware('auth')->group(function () {
+    Route::get('/reservations', [ReservationController::class, 'index'])->name('reservations.index');
+    Route::get('/reservations/create', [ReservationController::class, 'create'])->name('reservations.create');
+    Route::post('/reservations', [ReservationController::class, 'store'])->name('reservations.store');
+    Route::patch('/reservations/{reservation}/cancel', [ReservationController::class, 'cancel'])->name('reservations.cancel');
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
-    // Cart
-    Route::get('/cart', function () {
-        return Inertia::render('Cart/Index');
-    })->name('cart.index');
-
-    // Orders
-    Route::get('/orders', function () {
-        return Inertia::render('Orders/Index');
-    })->name('orders.index');
-
-    Route::get('/orders/{id}', function ($id) {
-        return Inertia::render('Orders/Show', ['order' => ['id' => $id]]);
-    })->name('orders.show');
-
-    // Reservations
-    Route::get('/reservations', function () {
-        return Inertia::render('Reservations/Index');
-    })->name('reservations.index');
-
-    Route::get('/reservations/create', function () {
-        return Inertia::render('Reservations/Create');
-    })->name('reservations.create');
-
-    Route::post('/reservations', function () {
-        return redirect()->route('reservations.index');
-    })->name('reservations.store');
-
-    Route::patch('/reservations/{id}/cancel', function ($id) {
-        return redirect()->route('reservations.index');
-    })->name('reservations.cancel');
-
-    // Admin Routes
-    Route::middleware('admin')->group(function () {
-        Route::get('/admin/dashboard', function () {
-            return Inertia::render('Admin/Dashboard/Index');
-        })->name('admin.dashboard');
-
-        // Menu Items
-        Route::get('/admin/menu-items', function () {
-            return Inertia::render('Admin/MenuItems/Index');
-        })->name('admin.menu-items.index');
-
-        Route::get('/admin/menu-items/create', function () {
-            return Inertia::render('Admin/MenuItems/Create');
-        })->name('admin.menu-items.create');
-
-        Route::get('/admin/menu-items/{id}/edit', function ($id) {
-            return Inertia::render('Admin/MenuItems/Edit', ['id' => $id]);
-        })->name('admin.menu-items.edit');
-
-        Route::patch('/admin/menu-items/{id}/toggle-availability', function ($id) {
-            return back();
-        });
-
-        // Categories
-        Route::get('/admin/categories', function () {
-            return Inertia::render('Admin/Categories/Index');
-        })->name('admin.categories.index');
-
-        Route::get('/admin/categories/create', function () {
-            return Inertia::render('Admin/Categories/Create');
-        })->name('admin.categories.create');
-
-        Route::get('/admin/categories/{id}/edit', function ($id) {
-            return Inertia::render('Admin/Categories/Edit', ['id' => $id]);
-        })->name('admin.categories.edit');
-
-        // Orders
-        Route::get('/admin/orders', function () {
-            return Inertia::render('Admin/Orders/Index');
-        })->name('admin.orders.index');
-
-        Route::get('/admin/orders/{id}', function ($id) {
-            return Inertia::render('Admin/Orders/Show', ['id' => $id]);
-        })->name('admin.orders.show');
-
-        Route::patch('/admin/orders/{id}/status', function ($id) {
-            return back();
-        });
-
-        // Reservations
-        Route::get('/admin/reservations', function () {
-            return Inertia::render('Admin/Reservations/Index');
-        })->name('admin.reservations.index');
-
-        Route::get('/admin/reservations/{id}', function ($id) {
-            return Inertia::render('Admin/Reservations/Show', ['id' => $id]);
-        })->name('admin.reservations.show');
-
-        Route::patch('/admin/reservations/{id}/status', function ($id) {
-            return back();
-        });
-
-        // Users
-        Route::get('/admin/users', function () {
-            return Inertia::render('Admin/Users/Index');
-        })->name('admin.users.index');
-
-        Route::patch('/admin/users/{id}/toggle-active', function ($id) {
-            return back();
-        });
-
-        Route::patch('/admin/users/{id}/role', function ($id) {
-            return back();
-        });
-    });
 });
 
-require __DIR__.'/auth.php';
+// Admin routes
+Route::middleware(['auth', 'verified', 'role:admin'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
+        Route::get('/dashboard', [Admin\DashboardController::class, 'index'])->name('dashboard');
+
+        Route::resource('menu-items', Admin\MenuItemController::class);
+        Route::resource('categories', Admin\CategoryController::class);
+
+        Route::get('/orders', [Admin\OrderController::class, 'index'])->name('orders.index');
+        Route::get('/orders/{order}', [Admin\OrderController::class, 'show'])->name('orders.show');
+        Route::patch('/orders/{order}/status', [Admin\OrderController::class, 'updateStatus'])->name('orders.status');
+
+        Route::get('/reservations', [Admin\ReservationController::class, 'index'])->name('reservations.index');
+        Route::patch('/reservations/{reservation}/status', [Admin\ReservationController::class, 'updateStatus'])->name('reservations.status');
+
+        Route::get('/users', [Admin\UserController::class, 'index'])->name('users.index');
+        Route::patch('/users/{user}/role', [Admin\UserController::class, 'updateRole'])->name('users.role');
+        Route::patch('/users/{user}/toggle-active', [Admin\UserController::class, 'toggleActive'])->name('users.toggle-active');
+    });

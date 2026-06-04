@@ -75,11 +75,11 @@ export default function MenuItemsIndex({ menuItems = mockMenuItems }) {
 
     const filteredItems = items.filter((item) => {
         const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchesCategory = filterCategory === 'all' || item.category === filterCategory;
+        const matchesCategory = filterCategory === 'all' || item.category?.name === filterCategory;
         return matchesSearch && matchesCategory;
     });
 
-    const categories = ['all', ...new Set(items.map((item) => item.category))];
+    const categories = ['all', ...new Set(items.map((item) => item.category?.name).filter(Boolean))];
 
     const containerVariants = {
         hidden: { opacity: 0 },
@@ -279,12 +279,12 @@ export default function MenuItemsIndex({ menuItems = mockMenuItems }) {
                                                     </td>
                                                     <td className="py-4 px-4">
                                                         <Badge variant="default">
-                                                            {item.category}
+                                                            {item.category?.name || 'Uncategorized'}
                                                         </Badge>
                                                     </td>
                                                     <td className="py-4 px-4">
                                                         <p className="font-semibold text-orange-500">
-                                                            ₦{item.price.toFixed(2)}
+                                                            ₦{parseFloat(item.price).toFixed(2)}
                                                         </p>
                                                     </td>
                                                     <td className="py-4 px-4">

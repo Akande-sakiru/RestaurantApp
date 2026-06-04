@@ -14,12 +14,14 @@ class AdminUserSeeder extends Seeder
     {
         // Create default admin user
         $admin = User::firstOrCreate(
-            ['email' => 'admin@restaurant.test'],
+            [
+                'email' => 'admin@restaurant.test'
+            ],
             [
                 'name' => 'Admin User',
                 'phone' => '08169453935',
                 'password' => 'password',
-                'is_active' => true,
+                'is_active' => true
             ]
         );
 

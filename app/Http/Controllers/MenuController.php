@@ -10,6 +10,8 @@ class MenuController extends Controller
 {
     public function index()
     {
+        $imageUrl = config('app.url') . '/images/amala.jpg';
+        
         $menuItems = MenuItem::with('category')
             ->where('is_available', true)
             ->orderBy('sort_order')
@@ -20,7 +22,7 @@ class MenuController extends Controller
                 'slug' => $item->slug,
                 'description' => $item->description,
                 'price' => (float) $item->price,
-                'image_url' => $item->image_url ?? '/images/amala.jpg',
+                'image_url' => $item->image_url ?? $imageUrl,
                 'is_available' => (bool) $item->is_available,
                 'category' => [
                     'id' => $item->category->id,
@@ -29,7 +31,7 @@ class MenuController extends Controller
                 ],
             ]);
 
-        $categories = Category::orderBy('sort_order')->get()->map(fn($category) => [
+        $categories = Category::orderBy('sort_order', 'asc')->get()->map(fn($category) => [
             'id' => $category->id,
             'name' => $category->name,
             'slug' => $category->slug,

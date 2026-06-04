@@ -371,18 +371,10 @@ export default function Welcome({
                             >
                                 <div className="relative mb-4">
                                     <motion.div
-                                        className="w-full aspect-square rounded-2xl bg-gray-100 flex items-center justify-center overflow-hidden shadow-md hover:shadow-lg transition-shadow"
+                                        className="w-full aspect-square rounded-2xl bg-gradient-to-br from-orange-100 to-orange-50 flex items-center justify-center overflow-hidden shadow-md hover:shadow-lg transition-shadow"
                                         whileHover={{ rotate: -5 }}
                                     >
-                                        {category.image_url ? (
-                                            <img
-                                                src={category.image_url}
-                                                alt={category.name}
-                                                className="w-full h-full object-cover"
-                                            />
-                                        ) : (
-                                            <span className="text-5xl">🍽️</span>
-                                        )}
+                                        <span className="text-5xl">🍽️</span>
                                     </motion.div>
                                     <motion.div
                                         initial={{ opacity: 0 }}

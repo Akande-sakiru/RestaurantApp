@@ -56,13 +56,15 @@ export default function MenuIndex({ menuItems = [], categories = [], filters = {
                         next.delete(itemId);
                         return next;
                     });
+                    // Show success - the page stays on the menu
                 },
-                onError: () => {
+                onError: (errors) => {
                     setLoadingItems((prev) => {
                         const next = new Set(prev);
                         next.delete(itemId);
                         return next;
                     });
+                    console.error('Error adding to cart:', errors);
                 },
             }
         );

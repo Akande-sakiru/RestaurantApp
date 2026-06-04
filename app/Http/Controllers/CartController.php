@@ -35,6 +35,7 @@ class CartController extends Controller
     public function store(Request $request)
     {
         $user = $request->user();
+        
 
         $validated = $request->validate([
             'menu_item_id' => 'required|exists:menu_items,id',
@@ -47,10 +48,11 @@ class CartController extends Controller
         if (!$item->is_available) {
             return back()->withErrors(['menu_item_id' => 'This item is not currently available.']);
         }
-
+//
         $this->cartService->add($user, $item, $validated['quantity'], $validated['notes'] ?? null);
 
-        return back()->with('success', 'Item added to cart');
+        // Return with redirect to the same page (for Inertia)
+        return redirect()->route('cart.index')->with('success', 'Item added to cart');
     }
 
     /**

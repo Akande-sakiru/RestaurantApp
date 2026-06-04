@@ -43,10 +43,11 @@ class CartService
     {
         try {
             $key = $this->key($user);
+             
             $field = (string) $item->id;
 
             $existing = Redis::hget($key, $field);
-
+//  dd($existing); 
             if ($existing !== null && $existing !== false) {
                 $entry = json_decode($existing, true);
                 $entry['quantity'] += $qty;
@@ -59,7 +60,7 @@ class CartService
                     'notes' => $notes,
                 ];
             }
-
+// dd($entry);
             Redis::hset($key, $field, json_encode($entry));
             Redis::expire($key, self::TTL);
         } catch (\Throwable $e) {

@@ -1,22 +1,45 @@
-import { Link, usePage } from "@inertiajs/react";
-import { motion } from "framer-motion";
-import { Menu, X, Search } from "lucide-react";
+import { Link, usePage, router } from "@inertiajs/react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Menu, X, Search, LogOut, User } from "lucide-react";
 import { useState } from "react";
 import Button from "../Components/UI/Button";
 
 export default function GuestLayout({ children }) {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [profileMenuOpen, setProfileMenuOpen] = useState(false);
     const { auth } = usePage().props;
 
-    const navItems = [
-        { label: "Home", href: "/" },
-        { label: "About", href: "#about" },
-        { label: "Menu", href: "/menu" },
+    const getNavItems = () => {
+        const baseItems = [
+            { label: "Home", href: "/" },
+            { label: "Menu", href: "/menu" },
+            { label: "Reservation", href: "/reservations/create" },
+        ];
+        
+        // Add Orders link only when user is logged in
+        if (auth.user) {
+            baseItems.push({ label: "Orders", href: "/orders" });
+        }
+        
+        return baseItems;
+    };
 
-        { label: "Reservation", href: "/reservations/create" },
-        { label: "Reviews", href: "#reviews" },
-        { label: "Contact", href: "#contact" },
-    ];
+    const navItems = getNavItems();
+
+    const handleLogout = () => {
+        router.post('/logout');
+    };
+
+    // Determine dashboard route based on user role
+    const getDashboardRoute = () => {
+        if (!auth.user) return '/menu';
+        return auth.user.role === 'admin' ? '/admin/dashboard' : '/';
+    };
+
+    const getDashboardLabel = () => {
+        if (!auth.user) return 'Order Now';
+        return auth.user.role === 'admin' ? 'Admin Dashboard' : 'Home';
+    };
 
     return (
         <div className="min-h-screen bg-white">
@@ -102,28 +125,100 @@ export default function GuestLayout({ children }) {
                                 <Search size={20} />
                             </button>
 
-                            {/* Order Now Button */}
+                            {/* Auth Section */}
                             {!auth.user ? (
-                                <Link href="/menu">
-                                    <Button
-                                        variant="primary"
-                                        size="md"
-                                        className="bg-orange-500 text-white hover:bg-orange-600 flex items-center space-x-1"
-                                    >
-                                        <span>🛒</span>
-                                        <span>Order Now</span>
-                                    </Button>
-                                </Link>
+                                <>
+                                    <Link href="/login">
+                                        <Button
+                                            variant="secondary"
+                                            size="md"
+                                            className="text-gray-700 hover:text-orange-500"
+                                        >
+                                            Sign In
+                                        </Button>
+                                    </Link>
+                                    <Link href="/menu">
+                                        <Button
+                                            variant="primary"
+                                            size="md"
+                                            className="bg-orange-500 text-white hover:bg-orange-600 flex items-center space-x-1"
+                                        >
+                                            <span>🛒</span>
+                                            <span>Order Now</span>
+                                        </Button>
+                                    </Link>
+                                </>
                             ) : (
-                                <Link href="/admin/dashboard">
-                                    <Button
-                                        variant="primary"
-                                        size="md"
-                                        className="bg-orange-500 text-white hover:bg-orange-600"
-                                    >
-                                        Dashboard
-                                    </Button>
-                                </Link>
+                                <div className="flex items-center space-x-4">
+                                    {/* Dashboard Button */}
+                                    <Link href={getDashboardRoute()}>
+                                        <Button
+                                            variant="primary"
+                                            size="md"
+                                            className="bg-orange-500 text-white hover:bg-orange-600"
+                                        >
+                                            {getDashboardLabel()}
+                                        </Button>
+                                    </Link>
+
+                                    {/* Profile Menu */}
+                                    <div className="relative">
+                                        <motion.button
+                                            whileHover={{ scale: 1.05 }}
+                                            onClick={() =>
+                                                setProfileMenuOpen(!profileMenuOpen)
+                                            }
+                                            className="flex items-center space-x-2 px-4 py-2 rounded-lg hover:bg-orange-50 transition-colors"
+                                        >
+                                            <div className="w-8 h-8 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center text-white font-bold shadow-md">
+                                                {auth.user.name
+                                                    .split(' ')
+                                                    .map(n => n.charAt(0))
+                                                    .join('')
+                                                    .toUpperCase()}
+                                            </div>
+                                            <span className="text-gray-700 font-medium text-sm">
+                                                {auth.user.name}
+                                            </span>
+                                        </motion.button>
+
+                                        {/* Profile Dropdown */}
+                                        <AnimatePresence>
+                                            {profileMenuOpen && (
+                                                <motion.div
+                                                    initial={{ opacity: 0, y: -10 }}
+                                                    animate={{ opacity: 1, y: 0 }}
+                                                    exit={{ opacity: 0, y: -10 }}
+                                                    className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 z-50"
+                                                >
+                                                    <Link href="/profile">
+                                                        <motion.button
+                                                            whileHover={{ x: 2 }}
+                                                            className="w-full flex items-center space-x-2 px-4 py-3 text-gray-700 hover:bg-orange-50 transition-colors"
+                                                            onClick={() =>
+                                                                setProfileMenuOpen(false)
+                                                            }
+                                                        >
+                                                            <User size={16} />
+                                                            <span>Profile</span>
+                                                        </motion.button>
+                                                    </Link>
+                                                    <motion.button
+                                                        whileHover={{ x: 2 }}
+                                                        onClick={() => {
+                                                            setProfileMenuOpen(false);
+                                                            handleLogout();
+                                                        }}
+                                                        className="w-full flex items-center space-x-2 px-4 py-3 text-red-600 hover:bg-red-50 transition-colors border-t border-gray-100"
+                                                    >
+                                                        <LogOut size={16} />
+                                                        <span>Logout</span>
+                                                    </motion.button>
+                                                </motion.div>
+                                            )}
+                                        </AnimatePresence>
+                                    </div>
+                                </div>
                             )}
                         </div>
 
@@ -158,27 +253,60 @@ export default function GuestLayout({ children }) {
                                     {item.label}
                                 </Link>
                             ))}
-                            <div className="px-4 py-2">
+                            <div className="px-4 py-2 space-y-2 border-t border-gray-100 mt-2 pt-2">
                                 {!auth.user ? (
-                                    <Link href="/menu" className="w-full">
-                                        <Button
-                                            variant="primary"
-                                            size="md"
-                                            className="w-full bg-orange-500 text-white hover:bg-orange-600"
-                                        >
-                                            Order Now
-                                        </Button>
-                                    </Link>
+                                    <>
+                                        <Link href="/login" className="w-full block">
+                                            <Button
+                                                variant="secondary"
+                                                size="md"
+                                                className="w-full text-gray-700"
+                                            >
+                                                Sign In
+                                            </Button>
+                                        </Link>
+                                        <Link href="/menu" className="w-full block">
+                                            <Button
+                                                variant="primary"
+                                                size="md"
+                                                className="w-full bg-orange-500 text-white hover:bg-orange-600"
+                                            >
+                                                Order Now
+                                            </Button>
+                                        </Link>
+                                    </>
                                 ) : (
-                                    <Link href="/orders" className="w-full">
-                                        <Button
-                                            variant="primary"
-                                            size="md"
-                                            className="w-full bg-orange-500 text-white hover:bg-orange-600"
+                                    <>
+                                        <Link href={getDashboardRoute()} className="w-full block">
+                                            <Button
+                                                variant="primary"
+                                                size="md"
+                                                className="w-full bg-orange-500 text-white hover:bg-orange-600"
+                                            >
+                                                {getDashboardLabel()}
+                                            </Button>
+                                        </Link>
+                                        <Link href="/profile" className="w-full block">
+                                            <Button
+                                                variant="secondary"
+                                                size="md"
+                                                className="w-full text-gray-700 flex items-center justify-center space-x-2"
+                                            >
+                                                <User size={16} />
+                                                <span>Profile</span>
+                                            </Button>
+                                        </Link>
+                                        <button
+                                            onClick={() => {
+                                                setMobileMenuOpen(false);
+                                                handleLogout();
+                                            }}
+                                            className="w-full px-4 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors flex items-center justify-center space-x-2 font-medium"
                                         >
-                                            Dashboard
-                                        </Button>
-                                    </Link>
+                                            <LogOut size={16} />
+                                            <span>Logout</span>
+                                        </button>
+                                    </>
                                 )}
                             </div>
                         </motion.div>

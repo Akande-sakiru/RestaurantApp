@@ -23,7 +23,7 @@ export default function CartItem({
     };
 
     const incrementQuantity = () => {
-        setQuantity((prev) => (prev < 10 ? prev + 1 : 10));
+        setQuantity((prev) => prev + 1);
     };
 
     const decrementQuantity = () => {
@@ -104,11 +104,10 @@ export default function CartItem({
                         <input
                             type="number"
                             min="1"
-                            max="10"
                             value={quantity}
                             onChange={(e) => {
                                 const val = parseInt(e.target.value, 10);
-                                if (val >= 1 && val <= 10) setQuantity(val);
+                                if (val >= 1) setQuantity(val);
                             }}
                             className="w-12 text-center px-2 py-1 border border-gray-200 rounded text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
                         />
@@ -117,7 +116,7 @@ export default function CartItem({
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={incrementQuantity}
-                            disabled={quantity === 10 || isLoading}
+                            disabled={isLoading}
                             className="p-1 bg-gray-100 text-gray-600 rounded hover:bg-gray-200 disabled:opacity-50 transition-colors"
                         >
                             <Plus size={16} />

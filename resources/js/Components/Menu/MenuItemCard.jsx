@@ -12,19 +12,19 @@ export default function MenuItemCard({
     const [quantity, setQuantity] = useState(1);
     const [isExpanded, setIsExpanded] = useState(false);
 
-    const handleQuantityChange = (e) => {
-        const value = parseInt(e.target.value, 10);
-        if (value >= 1 && value <= 10) {
-            setQuantity(value);
-        }
+    const decrementQuantity = () => {
+        setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
     };
 
     const incrementQuantity = () => {
-        setQuantity((prev) => (prev < 10 ? prev + 1 : 10));
+        setQuantity((prev) => prev + 1);
     };
 
-    const decrementQuantity = () => {
-        setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
+    const handleQuantityChange = (e) => {
+        const value = parseInt(e.target.value, 10);
+        if (value >= 1) {
+            setQuantity(value);
+        }
     };
 
     const handleAddToCart = () => {
@@ -56,7 +56,6 @@ export default function MenuItemCard({
             animate="animate"
             exit="exit"
             whileHover="hover"
-            variants={hoverVariants}
             className="h-full"
         >
             <div className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-100 hover:shadow-xl transition-shadow duration-300 h-full flex flex-col">
@@ -191,7 +190,7 @@ export default function MenuItemCard({
                                 {/* Quantity Selector */}
                                 <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
                                     <label className="block text-sm font-semibold text-gray-700 mb-3">
-                                        Quantity (1-10)
+                                        Quantity
                                     </label>
 
                                     {/* Quantity Display */}
@@ -209,7 +208,6 @@ export default function MenuItemCard({
                                         <input
                                             type="number"
                                             min="1"
-                                            max="10"
                                             value={quantity}
                                             onChange={handleQuantityChange}
                                             className="flex-1 h-10 text-center text-lg font-semibold border-2 border-orange-300 rounded-lg focus:border-orange-500 focus:outline-none transition-colors bg-white"
@@ -219,8 +217,7 @@ export default function MenuItemCard({
                                             whileHover={{ scale: 1.1 }}
                                             whileTap={{ scale: 0.95 }}
                                             onClick={incrementQuantity}
-                                            disabled={quantity === 10}
-                                            className="flex items-center justify-center w-10 h-10 rounded-lg bg-orange-100 text-orange-500 hover:bg-orange-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                            className="flex items-center justify-center w-10 h-10 rounded-lg bg-orange-100 text-orange-500 hover:bg-orange-200 transition-colors"
                                         >
                                             <Plus size={18} />
                                         </motion.button>
@@ -230,7 +227,7 @@ export default function MenuItemCard({
                                     <p className="text-xs text-gray-500 mt-2 text-center">
                                         {quantity === 1
                                             ? 'Just this one'
-                                            : `${quantity} item${quantity > 1 ? 's' : ''}`}
+                                            : `${quantity} items`}
                                     </p>
                                 </div>
 

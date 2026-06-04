@@ -70,13 +70,16 @@ export default function MenuItemsIndex({ menuItems = mockMenuItems }) {
     const [searchTerm, setSearchTerm] = useState('');
     const [filterCategory, setFilterCategory] = useState('all');
 
-    const filteredItems = menuItems.filter((item) => {
+    // Handle both paginated object and array formats
+    const items = Array.isArray(menuItems) ? menuItems : (menuItems?.data || []);
+
+    const filteredItems = items.filter((item) => {
         const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase());
         const matchesCategory = filterCategory === 'all' || item.category === filterCategory;
         return matchesSearch && matchesCategory;
     });
 
-    const categories = ['all', ...new Set(menuItems.map((item) => item.category))];
+    const categories = ['all', ...new Set(items.map((item) => item.category))];
 
     const containerVariants = {
         hidden: { opacity: 0 },
@@ -153,7 +156,7 @@ export default function MenuItemsIndex({ menuItems = mockMenuItems }) {
                     <Card hover={false}>
                         <CardBody className="text-center">
                             <div className="text-3xl font-bold text-orange-500">
-                                {menuItems.length}
+                                {items.length}
                             </div>
                             <p className="text-sm text-gray-600 mt-1">Total Items</p>
                         </CardBody>
@@ -161,7 +164,7 @@ export default function MenuItemsIndex({ menuItems = mockMenuItems }) {
                     <Card hover={false}>
                         <CardBody className="text-center">
                             <div className="text-3xl font-bold text-orange-600">
-                                {menuItems.filter((i) => i.is_available).length}
+                                {items.filter((i) => i.is_available).length}
                             </div>
                             <p className="text-sm text-gray-600 mt-1">Available</p>
                         </CardBody>
@@ -169,7 +172,7 @@ export default function MenuItemsIndex({ menuItems = mockMenuItems }) {
                     <Card hover={false}>
                         <CardBody className="text-center">
                             <div className="text-3xl font-bold text-red-500">
-                                {menuItems.filter((i) => !i.is_available).length}
+                                {items.filter((i) => !i.is_available).length}
                             </div>
                             <p className="text-sm text-gray-600 mt-1">Unavailable</p>
                         </CardBody>
@@ -177,7 +180,7 @@ export default function MenuItemsIndex({ menuItems = mockMenuItems }) {
                     <Card hover={false}>
                         <CardBody className="text-center">
                             <div className="text-3xl font-bold text-orange-500">
-                                {new Set(menuItems.map((i) => i.category)).size}
+                                {new Set(items.map((i) => i.category)).size}
                             </div>
                             <p className="text-sm text-gray-600 mt-1">Categories</p>
                         </CardBody>

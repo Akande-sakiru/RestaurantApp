@@ -11,9 +11,7 @@ use Inertia\Inertia;
 use App\Http\Controllers\Admin\MenuItemController;
 
 // Public routes
-Route::get('/', function () {
-    return Inertia::render('Welcome');
-})->name('home');
+Route::get('/', [LandingController::class, 'index'])->name('home');
 
 Route::get('/menu', [MenuController::class, 'index'])->name('menu.index');
 

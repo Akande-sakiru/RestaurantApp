@@ -91,6 +91,21 @@ export default function ReservationCreate() {
     // Get today's date in YYYY-MM-DD format for min constraint
     const today = new Date().toISOString().split('T')[0];
 
+    // Format hours object to string if needed
+    const formatHours = (hours) => {
+        if (typeof hours === 'string') {
+            return hours;
+        }
+        if (typeof hours === 'object' && hours !== null) {
+            return Object.entries(hours)
+                .map(([day, time]) => `${day.charAt(0).toUpperCase() + day.slice(1)}: ${time}`)
+                .join(' | ');
+        }
+        return 'Hours not available';
+    };
+
+    const formattedHours = formatHours(mockRestaurantInfo.hours);
+
     // Animation variants
     const containerVariants = {
         hidden: { opacity: 0 },
@@ -374,7 +389,7 @@ export default function ReservationCreate() {
                                                         Hours
                                                     </h3>
                                                     <p className="text-sm text-gray-600">
-                                                        {mockRestaurantInfo.hours || 'Mon-Thu: 11am - 10pm\nFri-Sat: 11am - 11pm\nSun: 12pm - 9pm'}
+                                                        {formattedHours}
                                                     </p>
                                                 </div>
                                             </div>

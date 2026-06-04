@@ -290,7 +290,15 @@ export const mockRestaurantInfo = {
     name: 'Sarah',
     tagline: 'Experience culinary excellence',
     address: '42 Flower Street, New York, NY 10001',
-    hours: 'Mon-Thu: 11am - 10pm | Fri-Sat: 11am - 11pm | Sun: 12pm - 9pm',
+    hours: {
+        monday: '11:00 AM - 10:00 PM',
+        tuesday: '11:00 AM - 10:00 PM',
+        wednesday: '11:00 AM - 10:00 PM',
+        thursday: '11:00 AM - 10:00 PM',
+        friday: '11:00 AM - 11:00 PM',
+        saturday: '10:00 AM - 11:00 PM',
+        sunday: '10:00 AM - 9:00 PM',
+    },
     phone: '+1 (800) 123-4567',
     email: 'hello@sarahfood.com',
 };

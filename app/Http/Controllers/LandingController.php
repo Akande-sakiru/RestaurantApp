@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\MenuItem;
+use App\Models\Category;
 use Inertia\Inertia;
 
 class LandingController extends Controller
@@ -30,6 +31,16 @@ class LandingController extends Controller
                 ],
             ]);
 
+        $categories = Category::query()
+            ->withCount(['menuItems' => fn($q) => $q->where('is_available', true)])
+            ->get()
+            ->map(fn($category) => [
+                'id' => $category->id,
+                'name' => $category->name,
+                'slug' => $category->slug,
+                'menu_items_count' => $category->menu_items_count,
+            ]);
+
         $restaurantInfo = [
             'name' => config('app.name', 'Restaurant'),
             'tagline' => 'Discover fine dining excellence',
@@ -48,6 +59,7 @@ class LandingController extends Controller
 
         return Inertia::render('Welcome', [
             'featuredItems' => $featuredItems,
+            'categories' => $categories,
             'restaurantInfo' => $restaurantInfo,
         ]);
     }

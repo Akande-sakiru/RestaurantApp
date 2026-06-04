@@ -46,7 +46,7 @@ class CategoryController extends Controller
             'description' => $validated['description'] ?? null,
         ]);
 
-        return redirect()->route('categories.index')->with('success', 'Category created successfully');
+        return redirect()->route('admin.categories.index')->with('success', 'Category created successfully');
     }
 
     /**
@@ -65,7 +65,7 @@ class CategoryController extends Controller
             'description' => $validated['description'] ?? null,
         ]);
 
-        return redirect()->route('categories.index')->with('success', 'Category updated successfully');
+        return redirect()->route('admin.categories.index')->with('success', 'Category updated successfully');
     }
 
     /**

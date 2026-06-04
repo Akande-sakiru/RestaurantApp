@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Events\ReservationStatusUpdated;
-use App\Jobs\SendReservationStatusUpdateEmail;
 use App\Http\Controllers\Controller;
+use App\Jobs\SendReservationStatusUpdateEmail;
 use App\Models\Reservation;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -40,7 +40,19 @@ class ReservationController extends Controller
     }
 
     /**
-     * Update the status of a reservation.
+     * Display the reservation detail page.
+     */
+    public function show(Reservation $reservation)
+    {
+        $reservation->load('user');
+
+        return Inertia::render('Admin/Reservations/Show', [
+            'reservation' => $reservation,
+        ]);
+    }
+
+    /**
+     * Update the reservation status.
      */
     public function updateStatus(Request $request, Reservation $reservation)
     {

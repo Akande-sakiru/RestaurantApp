@@ -56,20 +56,18 @@ Route::middleware(['auth', 'verified', 'role:admin'])
         })->name('dashboard');
 
         // Menu Items
-        Route::get('/menu-items', function () {
-            return \Inertia\Inertia::render('Admin/MenuItems/Index');
-        })->name('menu-items.index');
-
+        Route::get('/menu-items', [\App\Http\Controllers\Admin\MenuItemController::class, 'index'])->name('menu-items.index');
         Route::get('/menu-items/create', function () {
             $categories = \App\Models\Category::all();
             return \Inertia\Inertia::render('Admin/MenuItems/Create', ['categories' => $categories]);
         })->name('menu-items.create');
-
+        Route::post('/menu-items', [\App\Http\Controllers\Admin\MenuItemController::class, 'store'])->name('menu-items.store');
         Route::get('/menu-items/{menuItem}/edit', function (\App\Models\MenuItem $menuItem) {
             $categories = \App\Models\Category::all();
             return \Inertia\Inertia::render('Admin/MenuItems/Edit', ['menuItem' => $menuItem, 'categories' => $categories]);
         })->name('menu-items.edit');
-
+        Route::patch('/menu-items/{menuItem}', [\App\Http\Controllers\Admin\MenuItemController::class, 'update'])->name('menu-items.update');
+        Route::delete('/menu-items/{menuItem}', [\App\Http\Controllers\Admin\MenuItemController::class, 'destroy'])->name('menu-items.destroy');
         Route::patch('/menu-items/{id}/toggle-availability', function ($id) {
             return back();
         });
@@ -81,36 +79,20 @@ Route::middleware(['auth', 'verified', 'role:admin'])
         })->name('categories.create');
         Route::post('/categories', [\App\Http\Controllers\Admin\CategoryController::class, 'store'])->name('categories.store');
         Route::get('/categories/{category}/edit', function (\App\Models\Category $category) {
-            return \Inertia\Inertia::render('Admin/Categories/Edit', ['category' => $category->makeVisible($category->getHidden())]);
+            return \Inertia\Inertia::render('Admin/Categories/Edit', ['category' => $category]);
         })->name('categories.edit');
-        Route::put('/categories/{category}', [\App\Http\Controllers\Admin\CategoryController::class, 'update'])->name('categories.update');
+        Route::patch('/categories/{category}', [\App\Http\Controllers\Admin\CategoryController::class, 'update'])->name('categories.update');
         Route::delete('/categories/{category}', [\App\Http\Controllers\Admin\CategoryController::class, 'destroy'])->name('categories.destroy');
 
         // Orders
-        Route::get('/orders', function () {
-            return \Inertia\Inertia::render('Admin/Orders/Index');
-        })->name('orders.index');
-
-        Route::get('/orders/{order}', function (\App\Models\Order $order) {
-            return \Inertia\Inertia::render('Admin/Orders/Show', ['order' => $order->load('user', 'items')]);
-        })->name('orders.show');
-
-        Route::patch('/orders/{id}/status', function ($id) {
-            return back();
-        });
+        Route::get('/orders', [\App\Http\Controllers\Admin\OrderController::class, 'index'])->name('orders.index');
+        Route::get('/orders/{order}', [\App\Http\Controllers\Admin\OrderController::class, 'show'])->name('orders.show');
+        Route::patch('/orders/{order}/status', [\App\Http\Controllers\Admin\OrderController::class, 'updateStatus'])->name('orders.update-status');
 
         // Reservations
-        Route::get('/reservations', function () {
-            return \Inertia\Inertia::render('Admin/Reservations/Index');
-        })->name('reservations.index');
-
-        Route::get('/reservations/{reservation}', function (\App\Models\Reservation $reservation) {
-            return \Inertia\Inertia::render('Admin/Reservations/Show', ['reservation' => $reservation->load('user')]);
-        })->name('reservations.show');
-
-        Route::patch('/reservations/{id}/status', function ($id) {
-            return back();
-        });
+        Route::get('/reservations', [\App\Http\Controllers\Admin\ReservationController::class, 'index'])->name('reservations.index');
+        Route::get('/reservations/{reservation}', [\App\Http\Controllers\Admin\ReservationController::class, 'show'])->name('reservations.show');
+        Route::patch('/reservations/{reservation}/status', [\App\Http\Controllers\Admin\ReservationController::class, 'updateStatus'])->name('reservations.update-status');
 
         // Users
         Route::get('/users', function () {

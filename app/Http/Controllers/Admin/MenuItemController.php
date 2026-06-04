@@ -31,9 +31,27 @@ class MenuItemController extends Controller
      */
     public function index()
     {
+        $imageUrl = config('app.url') . '/images/amala.jpg';
+        
         $menuItems = MenuItem::with('category')
             ->orderBy('category_id')
-            ->paginate(15);
+            ->paginate(15)
+            ->map(fn($item) => [
+                'id' => $item->id,
+                'category_id' => $item->category_id,
+                'name' => $item->name,
+                'slug' => $item->slug,
+                'description' => $item->description,
+                'price' => (float) $item->price,
+                'image_url' => $item->image_url ?? $imageUrl,
+                'is_available' => (bool) $item->is_available,
+                'sort_order' => $item->sort_order,
+                'created_at' => $item->created_at,
+                'category' => [
+                    'id' => $item->category->id,
+                    'name' => $item->category->name,
+                ],
+            ]);
 
         $categories = Category::all();
 
@@ -48,10 +66,26 @@ class MenuItemController extends Controller
      */
     public function edit(MenuItem $menuItem)
     {
+        $imageUrl = config('app.url') . '/images/amala.jpg';
+        
         $categories = Category::all();
 
         return Inertia::render('Admin/MenuItems/Edit', [
-            'menuItem' => $menuItem,
+            'menuItem' => [
+                'id' => $menuItem->id,
+                'category_id' => $menuItem->category_id,
+                'name' => $menuItem->name,
+                'slug' => $menuItem->slug,
+                'description' => $menuItem->description,
+                'price' => (float) $menuItem->price,
+                'image_url' => $menuItem->image_url ?? $imageUrl,
+                'is_available' => (bool) $menuItem->is_available,
+                'sort_order' => $menuItem->sort_order,
+                'category' => [
+                    'id' => $menuItem->category->id,
+                    'name' => $menuItem->category->name,
+                ],
+            ],
             'categories' => $categories,
         ]);
     }

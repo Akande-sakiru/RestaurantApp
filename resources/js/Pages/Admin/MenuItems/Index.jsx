@@ -273,7 +273,13 @@ export default function MenuItemsIndex({ menuItems = mockMenuItems }) {
                                                     <td className="py-4 px-4">
                                                         <div className="flex items-center space-x-3">
                                                             <div className="w-12 h-12 bg-gradient-to-br from-orange-100 to-orange-50 rounded-lg flex items-center justify-center text-xl">
-                                                                🍽️
+                                                                <img
+                                                                    src={
+                                                                        item.image_url 
+                                                                    }
+                                                                    alt={item.name}
+                                                                    className="w-full h-full object-cover rounded-lg"
+                                                                />
                                                             </div>
                                                             <div>
                                                                 <p className="font-semibold text-gray-900">

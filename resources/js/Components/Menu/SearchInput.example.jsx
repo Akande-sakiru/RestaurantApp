@@ -1,16 +1,16 @@
 /**
  * SearchInput Component - Usage Examples
- * 
+ *
  * This file demonstrates how to use the SearchInput component
  * in various scenarios throughout the restaurant app.
  */
 
-import { useState, useRef } from 'react';
-import SearchInput from './SearchInput';
+import { useState, useRef } from "react";
+import SearchInput from "./SearchInput";
 
 // Example 1: Basic usage in Menu Page
 export function MenuPageExample() {
-    const [searchQuery, setSearchQuery] = useState('');
+    const [searchQuery, setSearchQuery] = useState("");
 
     const handleSearch = (query) => {
         setSearchQuery(query);
@@ -39,7 +39,7 @@ export function AdminMenuSearchExample() {
         // Search through menu items
         if (query.length > 0) {
             // API call or local filter
-            console.log('Searching for:', query);
+            console.log("Searching for:", query);
         } else {
             setResults([]);
         }
@@ -68,7 +68,9 @@ export function AdminMenuSearchExample() {
             </div>
             {results.length > 0 && (
                 <div className="bg-gray-50 rounded-lg p-4">
-                    <p className="text-sm text-gray-600">Found {results.length} items</p>
+                    <p className="text-sm text-gray-600">
+                        Found {results.length} items
+                    </p>
                 </div>
             )}
         </div>
@@ -88,9 +90,7 @@ export function SearchModalExample() {
 
     return (
         <>
-            <button onClick={() => setIsOpen(true)}>
-                Open Search
-            </button>
+            <button onClick={() => setIsOpen(true)}>Open Search</button>
 
             {isOpen && (
                 <div className="fixed inset-0 bg-black/50 flex items-start justify-center pt-20">
@@ -125,7 +125,9 @@ export function RealTimeSearchExample() {
         setIsLoading(true);
         try {
             // Simulate API call - in real app, this would use TanStack Query or Inertia
-            const results = await fetch(`/api/menu-items?search=${query}`).then(r => r.json());
+            const results = await fetch(`/api/menu-items?search=${query}`).then(
+                (r) => r.json()
+            );
             setItems(results);
         } finally {
             setIsLoading(false);
@@ -141,14 +143,25 @@ export function RealTimeSearchExample() {
                 className="w-full"
             />
 
-            {isLoading && <div className="text-center text-gray-500">Searching...</div>}
+            {isLoading && (
+                <div className="text-center text-gray-500">Searching...</div>
+            )}
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {items.map((item) => (
-                    <div key={item.id} className="p-4 border rounded-lg hover:shadow-md transition">
-                        <h3 className="font-semibold text-gray-900">{item.name}</h3>
-                        <p className="text-sm text-gray-600">{item.description}</p>
-                        <p className="text-orange-600 font-semibold mt-2">₦{item.price}</p>
+                    <div
+                        key={item.id}
+                        className="p-4 border rounded-lg hover:shadow-md transition"
+                    >
+                        <h3 className="font-semibold text-gray-900">
+                            {item.name}
+                        </h3>
+                        <p className="text-sm text-gray-600">
+                            {item.description}
+                        </p>
+                        <p className="text-orange-600 font-semibold mt-2">
+                            ₦{item.price}
+                        </p>
                     </div>
                 ))}
             </div>
@@ -158,7 +171,7 @@ export function RealTimeSearchExample() {
 
 /**
  * Component API
- * 
+ *
  * Props:
  *   - placeholder?: string (default: "Search menu items...")
  *   - onSearch?: (query: string) => void - Called after debounce delay
@@ -166,13 +179,13 @@ export function RealTimeSearchExample() {
  *   - className?: string - Additional Tailwind classes
  *   - isFocused?: boolean - Auto-focus on mount
  *   - ...props - Any other input attributes (disabled, etc.)
- * 
+ *
  * Ref Methods:
  *   - focus() - Programmatically focus the input
  *   - getValue() - Get current search value
  *   - setValue(value: string) - Set value and trigger onSearch
  *   - clear() - Clear the input and trigger onSearch with empty string
- * 
+ *
  * Features:
  *   - Search icon (left)
  *   - Animated clear button (right) - appears when value is not empty

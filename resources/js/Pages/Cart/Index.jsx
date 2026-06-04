@@ -169,7 +169,7 @@ export default function CartIndex({ cartItems = [], subtotal = 0 }) {
                                                     onClick={() =>
                                                         handleUpdateQuantity(
                                                             item.id,
-                                                            item.quantity - 1,
+                                                            item.quantity - 1
                                                         )
                                                     }
                                                     className="p-2 hover:bg-gray-100"
@@ -183,7 +183,7 @@ export default function CartIndex({ cartItems = [], subtotal = 0 }) {
                                                     onClick={() =>
                                                         handleUpdateQuantity(
                                                             item.id,
-                                                            item.quantity + 1,
+                                                            item.quantity + 1
                                                         )
                                                     }
                                                     className="p-2 hover:bg-gray-100"

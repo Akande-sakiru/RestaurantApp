@@ -1,20 +1,27 @@
-import { motion } from 'framer-motion';
-import { Link } from '@inertiajs/react';
-import AdminLayout from '../../../Layouts/AdminLayout';
-import { ArrowLeft, Calendar, Clock, DollarSign, Users, MapPin } from 'lucide-react';
-import OrderStatusBadge from '../../../Components/Orders/OrderStatusBadge';
+import { motion } from "framer-motion";
+import { Link } from "@inertiajs/react";
+import AdminLayout from "../../../Layouts/AdminLayout";
+import {
+    ArrowLeft,
+    Calendar,
+    Clock,
+    DollarSign,
+    Users,
+    MapPin,
+} from "lucide-react";
+import OrderStatusBadge from "../../../Components/Orders/OrderStatusBadge";
 
 export default function ShowOrder({ order }) {
-    const orderDate = new Date(order.created_at).toLocaleDateString('en-US', {
-        weekday: 'long',
-        month: 'long',
-        day: 'numeric',
-        year: 'numeric',
+    const orderDate = new Date(order.created_at).toLocaleDateString("en-US", {
+        weekday: "long",
+        month: "long",
+        day: "numeric",
+        year: "numeric",
     });
 
-    const orderTime = new Date(order.created_at).toLocaleTimeString('en-US', {
-        hour: '2-digit',
-        minute: '2-digit',
+    const orderTime = new Date(order.created_at).toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
     });
 
     return (
@@ -54,24 +61,37 @@ export default function ShowOrder({ order }) {
                     >
                         <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
                             <div className="flex items-center gap-3 mb-2">
-                                <Calendar size={18} className="text-orange-500" />
-                                <span className="text-sm text-gray-600">Date</span>
+                                <Calendar
+                                    size={18}
+                                    className="text-orange-500"
+                                />
+                                <span className="text-sm text-gray-600">
+                                    Date
+                                </span>
                             </div>
-                            <p className="font-semibold text-gray-900">{orderDate}</p>
+                            <p className="font-semibold text-gray-900">
+                                {orderDate}
+                            </p>
                         </div>
 
                         <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
                             <div className="flex items-center gap-3 mb-2">
                                 <Clock size={18} className="text-orange-500" />
-                                <span className="text-sm text-gray-600">Time</span>
+                                <span className="text-sm text-gray-600">
+                                    Time
+                                </span>
                             </div>
-                            <p className="font-semibold text-gray-900">{orderTime}</p>
+                            <p className="font-semibold text-gray-900">
+                                {orderTime}
+                            </p>
                         </div>
 
                         <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
                             <div className="flex items-center gap-3 mb-2">
                                 <Users size={18} className="text-orange-500" />
-                                <span className="text-sm text-gray-600">Items</span>
+                                <span className="text-sm text-gray-600">
+                                    Items
+                                </span>
                             </div>
                             <p className="font-semibold text-gray-900">
                                 {order.items?.length || 0} items
@@ -80,8 +100,13 @@ export default function ShowOrder({ order }) {
 
                         <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
                             <div className="flex items-center gap-3 mb-2">
-                                <DollarSign size={18} className="text-orange-500" />
-                                <span className="text-sm text-gray-600">Total</span>
+                                <DollarSign
+                                    size={18}
+                                    className="text-orange-500"
+                                />
+                                <span className="text-sm text-gray-600">
+                                    Total
+                                </span>
                             </div>
                             <p className="font-semibold text-lg text-orange-600">
                                 ₦{parseFloat(order.total).toFixed(2)}
@@ -122,16 +147,27 @@ export default function ShowOrder({ order }) {
                                                 </p>
                                                 {item.customization_notes && (
                                                     <p className="text-sm text-gray-600 mt-2 bg-gray-50 p-2 rounded">
-                                                        {item.customization_notes}
+                                                        {
+                                                            item.customization_notes
+                                                        }
                                                     </p>
                                                 )}
                                             </div>
                                             <div className="text-right">
                                                 <p className="font-semibold text-gray-900">
-                                                    ₦{(parseFloat(item.menu_item_price) * item.quantity).toFixed(2)}
+                                                    ₦
+                                                    {(
+                                                        parseFloat(
+                                                            item.menu_item_price
+                                                        ) * item.quantity
+                                                    ).toFixed(2)}
                                                 </p>
                                                 <p className="text-xs text-gray-500">
-                                                    ₦{parseFloat(item.menu_item_price).toFixed(2)} each
+                                                    ₦
+                                                    {parseFloat(
+                                                        item.menu_item_price
+                                                    ).toFixed(2)}{" "}
+                                                    each
                                                 </p>
                                             </div>
                                         </motion.div>
@@ -145,7 +181,9 @@ export default function ShowOrder({ order }) {
                                     <h3 className="font-semibold text-blue-900 mb-2">
                                         Special Notes
                                     </h3>
-                                    <p className="text-blue-800">{order.notes}</p>
+                                    <p className="text-blue-800">
+                                        {order.notes}
+                                    </p>
                                 </div>
                             )}
                         </motion.div>
@@ -197,9 +235,14 @@ export default function ShowOrder({ order }) {
                                 </h3>
                                 <div className="space-y-2 text-sm">
                                     <div className="flex justify-between">
-                                        <span className="text-gray-600">Subtotal</span>
+                                        <span className="text-gray-600">
+                                            Subtotal
+                                        </span>
                                         <span className="font-medium">
-                                            ₦{parseFloat(order.subtotal).toFixed(2)}
+                                            ₦
+                                            {parseFloat(order.subtotal).toFixed(
+                                                2
+                                            )}
                                         </span>
                                     </div>
                                     <div className="flex justify-between py-2 border-t border-gray-200">
@@ -207,7 +250,8 @@ export default function ShowOrder({ order }) {
                                             Total
                                         </span>
                                         <span className="font-bold text-lg text-orange-600">
-                                            ₦{parseFloat(order.total).toFixed(2)}
+                                            ₦
+                                            {parseFloat(order.total).toFixed(2)}
                                         </span>
                                     </div>
                                 </div>

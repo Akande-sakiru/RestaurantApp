@@ -499,7 +499,7 @@ export default function Welcome({
                                                 />
                                             ) : (
                                                 <div className="w-full h-full bg-gradient-to-br from-orange-100 to-orange-50 flex items-center justify-center text-6xl">
-                                                    🍽️
+                                                
                                                 </div>
                                             )}
 

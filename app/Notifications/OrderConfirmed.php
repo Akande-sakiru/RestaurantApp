@@ -15,9 +15,7 @@ class OrderConfirmed extends Notification implements ShouldQueue
     /**
      * Create a new notification instance.
      */
-    public function __construct(public readonly Order $order)
-    {
-    }
+    public function __construct(public readonly Order $order) {}
 
     /**
      * Get the notification's delivery channels.

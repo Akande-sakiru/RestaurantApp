@@ -1,36 +1,41 @@
-import { motion } from 'framer-motion';
-import { Link } from '@inertiajs/react';
-import { ArrowLeft, MapPin, Clock } from 'lucide-react';
-import CustomerLayout from '../../Layouts/CustomerLayout';
-import Badge from '../../Components/UI/Badge';
-import Button from '../../Components/UI/Button';
-import { Card, CardBody, CardHeader, CardFooter } from '../../Components/UI/Card';
-import { mockOrders } from '../../mockData';
+import { motion } from "framer-motion";
+import { Link } from "@inertiajs/react";
+import { ArrowLeft, MapPin, Clock } from "lucide-react";
+import CustomerLayout from "../../Layouts/CustomerLayout";
+import Badge from "../../Components/UI/Badge";
+import Button from "../../Components/UI/Button";
+import {
+    Card,
+    CardBody,
+    CardHeader,
+    CardFooter,
+} from "../../Components/UI/Card";
+import { mockOrders } from "../../mockData";
 
 const statusColors = {
-    pending: 'warning',
-    confirmed: 'info',
-    preparing: 'info',
-    ready: 'success',
-    completed: 'success',
-    cancelled: 'danger',
+    pending: "warning",
+    confirmed: "info",
+    preparing: "info",
+    ready: "success",
+    completed: "success",
+    cancelled: "danger",
 };
 
 const statusLabels = {
-    pending: 'Pending',
-    confirmed: 'Confirmed',
-    preparing: 'Preparing',
-    ready: 'Ready',
-    completed: 'Completed',
-    cancelled: 'Cancelled',
+    pending: "Pending",
+    confirmed: "Confirmed",
+    preparing: "Preparing",
+    ready: "Ready",
+    completed: "Completed",
+    cancelled: "Cancelled",
 };
 
 const statusSteps = [
-    { key: 'pending', label: 'Pending' },
-    { key: 'confirmed', label: 'Confirmed' },
-    { key: 'preparing', label: 'Preparing' },
-    { key: 'ready', label: 'Ready' },
-    { key: 'completed', label: 'Completed' },
+    { key: "pending", label: "Pending" },
+    { key: "confirmed", label: "Confirmed" },
+    { key: "preparing", label: "Preparing" },
+    { key: "ready", label: "Ready" },
+    { key: "completed", label: "Completed" },
 ];
 
 export default function OrderShow({ order = mockOrders[0] }) {
@@ -67,7 +72,10 @@ export default function OrderShow({ order = mockOrders[0] }) {
                 className="mb-8 flex items-center justify-between"
             >
                 <div>
-                    <Link href="/orders" className="flex items-center space-x-2 text-orange-500 hover:text-orange-600 mb-4">
+                    <Link
+                        href="/orders"
+                        className="flex items-center space-x-2 text-orange-500 hover:text-orange-600 mb-4"
+                    >
                         <ArrowLeft size={20} />
                         <span>Back to Orders</span>
                     </Link>
@@ -110,8 +118,8 @@ export default function OrderShow({ order = mockOrders[0] }) {
                                                 }}
                                                 className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-white mb-2 ${
                                                     index <= currentStepIndex
-                                                        ? 'bg-orange-500'
-                                                        : 'bg-gray-300'
+                                                        ? "bg-orange-500"
+                                                        : "bg-gray-300"
                                                 }`}
                                             >
                                                 {index + 1}
@@ -124,8 +132,8 @@ export default function OrderShow({ order = mockOrders[0] }) {
                                                 <div
                                                     className={`h-1 w-full mt-2 ${
                                                         index < currentStepIndex
-                                                            ? 'bg-orange-500'
-                                                            : 'bg-gray-300'
+                                                            ? "bg-orange-500"
+                                                            : "bg-gray-300"
                                                     }`}
                                                 />
                                             )}
@@ -167,23 +175,26 @@ export default function OrderShow({ order = mockOrders[0] }) {
                                                 </h3>
                                                 {item.customization_notes && (
                                                     <p className="text-sm text-gray-600 mt-1">
-                                                        Note:{' '}
-                                                        {item.customization_notes}
+                                                        Note:{" "}
+                                                        {
+                                                            item.customization_notes
+                                                        }
                                                     </p>
                                                 )}
                                             </div>
                                             <div className="text-right">
                                                 <p className="text-sm text-gray-600">
                                                     {item.quantity}x ₦
-                                                    {parseFloat(item.menu_item_price).toFixed(
-                                                        2
-                                                    )}
+                                                    {parseFloat(
+                                                        item.menu_item_price
+                                                    ).toFixed(2)}
                                                 </p>
                                                 <p className="font-bold text-orange-500">
                                                     ₦
                                                     {(
-                                                        parseFloat(item.menu_item_price) *
-                                                        item.quantity
+                                                        parseFloat(
+                                                            item.menu_item_price
+                                                        ) * item.quantity
                                                     ).toFixed(2)}
                                                 </p>
                                             </div>
@@ -289,7 +300,7 @@ export default function OrderShow({ order = mockOrders[0] }) {
                                 <div className="flex justify-between text-gray-600">
                                     <span>Order Type</span>
                                     <span className="capitalize">
-                                        {order.type?.replace('-', ' ')}
+                                        {order.type?.replace("-", " ")}
                                     </span>
                                 </div>
                             </div>

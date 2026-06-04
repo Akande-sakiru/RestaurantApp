@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { motion } from "framer-motion";
 import {
     ShoppingBag,
     Calendar,
@@ -6,12 +6,12 @@ import {
     TrendingUp,
     Clock,
     AlertCircle,
-} from 'lucide-react';
-import AdminLayout from '../../../Layouts/AdminLayout';
-import StatsCard from '../../../Components/Admin/StatsCard';
-import { Card, CardBody, CardHeader } from '../../../Components/UI/Card';
-import Badge from '../../../Components/UI/Badge';
-import { mockDashboardStats } from '../../../mockData';
+} from "lucide-react";
+import AdminLayout from "../../../Layouts/AdminLayout";
+import StatsCard from "../../../Components/Admin/StatsCard";
+import { Card, CardBody, CardHeader } from "../../../Components/UI/Card";
+import Badge from "../../../Components/UI/Badge";
+import { mockDashboardStats } from "../../../mockData";
 
 export default function AdminDashboard({
     todayOrders = mockDashboardStats.todayOrders,
@@ -146,9 +146,9 @@ export default function AdminDashboard({
                                                 <Badge
                                                     variant={
                                                         order.status ===
-                                                        'pending'
-                                                            ? 'warning'
-                                                            : 'success'
+                                                        "pending"
+                                                            ? "warning"
+                                                            : "success"
                                                     }
                                                     size="sm"
                                                 >
@@ -186,14 +186,11 @@ export default function AdminDashboard({
                                             >
                                                 <div>
                                                     <p className="font-semibold text-gray-900">
-                                                        {
-                                                            reservation.user
-                                                                ?.name
-                                                        }
+                                                        {reservation.user?.name}
                                                     </p>
                                                     <p className="text-sm text-gray-600">
-                                                        {reservation.party_size}{' '}
-                                                        guests at{' '}
+                                                        {reservation.party_size}{" "}
+                                                        guests at{" "}
                                                         {
                                                             reservation.reserved_time
                                                         }
@@ -202,9 +199,9 @@ export default function AdminDashboard({
                                                 <Badge
                                                     variant={
                                                         reservation.status ===
-                                                        'pending'
-                                                            ? 'warning'
-                                                            : 'success'
+                                                        "pending"
+                                                            ? "warning"
+                                                            : "success"
                                                     }
                                                     size="sm"
                                                 >

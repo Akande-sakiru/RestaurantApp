@@ -1,15 +1,15 @@
-import { useForm, Link, usePage } from '@inertiajs/react';
-import { motion } from 'framer-motion';
-import AdminLayout from '../../../Layouts/AdminLayout';
-import { ArrowLeft, Upload } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useForm, Link, usePage } from "@inertiajs/react";
+import { motion } from "framer-motion";
+import AdminLayout from "../../../Layouts/AdminLayout";
+import { ArrowLeft, Upload } from "lucide-react";
+import { useState, useEffect } from "react";
 
 export default function CreateMenuItem({ categories = [] }) {
     const { data, setData, post, processing, errors } = useForm({
-        name: '',
-        description: '',
-        category_id: '',
-        price: '',
+        name: "",
+        description: "",
+        category_id: "",
+        price: "",
         image: null,
         is_available: true,
         sort_order: 0,
@@ -25,7 +25,7 @@ export default function CreateMenuItem({ categories = [] }) {
     const handleImageChange = (e) => {
         const file = e.target.files?.[0];
         if (file) {
-            setData('image', file);
+            setData("image", file);
             const reader = new FileReader();
             reader.onload = (event) => {
                 setPreviewImage(event.target.result);
@@ -36,7 +36,7 @@ export default function CreateMenuItem({ categories = [] }) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        post('/admin/menu-items', {
+        post("/admin/menu-items", {
             onSuccess: () => {
                 // Success handled by Inertia redirect
             },
@@ -105,7 +105,10 @@ export default function CreateMenuItem({ categories = [] }) {
                         </div>
 
                         {/* Form Body */}
-                        <form onSubmit={handleSubmit} className="p-6 md:p-8 space-y-6">
+                        <form
+                            onSubmit={handleSubmit}
+                            className="p-6 md:p-8 space-y-6"
+                        >
                             {/* Image Upload */}
                             <motion.div
                                 variants={itemVariants}
@@ -153,37 +156,49 @@ export default function CreateMenuItem({ categories = [] }) {
                                     )}
                                 </div>
                                 {errors.image && (
-                                    <p className="text-sm text-red-500">{errors.image}</p>
+                                    <p className="text-sm text-red-500">
+                                        {errors.image}
+                                    </p>
                                 )}
                             </motion.div>
 
                             {/* Name */}
-                            <motion.div variants={itemVariants} className="space-y-2">
+                            <motion.div
+                                variants={itemVariants}
+                                className="space-y-2"
+                            >
                                 <label className="block text-sm font-semibold text-gray-700">
                                     Name *
                                 </label>
                                 <input
                                     type="text"
                                     value={data.name}
-                                    onChange={(e) => setData('name', e.target.value)}
+                                    onChange={(e) =>
+                                        setData("name", e.target.value)
+                                    }
                                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                                     placeholder="e.g., Grilled Salmon"
                                     required
                                 />
                                 {errors.name && (
-                                    <p className="text-sm text-red-500">{errors.name}</p>
+                                    <p className="text-sm text-red-500">
+                                        {errors.name}
+                                    </p>
                                 )}
                             </motion.div>
 
                             {/* Description */}
-                            <motion.div variants={itemVariants} className="space-y-2">
+                            <motion.div
+                                variants={itemVariants}
+                                className="space-y-2"
+                            >
                                 <label className="block text-sm font-semibold text-gray-700">
                                     Description *
                                 </label>
                                 <textarea
                                     value={data.description}
                                     onChange={(e) =>
-                                        setData('description', e.target.value)
+                                        setData("description", e.target.value)
                                     }
                                     rows={4}
                                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
@@ -209,12 +224,17 @@ export default function CreateMenuItem({ categories = [] }) {
                                     <select
                                         value={data.category_id}
                                         onChange={(e) =>
-                                            setData('category_id', e.target.value)
+                                            setData(
+                                                "category_id",
+                                                e.target.value
+                                            )
                                         }
                                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                                         required
                                     >
-                                        <option value="">Select a category</option>
+                                        <option value="">
+                                            Select a category
+                                        </option>
                                         {currentCategories.map((category) => (
                                             <option
                                                 key={category.id}
@@ -240,7 +260,7 @@ export default function CreateMenuItem({ categories = [] }) {
                                         step="0.01"
                                         value={data.price}
                                         onChange={(e) =>
-                                            setData('price', e.target.value)
+                                            setData("price", e.target.value)
                                         }
                                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                                         placeholder="0.00"
@@ -265,7 +285,10 @@ export default function CreateMenuItem({ categories = [] }) {
                                             type="checkbox"
                                             checked={data.is_available}
                                             onChange={(e) =>
-                                                setData('is_available', e.target.checked)
+                                                setData(
+                                                    "is_available",
+                                                    e.target.checked
+                                                )
                                             }
                                             className="w-5 h-5 text-orange-500 rounded cursor-pointer"
                                         />
@@ -283,7 +306,10 @@ export default function CreateMenuItem({ categories = [] }) {
                                         type="number"
                                         value={data.sort_order}
                                         onChange={(e) =>
-                                            setData('sort_order', e.target.value)
+                                            setData(
+                                                "sort_order",
+                                                e.target.value
+                                            )
                                         }
                                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                                         placeholder="0"
@@ -303,7 +329,7 @@ export default function CreateMenuItem({ categories = [] }) {
                                     disabled={processing}
                                     className="flex-1 py-3 px-6 bg-orange-500 text-white font-semibold rounded-lg hover:bg-orange-600 disabled:opacity-50 transition-colors"
                                 >
-                                    {processing ? 'Creating...' : 'Create Item'}
+                                    {processing ? "Creating..." : "Create Item"}
                                 </motion.button>
                                 <Link href="/admin/menu-items">
                                     <motion.button

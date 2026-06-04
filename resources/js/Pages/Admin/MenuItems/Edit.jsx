@@ -17,7 +17,7 @@ export default function EditMenuItem({ menuItem, categories = [] }) {
     });
 
     const [previewImage, setPreviewImage] = useState(
-        menuItem.image_url || null,
+        menuItem.image_url || null
     );
 
     const handleImageChange = (e) => {
@@ -222,7 +222,7 @@ export default function EditMenuItem({ menuItem, categories = [] }) {
                                         onChange={(e) =>
                                             setData(
                                                 "category_id",
-                                                e.target.value,
+                                                e.target.value
                                             )
                                         }
                                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
@@ -282,7 +282,7 @@ export default function EditMenuItem({ menuItem, categories = [] }) {
                                             onChange={(e) =>
                                                 setData(
                                                     "is_available",
-                                                    e.target.checked,
+                                                    e.target.checked
                                                 )
                                             }
                                             className="w-5 h-5 text-orange-500 rounded cursor-pointer"
@@ -303,7 +303,7 @@ export default function EditMenuItem({ menuItem, categories = [] }) {
                                         onChange={(e) =>
                                             setData(
                                                 "sort_order",
-                                                e.target.value,
+                                                e.target.value
                                             )
                                         }
                                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"

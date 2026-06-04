@@ -24,7 +24,14 @@ class OrderController extends Controller
         $orders = $user->orders()->latest()->get();
 
         return Inertia::render('Orders/Index', [
-            'orders' => $orders,
+            'orders' => $orders->map(fn($order) => [
+                'id' => $order->id,
+                'order_number' => $order->order_number,
+                'type' => $order->type,
+                'status' => $order->status,
+                'total' => (float) $order->total,
+                'created_at' => $order->created_at,
+            ])->toArray(),
         ]);
     }
 
@@ -38,7 +45,27 @@ class OrderController extends Controller
         $order->load('items');
 
         return Inertia::render('Orders/Show', [
-            'order' => $order,
+            'order' => [
+                'id' => $order->id,
+                'order_number' => $order->order_number,
+                'type' => $order->type,
+                'status' => $order->status,
+                'delivery_address' => $order->delivery_address,
+                'table_number' => $order->table_number,
+                'subtotal' => (float) $order->subtotal,
+                'total' => (float) $order->total,
+                'notes' => $order->notes,
+                'created_at' => $order->created_at,
+                'items' => $order->items->map(fn($item) => [
+                    'id' => $item->id,
+                    'order_id' => $item->order_id,
+                    'menu_item_id' => $item->menu_item_id,
+                    'menu_item_name' => $item->menu_item_name,
+                    'menu_item_price' => (float) $item->menu_item_price,
+                    'quantity' => $item->quantity,
+                    'customization_notes' => $item->customization_notes,
+                ])->toArray(),
+            ],
         ]);
     }
 

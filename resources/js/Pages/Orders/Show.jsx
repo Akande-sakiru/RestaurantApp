@@ -175,14 +175,14 @@ export default function OrderShow({ order = mockOrders[0] }) {
                                             <div className="text-right">
                                                 <p className="text-sm text-gray-600">
                                                     {item.quantity}x ₦
-                                                    {item.menu_item_price.toFixed(
+                                                    {parseFloat(item.menu_item_price).toFixed(
                                                         2
                                                     )}
                                                 </p>
                                                 <p className="font-bold text-orange-500">
                                                     ₦
                                                     {(
-                                                        item.menu_item_price *
+                                                        parseFloat(item.menu_item_price) *
                                                         item.quantity
                                                     ).toFixed(2)}
                                                 </p>
@@ -298,7 +298,7 @@ export default function OrderShow({ order = mockOrders[0] }) {
                                 <div className="flex justify-between text-gray-600">
                                     <span>Subtotal</span>
                                     <span>
-                                        ${order.subtotal?.toFixed(2)}
+                                        ${parseFloat(order.subtotal).toFixed(2)}
                                     </span>
                                 </div>
                                 <div className="flex justify-between text-gray-600">
@@ -306,15 +306,15 @@ export default function OrderShow({ order = mockOrders[0] }) {
                                     <span>
                                         $
                                         {(
-                                            order.total -
-                                            order.subtotal
+                                            parseFloat(order.total) -
+                                            parseFloat(order.subtotal)
                                         ).toFixed(2)}
                                     </span>
                                 </div>
                                 <div className="flex justify-between text-lg font-bold text-gray-900 pt-2 border-t border-gray-200">
                                     <span>Total</span>
                                     <span className="text-orange-500">
-                                        ${order.total?.toFixed(2)}
+                                        ${parseFloat(order.total).toFixed(2)}
                                     </span>
                                 </div>
                             </div>

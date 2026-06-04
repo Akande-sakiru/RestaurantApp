@@ -27,6 +27,7 @@ export default function MenuItemCard({ item, onAddToCart, isLoading = false }) {
         onAddToCart(item.id, quantity);
         setQuantity(1);
         setIsExpanded(false);
+        route.post("/cart", { menu_item_id: item.id, quantity });
     };
 
     const containerVariants = {
@@ -147,7 +148,7 @@ export default function MenuItemCard({ item, onAddToCart, isLoading = false }) {
                                 Price:
                             </span>
                             <span className="text-3xl font-bold text-orange-500">
-                                ₦{item.price}
+                                ₦{parseFloat(item.price).toFixed(2)}
                             </span>
                         </div>
                     </div>

@@ -26,9 +26,14 @@ export default function AdminLayout({ children }) {
             icon: LayoutDashboard,
         },
         {
-            label: 'Menu Management',
+            label: 'Menu Items',
             href: '/admin/menu-items',
             icon: UtensilsCrossed,
+        },
+        {
+            label: 'Categories',
+            href: '/admin/categories',
+            icon: Menu,
         },
         { label: 'Orders', href: '/admin/orders', icon: ShoppingBag },
         {

@@ -69,6 +69,75 @@ Route::middleware('auth')->group(function () {
         Route::get('/admin/dashboard', function () {
             return Inertia::render('Admin/Dashboard/Index');
         })->name('admin.dashboard');
+
+        // Menu Items
+        Route::get('/admin/menu-items', function () {
+            return Inertia::render('Admin/MenuItems/Index');
+        })->name('admin.menu-items.index');
+
+        Route::get('/admin/menu-items/create', function () {
+            return Inertia::render('Admin/MenuItems/Create');
+        })->name('admin.menu-items.create');
+
+        Route::get('/admin/menu-items/{id}/edit', function ($id) {
+            return Inertia::render('Admin/MenuItems/Edit', ['id' => $id]);
+        })->name('admin.menu-items.edit');
+
+        Route::patch('/admin/menu-items/{id}/toggle-availability', function ($id) {
+            return back();
+        });
+
+        // Categories
+        Route::get('/admin/categories', function () {
+            return Inertia::render('Admin/Categories/Index');
+        })->name('admin.categories.index');
+
+        Route::get('/admin/categories/create', function () {
+            return Inertia::render('Admin/Categories/Create');
+        })->name('admin.categories.create');
+
+        Route::get('/admin/categories/{id}/edit', function ($id) {
+            return Inertia::render('Admin/Categories/Edit', ['id' => $id]);
+        })->name('admin.categories.edit');
+
+        // Orders
+        Route::get('/admin/orders', function () {
+            return Inertia::render('Admin/Orders/Index');
+        })->name('admin.orders.index');
+
+        Route::get('/admin/orders/{id}', function ($id) {
+            return Inertia::render('Admin/Orders/Show', ['id' => $id]);
+        })->name('admin.orders.show');
+
+        Route::patch('/admin/orders/{id}/status', function ($id) {
+            return back();
+        });
+
+        // Reservations
+        Route::get('/admin/reservations', function () {
+            return Inertia::render('Admin/Reservations/Index');
+        })->name('admin.reservations.index');
+
+        Route::get('/admin/reservations/{id}', function ($id) {
+            return Inertia::render('Admin/Reservations/Show', ['id' => $id]);
+        })->name('admin.reservations.show');
+
+        Route::patch('/admin/reservations/{id}/status', function ($id) {
+            return back();
+        });
+
+        // Users
+        Route::get('/admin/users', function () {
+            return Inertia::render('Admin/Users/Index');
+        })->name('admin.users.index');
+
+        Route::patch('/admin/users/{id}/toggle-active', function ($id) {
+            return back();
+        });
+
+        Route::patch('/admin/users/{id}/role', function ($id) {
+            return back();
+        });
     });
 });
 

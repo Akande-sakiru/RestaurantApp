@@ -174,7 +174,7 @@ export default function Welcome({
                             >
                                 <div className="absolute inset-0 bg-gradient-to-br from-gray-800 to-gray-900 rounded-full shadow-2xl overflow-hidden">
                                     <img 
-                                        src="/tete.jpg" 
+                                        src="/images/amala.jpg" 
                                         alt="Delicious Food" 
                                         className="w-full h-full object-cover"
                                     />

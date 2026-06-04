@@ -92,9 +92,12 @@ export default function ReservationsIndex({ reservations = mockReservations }) {
     const [filterStatus, setFilterStatus] = useState('all');
     const [filterDate, setFilterDate] = useState('all');
 
+    // Handle both paginated object and array formats
+    const reservationsList = Array.isArray(reservations) ? reservations : (reservations?.data || []);
+
     const today = new Date().toISOString().split('T')[0];
 
-    const filteredReservations = reservations.filter((res) => {
+    const filteredReservations = reservationsList.filter((res) => {
         const matchesSearch =
             res.reservation_number.toLowerCase().includes(searchTerm.toLowerCase()) ||
             res.customer_name.toLowerCase().includes(searchTerm.toLowerCase());
@@ -134,7 +137,7 @@ export default function ReservationsIndex({ reservations = mockReservations }) {
         router.patch(`/admin/reservations/${resId}/status`, { status: newStatus });
     };
 
-    const upcomingCount = reservations.filter(
+    const upcomingCount = reservationsList.filter(
         (r) => r.reserved_date >= today && r.status !== 'cancelled'
     ).length;
     const totalGuests = filteredReservations.reduce((sum, res) => sum + res.party_size, 0);

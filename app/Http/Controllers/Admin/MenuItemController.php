@@ -15,6 +15,18 @@ use Inertia\Inertia;
 class MenuItemController extends Controller
 {
     /**
+     * Show the create form.
+     */
+    public function create()
+    {
+        $categories = Category::all();
+
+        return Inertia::render('Admin/MenuItems/Create', [
+            'categories' => $categories,
+        ]);
+    }
+
+    /**
      * Display all menu items.
      */
     public function index()
@@ -27,6 +39,19 @@ class MenuItemController extends Controller
 
         return Inertia::render('Admin/MenuItems/Index', [
             'menuItems' => $menuItems,
+            'categories' => $categories,
+        ]);
+    }
+
+    /**
+     * Show the edit form.
+     */
+    public function edit(MenuItem $menuItem)
+    {
+        $categories = Category::all();
+
+        return Inertia::render('Admin/MenuItems/Edit', [
+            'menuItem' => $menuItem,
             'categories' => $categories,
         ]);
     }

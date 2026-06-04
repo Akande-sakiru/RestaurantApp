@@ -26,14 +26,14 @@ export default function AdminLayout({ children }) {
             icon: LayoutDashboard,
         },
         {
-            label: 'Menu Items',
-            href: '/admin/menu-items',
-            icon: UtensilsCrossed,
-        },
-        {
             label: 'Categories',
             href: '/admin/categories',
             icon: Menu,
+        },
+        {
+            label: 'Menu Items',
+            href: '/admin/menu-items',
+            icon: UtensilsCrossed,
         },
         { label: 'Orders', href: '/admin/orders', icon: ShoppingBag },
         {

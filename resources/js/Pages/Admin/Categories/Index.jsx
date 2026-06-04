@@ -100,13 +100,13 @@ export default function CategoriesIndex({ categories = mockCategories }) {
                     </Card>
                     <Card hover={false}>
                         <CardBody className="text-center">
-                            <div className="text-3xl font-bold text-blue-500">{totalItems}</div>
+                            <div className="text-3xl font-bold text-orange-600">{totalItems}</div>
                             <p className="text-sm text-gray-600 mt-1">Total Items</p>
                         </CardBody>
                     </Card>
                     <Card hover={false}>
                         <CardBody className="text-center">
-                            <div className="text-3xl font-bold text-purple-500">
+                            <div className="text-3xl font-bold text-red-500">
                                 {(totalItems / categories.length).toFixed(1)}
                             </div>
                             <p className="text-sm text-gray-600 mt-1">Avg Items/Category</p>

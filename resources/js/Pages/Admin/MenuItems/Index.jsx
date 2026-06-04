@@ -160,7 +160,7 @@ export default function MenuItemsIndex({ items = mockMenuItems }) {
                     </Card>
                     <Card hover={false}>
                         <CardBody className="text-center">
-                            <div className="text-3xl font-bold text-green-500">
+                            <div className="text-3xl font-bold text-orange-600">
                                 {items.filter((i) => i.is_available).length}
                             </div>
                             <p className="text-sm text-gray-600 mt-1">Available</p>
@@ -176,7 +176,7 @@ export default function MenuItemsIndex({ items = mockMenuItems }) {
                     </Card>
                     <Card hover={false}>
                         <CardBody className="text-center">
-                            <div className="text-3xl font-bold text-blue-500">
+                            <div className="text-3xl font-bold text-orange-500">
                                 {new Set(items.map((i) => i.category)).size}
                             </div>
                             <p className="text-sm text-gray-600 mt-1">Categories</p>
@@ -281,7 +281,7 @@ export default function MenuItemsIndex({ items = mockMenuItems }) {
                                                     </td>
                                                     <td className="py-4 px-4">
                                                         <p className="font-semibold text-orange-500">
-                                                            ${item.price.toFixed(2)}
+                                                            ₦{item.price.toFixed(2)}
                                                         </p>
                                                     </td>
                                                     <td className="py-4 px-4">

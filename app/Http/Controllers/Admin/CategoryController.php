@@ -23,20 +23,30 @@ class CategoryController extends Controller
     }
 
     /**
+     * Show category with item count.
+     */
+    public function show(Category $category)
+    {
+        return $category->loadCount('menuItems');
+    }
+
+    /**
      * Store a new category.
      */
     public function store(Request $request)
     {
         $validated = $request->validate([
             'name' => 'required|string|unique:categories,name',
+            'description' => 'nullable|string|max:500',
         ]);
 
         Category::create([
             'name' => $validated['name'],
             'slug' => Str::slug($validated['name']),
+            'description' => $validated['description'] ?? null,
         ]);
 
-        return back()->with('success', 'Category created successfully');
+        return redirect()->route('categories.index')->with('success', 'Category created successfully');
     }
 
     /**
@@ -46,14 +56,16 @@ class CategoryController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|unique:categories,name,' . $category->id,
+            'description' => 'nullable|string|max:500',
         ]);
 
         $category->update([
             'name' => $validated['name'],
             'slug' => Str::slug($validated['name']),
+            'description' => $validated['description'] ?? null,
         ]);
 
-        return back()->with('success', 'Category updated successfully');
+        return redirect()->route('categories.index')->with('success', 'Category updated successfully');
     }
 
     /**

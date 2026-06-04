@@ -144,19 +144,19 @@ export default function UsersIndex({ users = mockUsers }) {
                     </Card>
                     <Card hover={false}>
                         <CardBody className="text-center">
-                            <div className="text-3xl font-bold text-green-500">{activeCount}</div>
+                            <div className="text-3xl font-bold text-orange-600">{activeCount}</div>
                             <p className="text-sm text-gray-600 mt-1">Active</p>
                         </CardBody>
                     </Card>
                     <Card hover={false}>
                         <CardBody className="text-center">
-                            <div className="text-3xl font-bold text-blue-500">{customerCount}</div>
+                            <div className="text-3xl font-bold text-orange-500">{customerCount}</div>
                             <p className="text-sm text-gray-600 mt-1">Customers</p>
                         </CardBody>
                     </Card>
                     <Card hover={false}>
                         <CardBody className="text-center">
-                            <div className="text-3xl font-bold text-purple-500">{totalOrders}</div>
+                            <div className="text-3xl font-bold text-red-500">{totalOrders}</div>
                             <p className="text-sm text-gray-600 mt-1">Total Orders</p>
                         </CardBody>
                     </Card>

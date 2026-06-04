@@ -68,7 +68,7 @@ export default function AdminDashboard({
                         title="Total Revenue"
                         value={`$${todayRevenue.toFixed(2)}`}
                         icon={TrendingUp}
-                        color="green"
+                        color="orange"
                         trend="+8% from yesterday"
                     />
                     <StatsCard
@@ -81,7 +81,7 @@ export default function AdminDashboard({
                         title="Today's Reservations"
                         value={todayReservations}
                         icon={Calendar}
-                        color="blue"
+                        color="orange"
                     />
                 </motion.div>
 
@@ -94,19 +94,19 @@ export default function AdminDashboard({
                         title="Pending Reservations"
                         value={pendingReservations}
                         icon={Clock}
-                        color="orange"
+                        color="red"
                     />
                     <StatsCard
                         title="Active Menu Items"
                         value={activeMenuItems}
                         icon={ShoppingBag}
-                        color="green"
+                        color="orange"
                     />
                     <StatsCard
                         title="Categories"
                         value={categories}
                         icon={TrendingUp}
-                        color="blue"
+                        color="orange"
                     />
                 </motion.div>
 

@@ -175,19 +175,19 @@ export default function ReservationsIndex({ reservations = mockReservations }) {
                     </Card>
                     <Card hover={false}>
                         <CardBody className="text-center">
-                            <div className="text-3xl font-bold text-green-500">{upcomingCount}</div>
+                            <div className="text-3xl font-bold text-orange-600">{upcomingCount}</div>
                             <p className="text-sm text-gray-600 mt-1">Upcoming</p>
                         </CardBody>
                     </Card>
                     <Card hover={false}>
                         <CardBody className="text-center">
-                            <div className="text-3xl font-bold text-blue-500">{totalGuests}</div>
+                            <div className="text-3xl font-bold text-orange-500">{totalGuests}</div>
                             <p className="text-sm text-gray-600 mt-1">Total Guests</p>
                         </CardBody>
                     </Card>
                     <Card hover={false}>
                         <CardBody className="text-center">
-                            <div className="text-3xl font-bold text-purple-500">
+                            <div className="text-3xl font-bold text-red-500">
                                 {confirmedCount}
                             </div>
                             <p className="text-sm text-gray-600 mt-1">Confirmed</p>

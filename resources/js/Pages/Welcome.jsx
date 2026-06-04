@@ -174,7 +174,7 @@ export default function Welcome({
                             >
                                 <div className="absolute inset-0 bg-gradient-to-br from-gray-800 to-gray-900 rounded-full shadow-2xl overflow-hidden">
                                     <img 
-                                        src="/images/amala.jpg" 
+                                        src="/images/recipe.jpg" 
                                         alt="Delicious Food" 
                                         className="w-full h-full object-cover"
                                     />
@@ -546,7 +546,7 @@ export default function Welcome({
                                             <div className="flex items-center justify-between">
                                                 <div>
                                                     <p className="text-2xl font-bold text-orange-500">
-                                                        ${item.price?.toFixed(2)}
+                                                        ₦{item.price?.toFixed(2)}
                                                     </p>
                                                     <div className="flex items-center space-x-1 mt-1">
                                                         <span className="text-yellow-400">★</span>

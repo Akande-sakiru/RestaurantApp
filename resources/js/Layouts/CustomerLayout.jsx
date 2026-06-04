@@ -16,7 +16,7 @@ export default function CustomerLayout({ children }) {
     ];
 
     const handleLogout = () => {
-        router.delete('/logout');
+        router.post('/logout');
     };
 
     return (

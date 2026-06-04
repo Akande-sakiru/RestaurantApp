@@ -174,13 +174,13 @@ export default function OrderShow({ order = mockOrders[0] }) {
                                             </div>
                                             <div className="text-right">
                                                 <p className="text-sm text-gray-600">
-                                                    {item.quantity}x $
+                                                    {item.quantity}x ₦
                                                     {item.menu_item_price.toFixed(
                                                         2
                                                     )}
                                                 </p>
                                                 <p className="font-bold text-orange-500">
-                                                    $
+                                                    ₦
                                                     {(
                                                         item.menu_item_price *
                                                         item.quantity

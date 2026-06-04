@@ -133,7 +133,7 @@ export default function OrdersIndex({ orders = mockOrders }) {
                                                 Total
                                             </p>
                                             <p className="text-2xl font-bold text-orange-500">
-                                                ${order.total.toFixed(2)}
+                                                ₦{order.total.toFixed(2)}
                                             </p>
                                         </div>
 

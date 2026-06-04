@@ -163,7 +163,7 @@ export default function OrdersIndex({ orders = mockOrders }) {
                     </Card>
                     <Card hover={false}>
                         <CardBody className="text-center">
-                            <div className="text-3xl font-bold text-green-500">
+                            <div className="text-3xl font-bold text-orange-600">
                                 ${totalRevenue.toFixed(2)}
                             </div>
                             <p className="text-sm text-gray-600 mt-1">Revenue</p>
@@ -177,7 +177,7 @@ export default function OrdersIndex({ orders = mockOrders }) {
                     </Card>
                     <Card hover={false}>
                         <CardBody className="text-center">
-                            <div className="text-3xl font-bold text-blue-500">
+                            <div className="text-3xl font-bold text-orange-500">
                                 {completedCount}
                             </div>
                             <p className="text-sm text-gray-600 mt-1">Completed</p>

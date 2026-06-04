@@ -45,7 +45,7 @@ export default function AdminLayout({ children }) {
     ];
 
     const handleLogout = () => {
-        router.delete('/logout');
+        router.post('/logout');
     };
 
     return (
@@ -56,43 +56,54 @@ export default function AdminLayout({ children }) {
                 animate={{ x: 0 }}
                 className={`${
                     sidebarOpen ? 'w-64' : 'w-20'
-                } bg-gray-900 text-white transition-all duration-300 fixed h-screen left-0 top-0 z-30 overflow-y-auto`}
+                } bg-gradient-to-b from-orange-600 to-red-600 text-white transition-all duration-300 fixed h-screen left-0 top-0 z-30 overflow-y-auto shadow-lg`}
             >
                 <div className="p-6 flex items-center justify-between">
                     {sidebarOpen && (
                         <div className="flex items-center space-x-2">
-                            <div className="text-2xl">🍽️</div>
+                            <motion.div
+                                whileHover={{ scale: 1.1, rotate: 5 }}
+                                className="text-2xl"
+                            >
+                                🍽️
+                            </motion.div>
                             <span className="font-bold text-lg">Admin</span>
                         </div>
                     )}
-                    <button
+                    <motion.button
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.95 }}
                         onClick={() => setSidebarOpen(!sidebarOpen)}
-                        className="p-1 hover:bg-gray-800 rounded-lg transition-colors"
+                        className="p-1 hover:bg-white hover:bg-opacity-20 rounded-lg transition-colors"
                     >
                         {sidebarOpen ? (
                             <X size={20} />
                         ) : (
                             <Menu size={20} />
                         )}
-                    </button>
+                    </motion.button>
                 </div>
 
                 <nav className="mt-8 space-y-2 px-3">
                     {navItems.map((item) => {
                         const Icon = item.icon;
                         return (
-                            <Link
+                            <motion.div
                                 key={item.href}
-                                href={item.href}
-                                className="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-800 transition-colors group"
+                                whileHover={{ x: 5 }}
                             >
-                                <Icon size={20} />
-                                {sidebarOpen && (
-                                    <span className="font-medium">
-                                        {item.label}
-                                    </span>
-                                )}
-                            </Link>
+                                <Link
+                                    href={item.href}
+                                    className="flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-white hover:bg-opacity-20 transition-all group"
+                                >
+                                    <Icon size={20} />
+                                    {sidebarOpen && (
+                                        <span className="font-medium">
+                                            {item.label}
+                                        </span>
+                                    )}
+                                </Link>
+                            </motion.div>
                         );
                     })}
                 </nav>
@@ -105,21 +116,22 @@ export default function AdminLayout({ children }) {
                 } transition-all duration-300`}
             >
                 {/* Top Navigation */}
-                <nav className="sticky top-0 z-20 bg-white border-b border-gray-100 shadow-sm">
+                <nav className="sticky top-0 z-20 bg-white border-b-2 border-orange-200 shadow-md">
                     <div className="px-6 py-4 flex justify-between items-center">
-                        <h1 className="text-2xl font-bold text-gray-900">
+                        <h1 className="text-2xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
                             Admin Dashboard
                         </h1>
 
                         {/* Profile Menu */}
                         <div className="relative">
-                            <button
+                            <motion.button
+                                whileHover={{ scale: 1.05 }}
                                 onClick={() =>
                                     setProfileMenuOpen(!profileMenuOpen)
                                 }
-                                className="flex items-center space-x-2 px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors"
+                                className="flex items-center space-x-2 px-4 py-2 rounded-lg hover:bg-orange-50 transition-colors"
                             >
-                                <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center text-white font-bold">
+                                <div className="w-8 h-8 bg-gradient-to-br from-orange-400 to-red-500 rounded-full flex items-center justify-center text-white font-bold shadow-md">
                                     {auth.user.name
                                         .charAt(0)
                                         .toUpperCase()}
@@ -127,7 +139,7 @@ export default function AdminLayout({ children }) {
                                 <span className="text-gray-700 font-medium">
                                     {auth.user.name}
                                 </span>
-                            </button>
+                            </motion.button>
 
                             {/* Profile Dropdown */}
                             <AnimatePresence>
@@ -136,11 +148,11 @@ export default function AdminLayout({ children }) {
                                         initial={{ opacity: 0, y: -10 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         exit={{ opacity: 0, y: -10 }}
-                                        className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 overflow-hidden"
+                                        className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border-2 border-orange-200 overflow-hidden"
                                     >
                                         <Link
                                             href="/profile"
-                                            className="flex items-center space-x-2 px-4 py-3 text-gray-700 hover:bg-gray-50 transition-colors"
+                                            className="flex items-center space-x-2 px-4 py-3 text-gray-700 hover:bg-orange-50 transition-colors"
                                             onClick={() =>
                                                 setProfileMenuOpen(false)
                                             }
@@ -148,16 +160,17 @@ export default function AdminLayout({ children }) {
                                             <User size={18} />
                                             <span>Profile</span>
                                         </Link>
-                                        <button
+                                        <motion.button
+                                            whileHover={{ x: 2 }}
                                             onClick={() => {
                                                 setProfileMenuOpen(false);
                                                 handleLogout();
                                             }}
-                                            className="w-full flex items-center space-x-2 px-4 py-3 text-red-600 hover:bg-red-50 transition-colors border-t border-gray-100"
+                                            className="w-full flex items-center space-x-2 px-4 py-3 text-red-600 hover:bg-red-50 transition-colors border-t-2 border-orange-200"
                                         >
                                             <LogOut size={18} />
                                             <span>Logout</span>
-                                        </button>
+                                        </motion.button>
                                     </motion.div>
                                 )}
                             </AnimatePresence>

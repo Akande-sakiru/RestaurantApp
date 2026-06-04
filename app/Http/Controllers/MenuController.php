@@ -20,7 +20,7 @@ class MenuController extends Controller
                 'slug' => $item->slug,
                 'description' => $item->description,
                 'price' => (float) $item->price,
-                'image_url' => $item->image_url ?? '/images/amala.jpg', // Fallback to test image
+                'image_url' => $item->image_path ?? '/images/amala.jpg', // Fallback to test image
                 'category' => [
                     'id' => $item->category->id,
                     'name' => $item->category->name,

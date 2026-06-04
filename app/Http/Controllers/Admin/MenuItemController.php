@@ -91,6 +91,7 @@ class MenuItemController extends Controller
      */
     public function update(UpdateMenuItemRequest $request, MenuItem $menuItem)
     {
+        // dd($request->all());
         $validated = $request->validated();
 
         $imagePath = $menuItem->image_path;
@@ -110,7 +111,7 @@ class MenuItemController extends Controller
             'price' => $validated['price'],
             'image_path' => $imagePath,
             'is_available' => $validated['is_available'] ?? true,
-            'sort_order' => $validated['sort_order'] ?? $menuItem->sort_order ?? 0,
+            'sort_order' => $validated['sort_order'] ?? $request->sort_order,
         ]);
 
         if ($request->hasFile('image') && $imagePath) {

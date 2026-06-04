@@ -8,6 +8,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReservationController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\Admin\MenuItemController;
 
 // Public routes
 Route::get('/', function () {
@@ -56,12 +57,12 @@ Route::middleware(['auth', 'verified', 'role:admin'])
         })->name('dashboard');
 
         // Menu Items
-        Route::get('/menu-items', [\App\Http\Controllers\Admin\MenuItemController::class, 'index'])->name('menu-items.index');
-        Route::get('/menu-items/create', [\App\Http\Controllers\Admin\MenuItemController::class, 'create'])->name('menu-items.create');
-        Route::post('/menu-items', [\App\Http\Controllers\Admin\MenuItemController::class, 'store'])->name('menu-items.store');
-        Route::get('/menu-items/{menuItem}/edit', [\App\Http\Controllers\Admin\MenuItemController::class, 'edit'])->name('menu-items.edit');
-        Route::patch('/menu-items/{menuItem}', [\App\Http\Controllers\Admin\MenuItemController::class, 'update'])->name('menu-items.update');
-        Route::delete('/menu-items/{menuItem}', [\App\Http\Controllers\Admin\MenuItemController::class, 'destroy'])->name('menu-items.destroy');
+        Route::get('/menu-items', [MenuItemController::class, 'index'])->name('menu-items.index');
+        Route::get('/menu-items/create', [MenuItemController::class, 'create'])->name('menu-items.create');
+        Route::post('/menu-items', [MenuItemController::class, 'store'])->name('menu-items.store');
+        Route::get('/menu-items/{menuItem}/edit', [MenuItemController::class, 'edit'])->name('menu-items.edit');
+        Route::patch('/menu-items/{menuItem}', [MenuItemController::class, 'edit'])->name('menu-items.update');
+        Route::delete('/menu-items/{menuItem}', [MenuItemController::class, 'destroy'])->name('menu-items.destroy');
         Route::patch('/menu-items/{id}/toggle-availability', function ($id) {
             return back();
         });

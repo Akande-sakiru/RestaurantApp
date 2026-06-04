@@ -128,10 +128,10 @@ export default function ShowOrder({ order }) {
                                             </div>
                                             <div className="text-right">
                                                 <p className="font-semibold text-gray-900">
-                                                    ₦{(item.menu_item_price * item.quantity).toFixed(2)}
+                                                    ₦{(parseFloat(item.menu_item_price) * item.quantity).toFixed(2)}
                                                 </p>
                                                 <p className="text-xs text-gray-500">
-                                                    ₦{item.menu_item_price.toFixed(2)} each
+                                                    ₦{parseFloat(item.menu_item_price).toFixed(2)} each
                                                 </p>
                                             </div>
                                         </motion.div>
@@ -199,7 +199,7 @@ export default function ShowOrder({ order }) {
                                     <div className="flex justify-between">
                                         <span className="text-gray-600">Subtotal</span>
                                         <span className="font-medium">
-                                            ₦{order.subtotal.toFixed(2)}
+                                            ₦{parseFloat(order.subtotal).toFixed(2)}
                                         </span>
                                     </div>
                                     <div className="flex justify-between py-2 border-t border-gray-200">

@@ -24,7 +24,20 @@ class UserController extends Controller
 
         $users = $query
             ->with('roles')
-            ->paginate(15);
+            ->withCount('orders')
+            ->paginate(15)
+            ->map(function($user) {
+                return [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'phone' => $user->phone,
+                    'is_active' => (bool) $user->is_active,
+                    'created_at' => $user->created_at->format('m/d/Y'),
+                    'roles' => $user->roles->pluck('name')->toArray(),
+                    'orders_count' => $user->orders_count,
+                ];
+            });
 
         return Inertia::render('Admin/Users/Index', [
             'users' => $users,

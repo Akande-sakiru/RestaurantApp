@@ -7,73 +7,19 @@ import Input from '../../../Components/UI/Input';
 import { Card, CardBody, CardHeader } from '../../../Components/UI/Card';
 import Badge from '../../../Components/UI/Badge';
 
-// Mock data
-const mockUsers = [
-    {
-        id: 1,
-        name: 'Admin User',
-        email: 'admin@restaurant.com',
-        phone: '+1 (555) 111-1111',
-        role: 'admin',
-        is_active: true,
-        created_at: '2024-01-15',
-        orders: 0,
-    },
-    {
-        id: 2,
-        name: 'John Doe',
-        email: 'john@example.com',
-        phone: '+1 (555) 123-4567',
-        role: 'customer',
-        is_active: true,
-        created_at: '2024-05-20',
-        orders: 5,
-    },
-    {
-        id: 3,
-        name: 'Jane Smith',
-        email: 'jane@example.com',
-        phone: '+1 (555) 234-5678',
-        role: 'customer',
-        is_active: true,
-        created_at: '2024-05-21',
-        orders: 3,
-    },
-    {
-        id: 4,
-        name: 'Mike Johnson',
-        email: 'mike@example.com',
-        phone: '+1 (555) 345-6789',
-        role: 'customer',
-        is_active: false,
-        created_at: '2024-05-18',
-        orders: 2,
-    },
-    {
-        id: 5,
-        name: 'Sarah Williams',
-        email: 'sarah@example.com',
-        phone: '+1 (555) 456-7890',
-        role: 'customer',
-        is_active: true,
-        created_at: '2024-05-22',
-        orders: 7,
-    },
-];
-
-export default function UsersIndex({ users = mockUsers }) {
+export default function UsersIndex({ users = { data: [] } }) {
     const [searchTerm, setSearchTerm] = useState('');
     const [filterRole, setFilterRole] = useState('all');
     const [filterStatus, setFilterStatus] = useState('all');
 
-    // Handle both paginated object and array formats
+    // Extract users from paginated response
     const usersList = Array.isArray(users) ? users : (users?.data || []);
 
     const filteredUsers = usersList.filter((user) => {
         const matchesSearch =
             user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
             user.email.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchesRole = filterRole === 'all' || user.role === filterRole;
+        const matchesRole = filterRole === 'all' || user.roles?.[0] === filterRole;
         const matchesStatus =
             filterStatus === 'all' || (filterStatus === 'active' ? user.is_active : !user.is_active);
         return matchesSearch && matchesRole && matchesStatus;
@@ -110,9 +56,9 @@ export default function UsersIndex({ users = mockUsers }) {
     };
 
     const activeCount = usersList.filter((u) => u.is_active).length;
-    const customerCount = usersList.filter((u) => u.role === 'customer').length;
-    const adminCount = usersList.filter((u) => u.role === 'admin').length;
-    const totalOrders = usersList.reduce((sum, u) => sum + u.orders, 0);
+    const customerCount = usersList.filter((u) => u.roles?.[0] === 'customer').length;
+    const adminCount = usersList.filter((u) => u.roles?.[0] === 'admin').length;
+    const totalOrders = usersList.reduce((sum, u) => sum + (u.orders_count || 0), 0);
 
     return (
         <AdminLayout>
@@ -141,7 +87,7 @@ export default function UsersIndex({ users = mockUsers }) {
                 >
                     <Card hover={false}>
                         <CardBody className="text-center">
-                            <div className="text-3xl font-bold text-orange-500">{users.length}</div>
+                            <div className="text-3xl font-bold text-orange-500">{usersList.length}</div>
                             <p className="text-sm text-gray-600 mt-1">Total Users</p>
                         </CardBody>
                     </Card>
@@ -279,7 +225,7 @@ export default function UsersIndex({ users = mockUsers }) {
                                                     </td>
                                                     <td className="py-4 px-4">
                                                         <select
-                                                            value={user.role}
+                                                            value={user.roles?.[0] || 'customer'}
                                                             onChange={(e) =>
                                                                 handleChangeRole(user.id, e.target.value)
                                                             }
@@ -298,7 +244,7 @@ export default function UsersIndex({ users = mockUsers }) {
                                                     </td>
                                                     <td className="py-4 px-4">
                                                         <p className="font-semibold text-gray-900">
-                                                            {user.orders}
+                                                            {user.orders_count || 0}
                                                         </p>
                                                     </td>
                                                     <td className="py-4 px-4">

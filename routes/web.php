@@ -9,6 +9,7 @@ use App\Http\Controllers\ReservationController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\Admin\MenuItemController;
+use App\Http\Controllers\Admin\UserController;
 
 // Public routes
 Route::get('/', [LandingController::class, 'index'])->name('home');
@@ -65,9 +66,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
-        Route::get('/dashboard', function () {
-            return \Inertia\Inertia::render('Admin/Dashboard/Index');
-        })->name('dashboard');
+        Route::get('/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
 
         // Menu Items
         Route::post('/menu-items/{menuItem}', [MenuItemController::class, 'update'])->name('menu-items.update');
@@ -103,15 +102,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])
         Route::patch('/reservations/{reservation}/status', [\App\Http\Controllers\Admin\ReservationController::class, 'updateStatus'])->name('reservations.update-status');
 
         // Users
-        Route::get('/users', function () {
-            return \Inertia\Inertia::render('Admin/Users/Index');
-        })->name('users.index');
-
-        Route::patch('/users/{id}/toggle-active', function ($id) {
-            return back();
-        });
-
-        Route::patch('/users/{id}/role', function ($id) {
-            return back();
-        });
+        Route::get('/users', [UserController::class, 'index'])->name('users.index');
+        Route::patch('/users/{user}/toggle-active', [UserController::class, 'toggleActive'])->name('users.toggle-active');
+        Route::patch('/users/{user}/role', [UserController::class, 'updateRole'])->name('users.update-role');
     });

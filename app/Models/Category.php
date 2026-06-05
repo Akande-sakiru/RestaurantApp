@@ -23,6 +23,7 @@ class Category extends Model
         'slug',
         'description',
         'sort_order',
+        'image_path',
     ];
 
     /**

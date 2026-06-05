@@ -69,7 +69,7 @@ class CategoryController extends Controller
             'name' => 'required|string|unique:categories,name,' . $category->id,
             'description' => 'nullable|string|max:500',
             'sort_order' => 'required|integer',
-            'image' => 'required|file'
+            'image' => 'nullable|file'
         ]);
 
         $imagePath = $category->image_path;

@@ -22,7 +22,7 @@ class MenuController extends Controller
                 'slug' => $item->slug,
                 'description' => $item->description,
                 'price' => (float) $item->price,
-                'image_url' => $item->image_path ?? $imageUrl,
+                'image_url' => $item->image_path ? '/storage/' . $item->image_path : $imageUrl,
                 'is_available' => (bool) $item->is_available,
                 'category' => [
                     'id' => $item->category->id,

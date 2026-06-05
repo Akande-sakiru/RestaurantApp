@@ -6,13 +6,16 @@ import { ArrowLeft } from 'lucide-react';
 export default function EditCategory({ category }) {
     const { data, setData, post, processing, errors } = useForm({
         name: category.name || '',
+        description: category.description || '',
         sort_order: category.sort_order || 0,
+        image: null,
         _method: 'PATCH',
     });
 
     const handleSubmit = (e) => {
         e.preventDefault();
         post(`/admin/categories/${category.id}`, {
+            forceFormData: true,
             onSuccess: () => {
                 // Success handled by Inertia redirect
             },
@@ -96,6 +99,67 @@ export default function EditCategory({ category }) {
                                 />
                                 {errors.name && (
                                     <p className="text-sm text-red-500">{errors.name}</p>
+                                )}
+                            </motion.div>
+
+                            {/* Description */}
+                            <motion.div variants={itemVariants} className="space-y-2">
+                                <label className="block text-sm font-semibold text-gray-700">
+                                    Description
+                                </label>
+                                <textarea
+                                    value={data.description}
+                                    onChange={(e) => setData('description', e.target.value)}
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                                    placeholder="Brief description of this category"
+                                    rows={3}
+                                />
+                                {errors.description && (
+                                    <p className="text-sm text-red-500">{errors.description}</p>
+                                )}
+                            </motion.div>
+
+                            {/* Image Upload */}
+                            <motion.div variants={itemVariants} className="space-y-2">
+                                <label className="block text-sm font-semibold text-gray-700">
+                                    Category Image
+                                </label>
+                                {category.image_path && (
+                                    <div className="mb-4">
+                                        <p className="text-sm text-gray-600 mb-2">Current Image:</p>
+                                        <img
+                                            src={`/storage/${category.image_path}`}
+                                            alt={category.name}
+                                            className="w-32 h-32 object-cover rounded-lg"
+                                        />
+                                    </div>
+                                )}
+                                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-orange-500 transition-colors cursor-pointer">
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={(e) => setData('image', e.target.files[0])}
+                                        className="hidden"
+                                        id="image-input"
+                                    />
+                                    <label htmlFor="image-input" className="cursor-pointer block">
+                                        <div className="text-gray-600">
+                                            <p className="text-sm font-medium mb-1">
+                                                Click to upload or drag and drop
+                                            </p>
+                                            <p className="text-xs text-gray-500">
+                                                PNG, JPG, GIF up to 5MB (optional)
+                                            </p>
+                                        </div>
+                                    </label>
+                                    {data.image && (
+                                        <p className="text-sm text-green-600 mt-2">
+                                            ✓ {data.image.name}
+                                        </p>
+                                    )}
+                                </div>
+                                {errors.image && (
+                                    <p className="text-sm text-red-500">{errors.image}</p>
                                 )}
                             </motion.div>
 

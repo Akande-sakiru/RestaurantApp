@@ -11,9 +11,8 @@ export default function EditMenuItem({ menuItem, categories = [] }) {
         category_id: menuItem.category_id || "",
         price: menuItem.price || "",
         image: null,
-        is_available: menuItem.is_available || true,
+        is_available: menuItem.is_available === true || menuItem.is_available === 'yes' ? 'yes' : 'no',
         sort_order: menuItem.sort_order || 0,
-        // _method: "PATCH",
     });
 
     const [previewImage, setPreviewImage] = useState(
@@ -35,8 +34,13 @@ export default function EditMenuItem({ menuItem, categories = [] }) {
     const handleSubmit = (e) => {
         e.preventDefault();
         post(`/admin/menu-items/${menuItem.id}`, {
+            forceFormData: true,
+            _method: 'PATCH',
             onSuccess: () => {
                 // Success handled by Inertia redirect
+            },
+            onError: (errors) => {
+                console.log('Form errors:', errors);
             },
         });
     };
@@ -278,11 +282,11 @@ export default function EditMenuItem({ menuItem, categories = [] }) {
                                     <label className="flex items-center gap-3 cursor-pointer">
                                         <input
                                             type="checkbox"
-                                            checked={data.is_available}
+                                            checked={data.is_available === "yes"}
                                             onChange={(e) =>
                                                 setData(
                                                     "is_available",
-                                                    e.target.checked
+                                                    e.target.checked ? "yes" : "no"
                                                 )
                                             }
                                             className="w-5 h-5 text-orange-500 rounded cursor-pointer"

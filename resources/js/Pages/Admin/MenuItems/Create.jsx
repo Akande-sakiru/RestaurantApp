@@ -11,7 +11,7 @@ export default function CreateMenuItem({ categories = [] }) {
         category_id: "",
         price: "",
         image: null,
-        is_available: true,
+        is_available: "yes",
         sort_order: 0,
     });
     const [currentCategories, setCurrentCategories] = useState(categories);
@@ -37,8 +37,12 @@ export default function CreateMenuItem({ categories = [] }) {
     const handleSubmit = (e) => {
         e.preventDefault();
         post("/admin/menu-items", {
+            forceFormData: true,
             onSuccess: () => {
                 // Success handled by Inertia redirect
+            },
+            onError: (errors) => {
+                console.log('Form errors:', errors);
             },
         });
     };
@@ -283,11 +287,11 @@ export default function CreateMenuItem({ categories = [] }) {
                                     <label className="flex items-center gap-3 cursor-pointer">
                                         <input
                                             type="checkbox"
-                                            checked={data.is_available}
+                                            checked={data.is_available === "yes"}
                                             onChange={(e) =>
                                                 setData(
                                                     "is_available",
-                                                    e.target.checked
+                                                    e.target.checked ? "yes" : "no"
                                                 )
                                             }
                                             className="w-5 h-5 text-orange-500 rounded cursor-pointer"

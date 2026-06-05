@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Admin\MenuItemController;
+// use App\Http\Controllers\Admin\MenuItemController;
 use App\Http\Controllers\Api\OrderApiController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\LandingController;
@@ -10,6 +10,8 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReservationController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\Admin\MenuItemController;
+use App\Http\Controllers\Admin\UserController;
 
 // Public routes
 Route::get('/', [LandingController::class, 'index'])->name('home');
@@ -26,7 +28,7 @@ Route::post('/payment/webhook', [\App\Http\Controllers\PaymentController::class,
 // Auth routes (Breeze)
 require __DIR__ . '/auth.php';
 
-// Customer routes
+// Customer routes - Apply StoreIntendedUrl middleware for unauthenticated access
 Route::middleware(['auth', 'verified', 'role:customer|admin'])->group(function () {
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
     Route::post('/cart', [CartController::class, 'store'])->name('cart.store');
@@ -51,6 +53,9 @@ Route::middleware(['auth', 'verified', 'role:customer|admin'])->group(function (
     Route::get('/api/orders', [OrderApiController::class, 'index'])->name('api.orders.index');
     Route::get('/api/orders/{order}', [OrderApiController::class, 'show'])->name('api.orders.show');
 
+    // Cart sync API (for syncing pending cart after login)
+    Route::post('/api/cart/sync', [\App\Http\Controllers\Api\CartApiController::class, 'syncPending'])->name('api.cart.sync');
+
     Route::get('/reservations', [ReservationController::class, 'index'])->name('reservations.index');
     Route::get('/reservations/create', [ReservationController::class, 'create'])->name('reservations.create');
     Route::post('/reservations', [ReservationController::class, 'store'])->name('reservations.store');
@@ -67,18 +72,18 @@ Route::middleware(['auth', 'verified', 'role:admin'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
-        Route::get('/dashboard', function () {
-            return \Inertia\Inertia::render('Admin/Dashboard/Index');
-        })->name('dashboard');
+        Route::get('/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
 
         // Menu Items
-        Route::post('/menu-items/{menuItem}', [MenuItemController::class, 'update'])->name('menu-items.update');
         Route::get('/menu-items', [MenuItemController::class, 'index'])->name('menu-items.index');
         Route::get('/menu-items/create', [MenuItemController::class, 'create'])->name('menu-items.create');
         Route::post('/menu-items', [MenuItemController::class, 'store'])->name('menu-items.store');
         Route::get('/menu-items/{menuItem}/edit', [MenuItemController::class, 'edit'])->name('menu-items.edit');
+        Route::patch('/menu-items/{menuItem}', [MenuItemController::class, 'update'])->name('menu-items.update');
         Route::delete('/menu-items/{menuItem}', [MenuItemController::class, 'destroy'])->name('menu-items.destroy');
-        Route::patch('/menu-items/{id}/toggle-availability', function ($id) {
+        Route::patch('/menu-items/{menuItem}/toggle-availability', function ($menuItem) {
+            $newStatus = $menuItem->is_available === 'yes' ? 'no' : 'yes';
+            $menuItem->update(['is_available' => $newStatus]);
             return back();
         });
 
@@ -105,15 +110,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])
         Route::patch('/reservations/{reservation}/status', [\App\Http\Controllers\Admin\ReservationController::class, 'updateStatus'])->name('reservations.update-status');
 
         // Users
-        Route::get('/users', function () {
-            return \Inertia\Inertia::render('Admin/Users/Index');
-        })->name('users.index');
-
-        Route::patch('/users/{id}/toggle-active', function ($id) {
-            return back();
-        });
-
-        Route::patch('/users/{id}/role', function ($id) {
-            return back();
-        });
+        Route::get('/users', [UserController::class, 'index'])->name('users.index');
+        Route::patch('/users/{user}/toggle-active', [UserController::class, 'toggleActive'])->name('users.toggle-active');
+        Route::patch('/users/{user}/role', [UserController::class, 'updateRole'])->name('users.update-role');
     });

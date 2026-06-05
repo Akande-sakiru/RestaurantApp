@@ -32,6 +32,7 @@ class Order extends Model
         'amount_paid',
         'paid_at',
         'delivery_address',
+        'delivery_phone',
         'table_number',
         'subtotal',
         'total',

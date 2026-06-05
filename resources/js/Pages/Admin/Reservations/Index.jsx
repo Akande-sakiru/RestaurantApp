@@ -7,70 +7,6 @@ import Input from '../../../Components/UI/Input';
 import { Card, CardBody, CardHeader } from '../../../Components/UI/Card';
 import Badge from '../../../Components/UI/Badge';
 
-// Mock data
-const mockReservations = [
-    {
-        id: 1,
-        reservation_number: 'RES-20240525-001',
-        customer_name: 'John Doe',
-        party_size: 4,
-        reserved_date: '2024-05-26',
-        reserved_time: '19:00',
-        status: 'confirmed',
-        special_requests: 'Window seat if available',
-        phone: '+1 (555) 123-4567',
-        created_at: '2024-05-25T10:00:00',
-    },
-    {
-        id: 2,
-        reservation_number: 'RES-20240525-002',
-        customer_name: 'Jane Smith',
-        party_size: 2,
-        reserved_date: '2024-05-27',
-        reserved_time: '20:30',
-        status: 'pending',
-        special_requests: 'Celebration dinner - anniversary',
-        phone: '+1 (555) 234-5678',
-        created_at: '2024-05-25T11:30:00',
-    },
-    {
-        id: 3,
-        reservation_number: 'RES-20240525-003',
-        customer_name: 'Mike Johnson',
-        party_size: 6,
-        reserved_date: '2024-05-28',
-        reserved_time: '18:00',
-        status: 'confirmed',
-        special_requests: null,
-        phone: '+1 (555) 345-6789',
-        created_at: '2024-05-25T09:15:00',
-    },
-    {
-        id: 4,
-        reservation_number: 'RES-20240525-004',
-        customer_name: 'Sarah Williams',
-        party_size: 3,
-        reserved_date: '2024-05-26',
-        reserved_time: '18:30',
-        status: 'completed',
-        special_requests: 'High chair needed',
-        phone: '+1 (555) 456-7890',
-        created_at: '2024-05-24T14:20:00',
-    },
-    {
-        id: 5,
-        reservation_number: 'RES-20240525-005',
-        customer_name: 'Alex Brown',
-        party_size: 5,
-        reserved_date: '2024-05-29',
-        reserved_time: '19:30',
-        status: 'cancelled',
-        special_requests: null,
-        phone: '+1 (555) 567-8901',
-        created_at: '2024-05-25T08:00:00',
-    },
-];
-
 const statusColors = {
     pending: 'warning',
     confirmed: 'success',
@@ -87,20 +23,21 @@ const statusLabels = {
 
 const statusOptions = ['pending', 'confirmed', 'completed', 'cancelled'];
 
-export default function ReservationsIndex({ reservations = mockReservations }) {
+export default function ReservationsIndex({ reservations = { data: [] }, pendingReservationCount = 0 }) {
     const [searchTerm, setSearchTerm] = useState('');
     const [filterStatus, setFilterStatus] = useState('all');
     const [filterDate, setFilterDate] = useState('all');
 
-    // Handle both paginated object and array formats
+    // Extract reservations from paginated response
     const reservationsList = Array.isArray(reservations) ? reservations : (reservations?.data || []);
 
     const today = new Date().toISOString().split('T')[0];
 
     const filteredReservations = reservationsList.filter((res) => {
+        const customerName = res.user?.name || 'Unknown';
         const matchesSearch =
             res.reservation_number.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            res.customer_name.toLowerCase().includes(searchTerm.toLowerCase());
+            customerName.toLowerCase().includes(searchTerm.toLowerCase());
         const matchesStatus = filterStatus === 'all' || res.status === filterStatus;
 
         let matchesDate = true;
@@ -272,7 +209,7 @@ export default function ReservationsIndex({ reservations = mockReservations }) {
                                                     </div>
 
                                                     <p className="font-medium text-gray-900 mb-3">
-                                                        {res.customer_name}
+                                                        {res.user?.name || 'Unknown'}
                                                     </p>
 
                                                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-3">
@@ -306,7 +243,7 @@ export default function ReservationsIndex({ reservations = mockReservations }) {
                                                             </span>
                                                         </div>
                                                         <div className="text-sm text-gray-600">
-                                                            {res.phone}
+                                                            {res.user?.phone || 'N/A'}
                                                         </div>
                                                     </div>
 

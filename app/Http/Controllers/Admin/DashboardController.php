@@ -20,27 +20,51 @@ class DashboardController extends Controller
         $today = now()->toDateString();
 
         // Today's statistics
-        $todayOrderCount = Order::whereDate('created_at', $today)->count();
+        $todayOrderCount = (int) Order::whereDate('created_at', $today)->count();
         $todayRevenue = (float) Order::whereDate('created_at', $today)
             ->sum(DB::raw('CAST(total AS DECIMAL(10,2))'));
-        $pendingOrderCount = Order::where('status', 'pending')->count();
-        $todayReservationCount = Reservation::whereDate('reserved_date', $today)->count();
-        $pendingReservationCount = Reservation::where('status', 'pending')->count();
+        $pendingOrderCount = (int) Order::where('status', 'pending')->count();
+        $todayReservationCount = (int) Reservation::whereDate('reserved_date', $today)->count();
+        $pendingReservationCount = (int) Reservation::where('status', 'pending')->count();
 
         // Overall statistics
-        $activeMenuItemCount = MenuItem::where('is_available', true)->count();
-        $categoryCount = Category::count();
+        $activeMenuItemCount = (int) MenuItem::where('is_available', true)->count();
+        $categoryCount = (int) Category::count();
 
         // Recent orders (5 most recent)
         $recentOrders = Order::with('user')
             ->latest()
             ->limit(5)
-            ->get();
+            ->get()
+            ->map(function($order) {
+                return [
+                    'id' => $order->id,
+                    'order_number' => $order->order_number,
+                    'total' => (float) $order->total,
+                    'status' => $order->status,
+                    'user' => [
+                        'id' => $order->user->id,
+                        'name' => $order->user->name,
+                    ],
+                ];
+            });
 
         // Today's reservations
         $todayReservations = Reservation::with('user')
             ->whereDate('reserved_date', $today)
-            ->get();
+            ->get()
+            ->map(function($reservation) {
+                return [
+                    'id' => $reservation->id,
+                    'user' => [
+                        'id' => $reservation->user->id,
+                        'name' => $reservation->user->name,
+                    ],
+                    'party_size' => $reservation->party_size,
+                    'reserved_time' => $reservation->reserved_time,
+                    'status' => $reservation->status,
+                ];
+            });
 
         return Inertia::render('Admin/Dashboard/Index', [
             'todayOrderCount' => $todayOrderCount,

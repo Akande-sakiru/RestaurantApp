@@ -11,7 +11,7 @@ import { router, usePage } from "@inertiajs/react";
 import CustomerLayout from "../../Layouts/CustomerLayout";
 import Button from "../../Components/UI/Button";
 import { Card, CardBody, CardHeader } from "../../Components/UI/Card";
-import PaystackPop from "@paystack/inline-js";
+// import PaystackPop from "@paystack/inline-js";
 
 export default function PaymentIndex({
     cartItems = [],

@@ -40,7 +40,10 @@ class AuthenticatedSessionController extends Controller
             return redirect()->intended(route('admin.dashboard', absolute: false));
         }
 
-        return redirect()->intended(route('orders.index', absolute: false));
+        // For customers:
+        // If there's an intended destination (from cart), use it
+        // Otherwise go to home page
+        return redirect()->intended(route('home', absolute: false));
     }
 
     /**

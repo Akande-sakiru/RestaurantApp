@@ -11,18 +11,17 @@ import AdminLayout from "../../../Layouts/AdminLayout";
 import StatsCard from "../../../Components/Admin/StatsCard";
 import { Card, CardBody, CardHeader } from "../../../Components/UI/Card";
 import Badge from "../../../Components/UI/Badge";
-import { mockDashboardStats } from "../../../mockData";
 
 export default function AdminDashboard({
-    todayOrders = mockDashboardStats.todayOrders,
-    todayRevenue = mockDashboardStats.todayRevenue,
-    pendingOrders = mockDashboardStats.pendingOrders,
-    todayReservations = mockDashboardStats.todayReservations,
-    pendingReservations = mockDashboardStats.pendingReservations,
-    activeMenuItems = mockDashboardStats.activeMenuItems,
-    categories = mockDashboardStats.categories,
-    recentOrders = mockDashboardStats.recentOrders,
-    todayReservationsList = mockDashboardStats.todayReservationsList,
+    todayOrderCount = 0,
+    todayRevenue = 0,
+    pendingOrderCount = 0,
+    todayReservationCount = 0,
+    pendingReservationCount = 0,
+    activeMenuItemCount = 0,
+    categoryCount = 0,
+    recentOrders = [],
+    todayReservations = [],
 }) {
     const containerVariants = {
         hidden: { opacity: 0 },
@@ -59,7 +58,7 @@ export default function AdminDashboard({
                 >
                     <StatsCard
                         title="Today's Orders"
-                        value={todayOrders}
+                        value={todayOrderCount}
                         icon={ShoppingBag}
                         color="orange"
                         trend="+12% from yesterday"
@@ -73,13 +72,13 @@ export default function AdminDashboard({
                     />
                     <StatsCard
                         title="Pending Orders"
-                        value={pendingOrders}
+                        value={pendingOrderCount}
                         icon={AlertCircle}
                         color="red"
                     />
                     <StatsCard
                         title="Today's Reservations"
-                        value={todayReservations}
+                        value={todayReservationCount}
                         icon={Calendar}
                         color="orange"
                     />
@@ -92,19 +91,19 @@ export default function AdminDashboard({
                 >
                     <StatsCard
                         title="Pending Reservations"
-                        value={pendingReservations}
+                        value={pendingReservationCount}
                         icon={Clock}
                         color="red"
                     />
                     <StatsCard
                         title="Active Menu Items"
-                        value={activeMenuItems}
+                        value={activeMenuItemCount}
                         icon={ShoppingBag}
                         color="orange"
                     />
                     <StatsCard
                         title="Categories"
-                        value={categories}
+                        value={categoryCount}
                         icon={TrendingUp}
                         color="orange"
                     />
@@ -174,9 +173,9 @@ export default function AdminDashboard({
                             </h3>
                         </CardHeader>
                         <CardBody>
-                            {todayReservationsList.length > 0 ? (
+                            {todayReservations.length > 0 ? (
                                 <div className="space-y-4">
-                                    {todayReservationsList
+                                    {todayReservations
                                         .slice(0, 5)
                                         .map((reservation) => (
                                             <motion.div

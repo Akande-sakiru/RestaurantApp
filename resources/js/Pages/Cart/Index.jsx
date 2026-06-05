@@ -1,27 +1,31 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Trash2, Plus, Minus, ShoppingCart } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { router } from "@inertiajs/react";
+import { router, usePage } from "@inertiajs/react";
 import CustomerLayout from "../../Layouts/CustomerLayout";
 import Button from "../../Components/UI/Button";
 import Input from "../../Components/UI/Input";
 import Select from "../../Components/UI/Select";
 import Textarea from "../../Components/UI/Textarea";
 import { Card, CardBody, CardHeader } from "../../Components/UI/Card";
+import { getPendingCart, clearPendingCart } from "../../Utils/cartStorage";
 
 const checkoutSchema = z.object({
     type: z.enum(["dine-in", "takeaway", "delivery"]),
     delivery_address: z.string().optional(),
+    delivery_phone: z.string().optional(),
     table_number: z.string().optional(),
     notes: z.string().optional(),
 });
 
 export default function CartIndex({ cartItems = [], subtotal = 0 }) {
+    const { auth } = usePage().props;
     const items = Array.isArray(cartItems) ? cartItems : [];
     const [isProcessing, setIsProcessing] = useState(false);
+    const [syncedItems, setSyncedItems] = useState(false);
 
     const {
         register,
@@ -36,6 +40,37 @@ export default function CartIndex({ cartItems = [], subtotal = 0 }) {
     });
 
     const selectedType = watch("type");
+
+    // Sync pending cart items when user logs in
+    useEffect(() => {
+        const syncPendingCart = async () => {
+            const pendingItems = getPendingCart();
+            
+            if (pendingItems.length > 0 && auth?.user && !syncedItems) {
+                try {
+                    await fetch('/api/cart/sync', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content,
+                        },
+                        body: JSON.stringify({ items: pendingItems }),
+                    });
+                    
+                    // Clear pending cart after syncing
+                    clearPendingCart();
+                    setSyncedItems(true);
+                    
+                    // Reload cart to show synced items
+                    router.reload();
+                } catch (error) {
+                    console.error('Error syncing pending cart:', error);
+                }
+            }
+        };
+
+        syncPendingCart();
+    }, [auth?.user, syncedItems]);
 
     const handleUpdateQuantity = (itemId, newQuantity) => {
         if (newQuantity === 0) {
@@ -309,14 +344,24 @@ export default function CartIndex({ cartItems = [], subtotal = 0 }) {
                                     )}
 
                                     {selectedType === "delivery" && (
-                                        <Input
-                                            label="Delivery Address"
-                                            placeholder="Enter your address"
-                                            {...register("delivery_address")}
-                                            error={
-                                                errors.delivery_address?.message
-                                            }
-                                        />
+                                        <>
+                                            <Input
+                                                label="Delivery Address"
+                                                placeholder="Enter your address"
+                                                {...register("delivery_address")}
+                                                error={
+                                                    errors.delivery_address?.message
+                                                }
+                                            />
+                                            <Input
+                                                label="Delivery Phone Number"
+                                                placeholder="Enter your phone number (optional)"
+                                                {...register("delivery_phone")}
+                                                error={
+                                                    errors.delivery_phone?.message
+                                                }
+                                            />
+                                        </>
                                     )}
 
                                     {/* Notes */}

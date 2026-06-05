@@ -42,7 +42,7 @@ class OrderService
             foreach ($cartItems as $cartItem) {
                 $menuItem = $menuItems->get($cartItem['id']);
 
-                if ($menuItem === null || !$menuItem->is_available) {
+                if ($menuItem === null || $menuItem->is_available !== 'yes') {
                     throw ValidationException::withMessages([
                         'cart' => [
                             "'{$cartItem['name']}' is no longer available and cannot be ordered.",
@@ -127,7 +127,7 @@ class OrderService
             foreach ($cartItems as $cartItem) {
                 $menuItem = $menuItems->get($cartItem['id']);
 
-                if ($menuItem === null || !$menuItem->is_available) {
+                if ($menuItem === null || $menuItem->is_available !== 'yes') {
                     throw ValidationException::withMessages([
                         'cart' => [
                             "'{$cartItem['name']}' is no longer available and cannot be ordered.",

@@ -22,6 +22,7 @@ return new class extends Migration {
             $table->decimal('amount_paid', 8, 2)->nullable();
             $table->timestamp('paid_at')->nullable();
             $table->text('delivery_address')->nullable();
+            $table->string('delivery_phone')->nullable();
             $table->string('table_number')->nullable();
             $table->decimal('subtotal', 8, 2);
             $table->decimal('total', 8, 2);

@@ -7,6 +7,7 @@ use App\Services\CartService;
 use App\Services\OrderService;
 use App\Services\PaymentService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 
@@ -24,7 +25,6 @@ class PaymentController extends Controller
      */
     public function create(Request $request)
     {
-        // POST request - validate and store in session
         $validated = $request->validate([
             'type' => 'required|in:dine-in,takeaway,delivery',
             'delivery_address' => 'nullable|string',
@@ -32,7 +32,6 @@ class PaymentController extends Controller
             'notes' => 'nullable|string|max:1000',
         ]);
 
-        // Store in session temporarily
         $request->session()->put('pending_order_data', $validated);
 
         return redirect()->route('payment.show');
@@ -51,10 +50,8 @@ class PaymentController extends Controller
             return back()->withErrors(['cart' => 'Your cart is empty']);
         }
 
-        // Get order data from session
         $orderData = $request->session()->get('pending_order_data');
         if (!$orderData) {
-            // Default to dine-in if no order data
             $orderData = [
                 'type' => 'dine-in',
                 'delivery_address' => null,
@@ -63,7 +60,6 @@ class PaymentController extends Controller
             ];
         }
 
-        // Transform cart items to match frontend expectations
         $transformedItems = array_values(array_map(function ($item) {
             return [
                 'id' => $item['id'],
@@ -93,7 +89,6 @@ class PaymentController extends Controller
         try {
             $user = $request->user();
 
-            // Validate the order data from frontend
             $validated = $request->validate([
                 'type' => 'required|in:dine-in,takeaway,delivery',
                 'delivery_address' => 'nullable|string',
@@ -102,20 +97,16 @@ class PaymentController extends Controller
                 'payment_method' => 'required|string',
             ]);
 
-            // Create pending order (not confirmed yet)
             $order = $this->orderService->createPendingOrder($user, [
                 'type' => $validated['type'],
-                'delivery_address' => $validated['delivery_address'],
-                'table_number' => $validated['table_number'],
-                'notes' => $validated['notes'],
+                'delivery_address' => $validated['delivery_address'] ?? "",
+                'table_number' => $validated['table_number'] ?? "",
+                'notes' => $validated['notes'] ?? "",
             ]);
 
-            // Initialize payment with Paystack
-            $paymentData = $this->paymentService->initializePayment(
-                $user,
-                $order,
-                $validated['payment_method'] ?? 'all'
-            );
+            Log::info('Payment initialization', ['order_id' => $order->id, 'payment_method' => $validated['payment_method']]);
+
+            $paymentData = $this->paymentService->initializePayment($user, $order, $validated['payment_method']);
 
             return response()->json([
                 'status' => true,
@@ -130,12 +121,14 @@ class PaymentController extends Controller
                 ],
             ]);
         } catch (ValidationException $e) {
+            Log::error('Payment initialization validation error', ['errors' => $e->errors()]);
             return response()->json([
                 'status' => false,
                 'message' => 'Validation failed',
                 'errors' => $e->errors(),
             ], 422);
         } catch (\Exception $e) {
+            Log::error('Payment initialization exception', ['error' => $e->getMessage()]);
             return response()->json([
                 'status' => false,
                 'message' => $e->getMessage(),
@@ -144,10 +137,76 @@ class PaymentController extends Controller
     }
 
     /**
-     * Verify payment after successful Paystack transaction
+     * Handle payment callback from Paystack after user completes payment
+     */
+    public function callback(Request $request)
+    {
+        try {
+            $reference = $request->query('reference');
+
+            if (!$reference) {
+                return redirect()->route('payment.show')->withErrors(['payment' => 'Invalid payment reference']);
+            }
+
+            Log::info('Payment callback received', ['reference' => $reference]);
+
+            // Extract order_id from reference (format: ORD-{order_id}-{timestamp}-{random})
+            $parts = explode('-', $reference);
+            if (count($parts) < 2) {
+                return redirect()->route('payment.show')->withErrors(['payment' => 'Invalid reference format']);
+            }
+
+            $orderId = (int) $parts[1];
+            $order = Order::findOrFail($orderId);
+
+            // Check if order belongs to user
+            if ($order->user_id !== $request->user()->id) {
+                Log::warning('Payment callback - unauthorized access', ['order_id' => $orderId, 'user_id' => $request->user()->id]);
+                abort(403, 'Unauthorized');
+            }
+
+            // Verify payment with Paystack
+            $paymentResult = $this->paymentService->verifyPayment($reference);
+            Log::info('Payment verification from callback', ['result' => $paymentResult, 'reference' => $reference]);
+
+            if (!$paymentResult['status']) {
+                Log::warning('Payment verification failed in callback', ['reference' => $reference]);
+                $this->paymentService->markPaymentAsFailed(
+                    $order,
+                    $reference,
+                    $paymentResult['message'] ?? 'Payment verification failed'
+                );
+
+                return redirect()->route('payment.show')->withErrors(['payment' => 'Payment verification failed']);
+            }
+
+            // Mark order as paid
+            $this->paymentService->markOrderAsPaid(
+                $order,
+                $reference,
+                $paymentResult['authorization']['channel'] ?? 'card',
+                $paymentResult['amount']
+            );
+
+            // Clear cart after successful payment
+            $this->cartService->clear($request->user());
+
+            Log::info('Payment successful - redirecting to confirmation', ['order_id' => $order->id]);
+
+            // Redirect to confirmation page
+            return redirect()->route('orders.confirmation', $order);
+        } catch (\Exception $e) {
+            Log::error('Payment callback error', ['error' => $e->getMessage()]);
+            return redirect()->route('payment.show')->withErrors(['payment' => 'An error occurred processing your payment']);
+        }
+    }
+
+    /**
+     * Verify payment after successful Paystack transaction (legacy - for API calls)
      */
     public function verify(Request $request)
     {
+        Log::info('Payment verification started', ['request' => $request->all()]);
         try {
             $validated = $request->validate([
                 'reference' => 'required|string',
@@ -157,18 +216,21 @@ class PaymentController extends Controller
             $reference = $validated['reference'];
             $order = Order::findOrFail($validated['order_id']);
 
-            // Check if order belongs to user
+            Log::info('Payment verification - order found', ['order_id' => $order->id]);
+
             if ($order->user_id !== $request->user()->id) {
+                Log::warning('Payment verification - unauthorized user', ['order_id' => $order->id, 'user_id' => $request->user()->id]);
                 return response()->json([
                     'status' => false,
                     'message' => 'Unauthorized',
                 ], 403);
             }
 
-            // Verify payment with Paystack
             $paymentResult = $this->paymentService->verifyPayment($reference);
+            Log::info('Payment verification - Paystack response', ['result' => $paymentResult]);
 
             if (!$paymentResult['status']) {
+                Log::warning('Payment verification failed', ['reference' => $reference, 'result' => $paymentResult]);
                 $this->paymentService->markPaymentAsFailed(
                     $order,
                     $reference,
@@ -182,15 +244,15 @@ class PaymentController extends Controller
                 ], 400);
             }
 
-            // Mark order as paid
+            Log::info('Payment verified successfully', ['order_id' => $order->id, 'reference' => $reference]);
+
             $this->paymentService->markOrderAsPaid(
                 $order,
                 $reference,
-                $paymentResult['metadata']['payment_method'] ?? 'card',
+                $paymentResult['authorization']['channel'] ?? 'card',
                 $paymentResult['amount']
             );
 
-            // Clear cart after successful payment
             $this->cartService->clear($request->user());
 
             return response()->json([
@@ -203,12 +265,14 @@ class PaymentController extends Controller
                 ],
             ]);
         } catch (ValidationException $e) {
+            Log::error('Payment verification validation error', ['errors' => $e->errors()]);
             return response()->json([
                 'status' => false,
                 'message' => 'Validation failed',
                 'errors' => $e->errors(),
             ], 422);
         } catch (\Exception $e) {
+            Log::error('Payment verification exception', ['error' => $e->getMessage()]);
             return response()->json([
                 'status' => false,
                 'message' => $e->getMessage(),
@@ -230,7 +294,6 @@ class PaymentController extends Controller
 
             $order = Order::findOrFail($validated['order_id']);
 
-            // Check if order belongs to user
             if ($order->user_id !== $request->user()->id) {
                 return response()->json([
                     'status' => false,
@@ -238,7 +301,6 @@ class PaymentController extends Controller
                 ], 403);
             }
 
-            // Mark payment as failed
             $this->paymentService->markPaymentAsFailed(
                 $order,
                 $validated['reference'],
@@ -250,6 +312,7 @@ class PaymentController extends Controller
                 'message' => 'Payment cancelled',
             ]);
         } catch (\Exception $e) {
+            Log::error('Payment fail error', ['error' => $e->getMessage()]);
             return response()->json([
                 'status' => false,
                 'message' => $e->getMessage(),
@@ -265,7 +328,6 @@ class PaymentController extends Controller
         $signature = $request->header('X-Paystack-Signature');
         $body = $request->getContent();
 
-        // Verify webhook signature
         if ($signature !== hash('sha512', $body . config('services.paystack.secret_key'))) {
             return response()->json(['error' => 'Invalid signature'], 401);
         }

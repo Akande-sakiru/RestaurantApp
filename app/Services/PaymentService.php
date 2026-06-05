@@ -20,7 +20,7 @@ class PaymentService
     {
         $this->secretKey = config('services.paystack.secret_key');
         $this->publicKey = config('services.paystack.public_key');
-        
+
         if (!$this->secretKey || !$this->publicKey) {
             throw new \Exception('Paystack API keys not configured');
         }
@@ -38,17 +38,15 @@ class PaymentService
      * Initialize a payment transaction with Paystack
      * Returns reference code for payment modal
      */
-    public function initializePayment(
-        User $user,
-        Order $order,
-        string $paymentMethod = 'card'
-    ): array {
+    public function initializePayment(User $user, Order $order, string $paymentMethod = 'card'): array
+    {
         try {
             $response = $this->httpClient->post('/transaction/initialize', [
                 'json' => [
                     'email' => $user->email,
                     'amount' => (int) ($order->total * 100), // Paystack uses kobo (cents)
                     'reference' => $this->generateReference($order->id),
+                    'callback_url' => route('payment.callback'),
                     'metadata' => [
                         'order_id' => $order->id,
                         'order_number' => $order->order_number,
@@ -111,6 +109,11 @@ class PaymentService
 
             // Check if payment was successful
             if ($transaction['status'] === 'success') {
+                // Order::where('id', $order_id)->update([
+                //     'payment_status' => 'paid',
+                //     'transaction_reference' => $transaction['reference'],
+                //     'paid_at' => now()
+                // ]);
                 return [
                     'status' => true,
                     'message' => 'Payment successful',
@@ -119,6 +122,7 @@ class PaymentService
                     'metadata' => $transaction['metadata'],
                     'authorization' => $transaction['authorization'],
                 ];
+
             }
 
             return [

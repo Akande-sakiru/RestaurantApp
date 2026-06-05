@@ -24,6 +24,7 @@ class StoreOrderRequest extends FormRequest
         return [
             'type' => 'required|in:dine-in,takeaway,delivery',
             'delivery_address' => 'required_if:type,delivery|nullable|string',
+            'delivery_phone' => 'required_if:type,delivery|number|max:11|min:11',
             'table_number' => 'required_if:type,dine-in|nullable|string',
             'notes' => 'nullable|string|max:1000',
         ];

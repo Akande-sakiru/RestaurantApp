@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\MenuItemController;
+use App\Http\Controllers\Api\OrderApiController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\MenuController;
@@ -8,7 +10,6 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReservationController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use App\Http\Controllers\Admin\MenuItemController;
 
 // Public routes
 Route::get('/', [LandingController::class, 'index'])->name('home');
@@ -39,15 +40,16 @@ Route::middleware(['auth', 'verified', 'role:customer|admin'])->group(function (
     Route::post('/payment/initialize', [\App\Http\Controllers\PaymentController::class, 'initialize'])->name('payment.initialize');
     Route::post('/payment/verify', [\App\Http\Controllers\PaymentController::class, 'verify'])->name('payment.verify');
     Route::post('/payment/fail', [\App\Http\Controllers\PaymentController::class, 'fail'])->name('payment.fail');
+    Route::get('/payment/callback', [\App\Http\Controllers\PaymentController::class, 'callback'])->name('payment.callback');
 
     // Order routes
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
     Route::get('/orders/{order}/confirmation', [OrderController::class, 'confirmation'])->name('orders.confirmation');
-    
+
     // Order API endpoints (for real-time status)
-    Route::get('/api/orders', [\App\Http\Controllers\Api\OrderApiController::class, 'index'])->name('api.orders.index');
-    Route::get('/api/orders/{order}', [\App\Http\Controllers\Api\OrderApiController::class, 'show'])->name('api.orders.show');
+    Route::get('/api/orders', [OrderApiController::class, 'index'])->name('api.orders.index');
+    Route::get('/api/orders/{order}', [OrderApiController::class, 'show'])->name('api.orders.show');
 
     Route::get('/reservations', [ReservationController::class, 'index'])->name('reservations.index');
     Route::get('/reservations/create', [ReservationController::class, 'create'])->name('reservations.create');

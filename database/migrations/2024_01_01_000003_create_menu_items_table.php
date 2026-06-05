@@ -18,7 +18,7 @@ return new class extends Migration {
             $table->text('description');
             $table->decimal('price', 8, 2);
             $table->string('image_path')->nullable();
-            $table->boolean('is_available')->default(true);
+            $table->enum('is_available', ['yes', 'no'])->default('yes');
             $table->integer('sort_order')->default(0);
             $table->timestamp('deleted_at')->nullable();
             $table->timestamps();

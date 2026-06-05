@@ -26,7 +26,7 @@ class StoreMenuItemRequest extends FormRequest
             'description' => 'required|string',
             'price' => 'required|numeric|min:0',
             'category_id' => 'required|exists:categories,id',
-            'is_available' => 'boolean',
+            'is_available' => 'required|in:yes,no',
             'sort_order' => 'nullable|integer|min:0',
             'image' => 'nullable|image|max:2048',
         ];

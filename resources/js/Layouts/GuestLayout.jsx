@@ -1,13 +1,14 @@
 import { Link, usePage, router } from "@inertiajs/react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Search, LogOut, User } from "lucide-react";
+import { Menu, X, Search, LogOut, User, ShoppingCart } from "lucide-react";
 import { useState } from "react";
 import Button from "../Components/UI/Button";
+import Badge from "../Components/UI/Badge";
 
 export default function GuestLayout({ children }) {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [profileMenuOpen, setProfileMenuOpen] = useState(false);
-    const { auth } = usePage().props;
+    const { auth, cart } = usePage().props;
 
     const getNavItems = () => {
         const baseItems = [
@@ -124,6 +125,25 @@ export default function GuestLayout({ children }) {
                             <button className="p-2 text-gray-700 hover:text-orange-500 transition-colors">
                                 <Search size={20} />
                             </button>
+
+                            {/* Cart Icon */}
+                            {auth.user && (
+                                <Link
+                                    href="/cart"
+                                    className="relative p-2 text-gray-700 hover:text-orange-500 transition-colors"
+                                >
+                                    <ShoppingCart size={20} />
+                                    {cart && cart.count > 0 && (
+                                        <Badge
+                                            variant="danger"
+                                            size="sm"
+                                            className="absolute -top-2 -right-2"
+                                        >
+                                            {cart.count}
+                                        </Badge>
+                                    )}
+                                </Link>
+                            )}
 
                             {/* Auth Section */}
                             {!auth.user ? (
@@ -253,6 +273,24 @@ export default function GuestLayout({ children }) {
                                     {item.label}
                                 </Link>
                             ))}
+                            
+                            {/* Mobile Cart Icon */}
+                            {auth.user && (
+                                <Link
+                                    href="/cart"
+                                    className="flex items-center space-x-2 px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                                    onClick={() => setMobileMenuOpen(false)}
+                                >
+                                    <ShoppingCart size={20} />
+                                    <span>Cart</span>
+                                    {cart && cart.count > 0 && (
+                                        <Badge variant="danger" size="sm">
+                                            {cart.count}
+                                        </Badge>
+                                    )}
+                                </Link>
+                            )}
+
                             <div className="px-4 py-2 space-y-2 border-t border-gray-100 mt-2 pt-2">
                                 {!auth.user ? (
                                     <>

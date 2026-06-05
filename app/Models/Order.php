@@ -26,6 +26,11 @@ class Order extends Model
         'order_number',
         'type',
         'status',
+        'payment_status',
+        'payment_method',
+        'transaction_reference',
+        'amount_paid',
+        'paid_at',
         'delivery_address',
         'table_number',
         'subtotal',
@@ -43,6 +48,8 @@ class Order extends Model
         return [
             'subtotal' => 'decimal:2',
             'total' => 'decimal:2',
+            'amount_paid' => 'decimal:2',
+            'paid_at' => 'datetime',
         ];
     }
 

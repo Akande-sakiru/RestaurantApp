@@ -19,6 +19,7 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->singleton(CartService::class);
         $this->app->singleton(OrderService::class);
+        $this->app->singleton(\App\Services\PaymentService::class);
     }
 
     /**

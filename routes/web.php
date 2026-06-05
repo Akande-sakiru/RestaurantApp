@@ -19,6 +19,9 @@ Route::get('/category/{id}', function ($id) {
     return Inertia::render('Category/Show', ['category' => ['id' => $id, 'name' => 'Category']]);
 })->name('category.show');
 
+// Payment webhook (public, but verify signature)
+Route::post('/payment/webhook', [\App\Http\Controllers\PaymentController::class, 'webhook'])->name('payment.webhook');
+
 // Auth routes (Breeze)
 require __DIR__ . '/auth.php';
 
@@ -30,9 +33,17 @@ Route::middleware(['auth', 'verified', 'role:customer|admin'])->group(function (
     Route::delete('/cart/{menuItem}', [CartController::class, 'destroy'])->name('cart.destroy');
     Route::delete('/cart', [CartController::class, 'clear'])->name('cart.clear');
 
+    // Payment routes
+    Route::get('/payment', [\App\Http\Controllers\PaymentController::class, 'show'])->name('payment.show');
+    Route::post('/payment', [\App\Http\Controllers\PaymentController::class, 'create'])->name('payment.create');
+    Route::post('/payment/initialize', [\App\Http\Controllers\PaymentController::class, 'initialize'])->name('payment.initialize');
+    Route::post('/payment/verify', [\App\Http\Controllers\PaymentController::class, 'verify'])->name('payment.verify');
+    Route::post('/payment/fail', [\App\Http\Controllers\PaymentController::class, 'fail'])->name('payment.fail');
+
     Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+    Route::get('/orders/{order}/confirmation', [\App\Http\Controllers\OrderController::class, 'confirmation'])->name('orders.confirmation');
 
     Route::get('/reservations', [ReservationController::class, 'index'])->name('reservations.index');
     Route::get('/reservations/create', [ReservationController::class, 'create'])->name('reservations.create');

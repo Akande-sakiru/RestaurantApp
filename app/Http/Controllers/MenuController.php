@@ -37,9 +37,19 @@ class MenuController extends Controller
             'slug' => $category->slug,
         ]);
 
+        // Get category filter from query parameter
+        $filters = [];
+        if (request()->has('category')) {
+            $filters['category'] = request('category');
+        }
+        if (request()->has('search')) {
+            $filters['search'] = request('search');
+        }
+
         return Inertia::render('Menu/Index', [
             'menuItems' => $menuItems,
             'categories' => $categories,
+            'filters' => $filters,
         ]);
     }
 }

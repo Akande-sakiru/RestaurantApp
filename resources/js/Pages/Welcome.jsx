@@ -428,7 +428,8 @@ export default function Welcome({
                         <motion.button
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
-                            className="px-6 py-2 bg-orange-500 text-white rounded-full font-semibold shadow-lg hover:shadow-xl transition-shadow"
+                            onClick={() => router.visit('/menu')}
+                            className="px-6 py-2 bg-orange-500 text-white rounded-full font-semibold shadow-lg hover:shadow-xl transition-shadow cursor-pointer"
                         >
                             All
                         </motion.button>
@@ -438,7 +439,8 @@ export default function Welcome({
                                     key={category.id}
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
-                                    className="px-6 py-2 bg-white text-gray-700 rounded-full font-semibold border-2 border-gray-200 hover:border-orange-500 hover:text-orange-500 transition-all"
+                                    onClick={() => router.visit(`/menu?category=${category.id}`)}
+                                    className="px-6 py-2 bg-white text-gray-700 rounded-full font-semibold border-2 border-gray-200 hover:border-orange-500 hover:text-orange-500 transition-all cursor-pointer"
                                 >
                                     {category.name}
                                 </motion.button>
@@ -449,7 +451,7 @@ export default function Welcome({
                                     key={category}
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
-                                    className="px-6 py-2 bg-white text-gray-700 rounded-full font-semibold border-2 border-gray-200 hover:border-orange-500 hover:text-orange-500 transition-all"
+                                    className="px-6 py-2 bg-white text-gray-700 rounded-full font-semibold border-2 border-gray-200 hover:border-orange-500 hover:text-orange-500 transition-all cursor-pointer"
                                 >
                                     {category}
                                 </motion.button>

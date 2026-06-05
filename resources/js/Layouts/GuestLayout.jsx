@@ -31,17 +31,6 @@ export default function GuestLayout({ children }) {
         router.post('/logout');
     };
 
-    // Determine dashboard route based on user role
-    const getDashboardRoute = () => {
-        if (!auth.user) return '/menu';
-        return auth.user.role === 'admin' ? '/admin/dashboard' : '/';
-    };
-
-    const getDashboardLabel = () => {
-        if (!auth.user) return 'Order Now';
-        return auth.user.role === 'admin' ? 'Admin Dashboard' : 'Home';
-    };
-
     return (
         <div className="min-h-screen bg-white">
             {/* Top Bar */}
@@ -148,20 +137,22 @@ export default function GuestLayout({ children }) {
                             {/* Auth Section */}
                             {!auth.user ? (
                                 <>
-                                    <Link href="/login">
+                                    <Link href="/login" className="no-underline">
                                         <Button
                                             variant="secondary"
                                             size="md"
-                                            className="text-gray-700 hover:text-orange-500"
+                                            className="text-gray-700 hover:text-orange-500 cursor-pointer"
+                                            type="button"
                                         >
                                             Sign In
                                         </Button>
                                     </Link>
-                                    <Link href="/menu">
+                                    <Link href="/menu" className="no-underline">
                                         <Button
                                             variant="primary"
                                             size="md"
-                                            className="bg-orange-500 text-white hover:bg-orange-600 flex items-center space-x-1"
+                                            className="bg-orange-500 text-white hover:bg-orange-600 flex items-center space-x-1 cursor-pointer"
+                                            type="button"
                                         >
                                             <span>🛒</span>
                                             <span>Order Now</span>
@@ -170,17 +161,6 @@ export default function GuestLayout({ children }) {
                                 </>
                             ) : (
                                 <div className="flex items-center space-x-4">
-                                    {/* Dashboard Button */}
-                                    <Link href={getDashboardRoute()}>
-                                        <Button
-                                            variant="primary"
-                                            size="md"
-                                            className="bg-orange-500 text-white hover:bg-orange-600"
-                                        >
-                                            {getDashboardLabel()}
-                                        </Button>
-                                    </Link>
-
                                     {/* Profile Menu */}
                                     <div className="relative">
                                         <motion.button
@@ -294,20 +274,22 @@ export default function GuestLayout({ children }) {
                             <div className="px-4 py-2 space-y-2 border-t border-gray-100 mt-2 pt-2">
                                 {!auth.user ? (
                                     <>
-                                        <Link href="/login" className="w-full block">
+                                        <Link href="/login" className="w-full block no-underline">
                                             <Button
                                                 variant="secondary"
                                                 size="md"
-                                                className="w-full text-gray-700"
+                                                className="w-full text-gray-700 cursor-pointer"
+                                                type="button"
                                             >
                                                 Sign In
                                             </Button>
                                         </Link>
-                                        <Link href="/menu" className="w-full block">
+                                        <Link href="/menu" className="w-full block no-underline">
                                             <Button
                                                 variant="primary"
                                                 size="md"
-                                                className="w-full bg-orange-500 text-white hover:bg-orange-600"
+                                                className="w-full bg-orange-500 text-white hover:bg-orange-600 cursor-pointer"
+                                                type="button"
                                             >
                                                 Order Now
                                             </Button>
@@ -315,20 +297,12 @@ export default function GuestLayout({ children }) {
                                     </>
                                 ) : (
                                     <>
-                                        <Link href={getDashboardRoute()} className="w-full block">
-                                            <Button
-                                                variant="primary"
-                                                size="md"
-                                                className="w-full bg-orange-500 text-white hover:bg-orange-600"
-                                            >
-                                                {getDashboardLabel()}
-                                            </Button>
-                                        </Link>
-                                        <Link href="/profile" className="w-full block">
+                                        <Link href="/profile" className="w-full block no-underline">
                                             <Button
                                                 variant="secondary"
                                                 size="md"
-                                                className="w-full text-gray-700 flex items-center justify-center space-x-2"
+                                                className="w-full text-gray-700 flex items-center justify-center space-x-2 cursor-pointer"
+                                                type="button"
                                             >
                                                 <User size={16} />
                                                 <span>Profile</span>

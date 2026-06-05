@@ -19,6 +19,13 @@ class ReservationStatusUpdated implements ShouldBroadcast
      */
     public function __construct(public readonly Reservation $reservation)
     {
+        //     NotificationMessage::create(
+        //     [
+        //         'user_id' => $this->order->user_id,
+        //         'title' => "Order Created",
+        //         'message' => "Your order {$this->order->order_number} ({$this->order->type}) has been updated to {$this->order->status}.Total Amount {$this->order->amount_paid}",
+        //     ]
+        // );
     }
 
     /**

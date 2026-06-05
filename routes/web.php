@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\Admin\MenuItemController;
 use App\Http\Controllers\Admin\UserController;
+use App\Models\MenuItem;
 
 // Public routes
 Route::get('/', [LandingController::class, 'index'])->name('home');
@@ -81,20 +82,26 @@ Route::middleware(['auth', 'verified', 'role:admin'])
         Route::get('/menu-items/{menuItem}/edit', [MenuItemController::class, 'edit'])->name('menu-items.edit');
         Route::patch('/menu-items/{menuItem}', [MenuItemController::class, 'update'])->name('menu-items.update');
         Route::delete('/menu-items/{menuItem}', [MenuItemController::class, 'destroy'])->name('menu-items.destroy');
-        Route::patch('/menu-items/{menuItem}/toggle-availability', function ($menuItem) {
-            $newStatus = $menuItem->is_available === 'yes' ? 'no' : 'yes';
-            $menuItem->update(['is_available' => $newStatus]);
+        Route::patch('/menu-items/{menuItem}/toggle-availability', function ($mi) {
+            $menuItem = MenuItem::where('id', $mi)->first();
+            $is_available = "";
+            if ($menuItem->is_available == "yes") {
+                $is_available = "no";
+            } else {
+                $is_available = "yes";
+            }
+            $menuItem->update(['is_available' => $is_available]);
             return back();
         });
 
         // Categories
         Route::get('/categories', [\App\Http\Controllers\Admin\CategoryController::class, 'index'])->name('categories.index');
         Route::get('/categories/create', function () {
-            return \Inertia\Inertia::render('Admin/Categories/Create');
+            return Inertia::render('Admin/Categories/Create');
         })->name('categories.create');
         Route::post('/categories', [\App\Http\Controllers\Admin\CategoryController::class, 'store'])->name('categories.store');
         Route::get('/categories/{category}/edit', function (\App\Models\Category $category) {
-            return \Inertia\Inertia::render('Admin/Categories/Edit', ['category' => $category]);
+            return Inertia::render('Admin/Categories/Edit', ['category' => $category]);
         })->name('categories.edit');
         Route::patch('/categories/{category}', [\App\Http\Controllers\Admin\CategoryController::class, 'update'])->name('categories.update');
         Route::delete('/categories/{category}', [\App\Http\Controllers\Admin\CategoryController::class, 'destroy'])->name('categories.destroy');

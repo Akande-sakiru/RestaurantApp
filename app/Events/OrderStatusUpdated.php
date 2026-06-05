@@ -2,6 +2,7 @@
 
 namespace App\Events;
 
+use App\Models\NotificationMessage;
 use App\Models\Order;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
@@ -20,6 +21,14 @@ class OrderStatusUpdated implements ShouldBroadcast
      */
     public function __construct(public readonly Order $order)
     {
+
+        NotificationMessage::create(
+            [
+                'user_id' => $this->order->user_id,
+                'title' => "Order Created",
+                'message' => "Your order {$this->order->order_number} ({$this->order->type}) has been updated to {$this->order->status}.Total Amount {$this->order->amount_paid}",
+            ]
+        );
     }
 
     /**

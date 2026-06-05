@@ -51,6 +51,18 @@ class PaymentController extends Controller
             return back()->withErrors(['cart' => 'Your cart is empty']);
         }
 
+        // Get order data from session
+        $orderData = $request->session()->get('pending_order_data');
+        if (!$orderData) {
+            // Default to dine-in if no order data
+            $orderData = [
+                'type' => 'dine-in',
+                'delivery_address' => null,
+                'table_number' => null,
+                'notes' => null,
+            ];
+        }
+
         // Transform cart items to match frontend expectations
         $transformedItems = array_values(array_map(function ($item) {
             return [
@@ -68,6 +80,7 @@ class PaymentController extends Controller
             'cartItems' => $transformedItems,
             'subtotal' => $subtotal,
             'publicKey' => $publicKey,
+            'orderData' => $orderData,
         ]);
     }
 
@@ -80,28 +93,29 @@ class PaymentController extends Controller
         try {
             $user = $request->user();
 
-            // Get pending order data from session
-            $orderData = $request->session()->get('pending_order_data');
-
-            if (!$orderData) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Order data not found. Please go back and try again.',
-                ], 400);
-            }
+            // Validate the order data from frontend
+            $validated = $request->validate([
+                'type' => 'required|in:dine-in,takeaway,delivery',
+                'delivery_address' => 'nullable|string',
+                'table_number' => 'nullable|string',
+                'notes' => 'nullable|string|max:1000',
+                'payment_method' => 'required|string',
+            ]);
 
             // Create pending order (not confirmed yet)
-            $order = $this->orderService->createPendingOrder($user, $orderData);
+            $order = $this->orderService->createPendingOrder($user, [
+                'type' => $validated['type'],
+                'delivery_address' => $validated['delivery_address'],
+                'table_number' => $validated['table_number'],
+                'notes' => $validated['notes'],
+            ]);
 
             // Initialize payment with Paystack
             $paymentData = $this->paymentService->initializePayment(
                 $user,
                 $order,
-                $request->input('payment_method', 'all')
+                $validated['payment_method'] ?? 'all'
             );
-
-            // Clear session data
-            $request->session()->forget('pending_order_data');
 
             return response()->json([
                 'status' => true,

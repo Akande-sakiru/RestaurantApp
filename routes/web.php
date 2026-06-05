@@ -26,7 +26,7 @@ Route::post('/payment/webhook', [\App\Http\Controllers\PaymentController::class,
 // Auth routes (Breeze)
 require __DIR__ . '/auth.php';
 
-// Customer routes
+// Customer routes - Apply StoreIntendedUrl middleware for unauthenticated access
 Route::middleware(['auth', 'verified', 'role:customer|admin'])->group(function () {
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
     Route::post('/cart', [CartController::class, 'store'])->name('cart.store');
@@ -50,6 +50,9 @@ Route::middleware(['auth', 'verified', 'role:customer|admin'])->group(function (
     Route::get('/api/orders', [\App\Http\Controllers\Api\OrderApiController::class, 'index'])->name('api.orders.index');
     Route::get('/api/orders/{order}', [\App\Http\Controllers\Api\OrderApiController::class, 'show'])->name('api.orders.show');
 
+    // Cart sync API (for syncing pending cart after login)
+    Route::post('/api/cart/sync', [\App\Http\Controllers\Api\CartApiController::class, 'syncPending'])->name('api.cart.sync');
+
     Route::get('/reservations', [ReservationController::class, 'index'])->name('reservations.index');
     Route::get('/reservations/create', [ReservationController::class, 'create'])->name('reservations.create');
     Route::post('/reservations', [ReservationController::class, 'store'])->name('reservations.store');
@@ -69,13 +72,15 @@ Route::middleware(['auth', 'verified', 'role:admin'])
         Route::get('/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
 
         // Menu Items
-        Route::post('/menu-items/{menuItem}', [MenuItemController::class, 'update'])->name('menu-items.update');
         Route::get('/menu-items', [MenuItemController::class, 'index'])->name('menu-items.index');
         Route::get('/menu-items/create', [MenuItemController::class, 'create'])->name('menu-items.create');
         Route::post('/menu-items', [MenuItemController::class, 'store'])->name('menu-items.store');
         Route::get('/menu-items/{menuItem}/edit', [MenuItemController::class, 'edit'])->name('menu-items.edit');
+        Route::patch('/menu-items/{menuItem}', [MenuItemController::class, 'update'])->name('menu-items.update');
         Route::delete('/menu-items/{menuItem}', [MenuItemController::class, 'destroy'])->name('menu-items.destroy');
-        Route::patch('/menu-items/{id}/toggle-availability', function ($id) {
+        Route::patch('/menu-items/{menuItem}/toggle-availability', function ($menuItem) {
+            $newStatus = $menuItem->is_available === 'yes' ? 'no' : 'yes';
+            $menuItem->update(['is_available' => $newStatus]);
             return back();
         });
 

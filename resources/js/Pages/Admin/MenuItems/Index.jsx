@@ -108,9 +108,8 @@ export default function MenuItemsIndex({ menuItems = mockMenuItems }) {
     };
 
     const handleToggleAvailability = (id, currentStatus) => {
-        router.patch(`/admin/menu-items/${id}/toggle-availability`, {
-            is_available: !currentStatus,
-        });
+        // currentStatus is 'yes' or 'no', no need to send data
+        router.patch(`/admin/menu-items/${id}/toggle-availability`);
     };
 
     return (

@@ -2,18 +2,31 @@ import { useForm, Link } from "@inertiajs/react";
 import { motion } from "framer-motion";
 import AdminLayout from "../../../Layouts/AdminLayout";
 import { ArrowLeft, Upload } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { router } from "@inertiajs/react";
 
 export default function EditMenuItem({ menuItem, categories = [] }) {
-    const { data, setData, post, processing, errors } = useForm({
+    const [hasUserInteracted, setHasUserInteracted] = useState(false);
+    
+    const availabilityValue = menuItem.is_available === true ? "yes" : "no";
+    
+    // Create form with correct initial values
+    const { data, setData, processing, errors } = useForm({
         name: menuItem.name || "",
         description: menuItem.description || "",
         category_id: menuItem.category_id || "",
-        price: menuItem.price || "",
+        price: String(menuItem.price) || "",
         image: null,
-        is_available: menuItem.is_available === true || menuItem.is_available === 'yes' ? 'yes' : 'no',
+        is_available: availabilityValue,
         sort_order: menuItem.sort_order || 0,
     });
+
+    // Only reset form if user hasn't interacted with it yet
+    useEffect(() => {
+        if (!hasUserInteracted && data.is_available !== availabilityValue) {
+            setData('is_available', availabilityValue);
+        }
+    }, [menuItem.id]); // Only run when menuItem ID changes (new item is being edited)
 
     const [previewImage, setPreviewImage] = useState(
         menuItem.image_url || null
@@ -33,15 +46,28 @@ export default function EditMenuItem({ menuItem, categories = [] }) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        post(`/admin/menu-items/${menuItem.id}`, {
-            forceFormData: true,
-            _method: 'PATCH',
+        
+        // Create FormData manually for better control
+        const formData = new FormData();
+        formData.append('name', data.name);
+        formData.append('description', data.description);
+        formData.append('category_id', data.category_id);
+        formData.append('price', data.price);
+        formData.append('is_available', data.is_available);
+        formData.append('sort_order', data.sort_order);
+        if (data.image) {
+            formData.append('image', data.image);
+        }
+        
+        // Use router.patch with manual FormData
+        router.patch(`/admin/menu-items/${menuItem.id}`, formData, {
             onSuccess: () => {
-                // Success handled by Inertia redirect
+                // Redirect back to menu items list
+                router.visit('/admin/menu-items');
             },
             onError: (errors) => {
-                console.log('Form errors:', errors);
-            },
+                console.error('Update error:', errors);
+            }
         });
     };
 
@@ -281,14 +307,16 @@ export default function EditMenuItem({ menuItem, categories = [] }) {
                                 <div className="space-y-2">
                                     <label className="flex items-center gap-3 cursor-pointer">
                                         <input
+                                            key={`availability-${data.is_available}`}
                                             type="checkbox"
                                             checked={data.is_available === "yes"}
-                                            onChange={(e) =>
+                                            onChange={(e) => {
+                                                setHasUserInteracted(true);
                                                 setData(
                                                     "is_available",
                                                     e.target.checked ? "yes" : "no"
-                                                )
-                                            }
+                                                );
+                                            }}
                                             className="w-5 h-5 text-orange-500 rounded cursor-pointer"
                                         />
                                         <span className="text-sm font-semibold text-gray-700">

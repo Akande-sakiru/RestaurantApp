@@ -37,6 +37,7 @@ class CartController extends Controller
         return Inertia::render('Cart/Index', [
             'cartItems' => $transformedItems,
             'subtotal' => $subtotal,
+            'hasPendingCart' => false, // This will be set by frontend if needed
         ]);
     }
 
@@ -46,7 +47,6 @@ class CartController extends Controller
     public function store(Request $request)
     {
         $user = $request->user();
-
 
         $validated = $request->validate([
             'menu_item_id' => 'required|exists:menu_items,id',
@@ -59,20 +59,10 @@ class CartController extends Controller
         if (!$item->is_available) {
             return back()->withErrors(['menu_item_id' => 'This item is not currently available.']);
         }
-        //
+
         $this->cartService->add($user, $item, $validated['quantity'], $validated['notes'] ?? null);
 
-        // // $this->index(Request $request);
-
-        // $cartItems = $this->cartService->get($user);
-        // $subtotal = $this->cartService->subtotal($user);
-
-        // return Inertia::render('Cart/Index', [
-        //     'cartItems' => $cartItems,
-        //     'subtotal' => $subtotal,
-        // ]);
-
-        // Return with redirect to the same page (for Inertia)
+        // Return with redirect to the cart page
         return redirect()->route('cart.index')->with('success', 'Item added to cart');
     }
 

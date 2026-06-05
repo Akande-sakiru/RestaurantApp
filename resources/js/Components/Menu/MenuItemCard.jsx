@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ShoppingCart, AlertCircle, Plus, Minus, Check } from "lucide-react";
-import { router } from "@inertiajs/react";
+import { router, usePage } from "@inertiajs/react";
 import Button from "../UI/Button";
 import Badge from "../UI/Badge";
+import { addToPendingCart } from "../../Utils/cartStorage";
 
 export default function MenuItemCard({ item, onAddToCart, isLoading = false }) {
+    const { auth } = usePage().props;
     const [quantity, setQuantity] = useState(1);
     const [isExpanded, setIsExpanded] = useState(false);
 
@@ -25,10 +27,20 @@ export default function MenuItemCard({ item, onAddToCart, isLoading = false }) {
     };
 
     const handleAddToCart = () => {
-        onAddToCart(item.id, quantity);
-        setQuantity(1);
-        setIsExpanded(false);
-        router.post("/cart", { menu_item_id: item.id, quantity });
+        if (!auth?.user) {
+            // User is not logged in - store in pending cart and redirect to cart
+            addToPendingCart(item.id, quantity);
+            setQuantity(1);
+            setIsExpanded(false);
+            // Redirect to cart page which requires auth, will then go to login
+            window.location.href = '/cart';
+        } else {
+            // User is logged in - add to actual cart
+            onAddToCart(item.id, quantity);
+            setQuantity(1);
+            setIsExpanded(false);
+            router.post("/cart", { menu_item_id: item.id, quantity });
+        }
     };
 
     const containerVariants = {

@@ -44,7 +44,7 @@ class MenuItemController extends Controller
                 'description' => $item->description,
                 'price' => (float) $item->price,
                 'image_url' => $item->image_path ? '/storage/' . $item->image_path : $imageUrl,
-                'is_available' => (bool) $item->is_available,
+                'is_available' => $item->is_available === 'yes',
                 'sort_order' => $item->sort_order,
                 'created_at' => $item->created_at,
                 'category' => [
@@ -79,7 +79,7 @@ class MenuItemController extends Controller
                 'description' => $menuItem->description,
                 'price' => (float) $menuItem->price,
                 'image_url' => $menuItem->image_path ? '/storage/' . $menuItem->image_path : $imageUrl,
-                'is_available' => (bool) $menuItem->is_available,
+                'is_available' => $menuItem->is_available === 'yes',
                 'sort_order' => $menuItem->sort_order,
                 'category' => [
                     'id' => $menuItem->category->id,
@@ -109,7 +109,7 @@ class MenuItemController extends Controller
             'description' => $validated['description'],
             'price' => $validated['price'],
             'image_path' => $imagePath,
-            'is_available' => $validated['is_available'] == true ? 'yes' : 'no',
+            'is_available' => $validated['is_available'],
             'sort_order' => $validated['sort_order'] ?? 0,
         ]);
 
@@ -143,7 +143,7 @@ class MenuItemController extends Controller
             'description' => $validated['description'],
             'price' => $validated['price'],
             'image_path' => $imagePath,
-            'is_available' => $validated['is_available'] == true ? 'yes' : 'no',
+            'is_available' => $validated['is_available'],
             'sort_order' => $validated['sort_order'] ?? $request->sort_order,
         ]);
 

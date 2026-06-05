@@ -7,32 +7,22 @@ import Button from '../Components/UI/Button';
 import MenuItemCard from '../Components/Menu/MenuItemCard';
 import { mockMenuItems, mockCategories, mockRestaurantInfo } from '../mockData';
 
-// Mock carousel data
-const carouselItems = [
-    { id: 1, name: 'Fresh Wraps & Rolls' },
-    { id: 2, name: 'Loaded Fries' },
-    { id: 3, name: 'Ice Cream Shakes' },
-    { id: 4, name: 'Grilled Sandwiches' },
-    { id: 5, name: 'Crispy Fried Chicken' },
-    { id: 6, name: 'Gourmet Burgers' },
-    { id: 7, name: 'Artisan Pizzas' },
-    { id: 8, name: 'Fresh Wraps & Rolls' },
-    { id: 9, name: 'Loaded Fries' },
-];
-
 export default function Welcome({ 
     featuredItems = mockMenuItems, 
     restaurantInfo = mockRestaurantInfo,
     categories = mockCategories 
 }) {
     const [carouselPosition, setCarouselPosition] = useState(0);
+    
+    // Use featured items for carousel, with fallback if empty
+    const carouselItems = featuredItems && featuredItems.length > 0 ? featuredItems : mockMenuItems;
 
     useEffect(() => {
         const interval = setInterval(() => {
             setCarouselPosition((prev) => (prev + 1) % carouselItems.length);
         }, 3000);
         return () => clearInterval(interval);
-    }, []);
+    }, [carouselItems.length]);
 
     const handleAddToCart = (itemId) => {
         router.post('/cart', { menu_item_id: itemId, quantity: 1 });

@@ -254,24 +254,28 @@ export default function OrderConfirmation({ order = {} }) {
 
                             {/* Price Breakdown */}
                             <div className="space-y-2">
-                                <div className="flex justify-between text-gray-600">
-                                    <span>Subtotal</span>
-                                    <span>
-                                        ₦{orderData.subtotal ? parseFloat(orderData.subtotal).toFixed(2) : '0.00'}
-                                    </span>
-                                </div>
-                                <div className="flex justify-between text-gray-600">
-                                    <span>Tax (10%)</span>
-                                    <span>
-                                        ₦{orderData.subtotal ? (parseFloat(orderData.subtotal) * 0.1).toFixed(2) : '0.00'}
-                                    </span>
-                                </div>
-                                <div className="flex justify-between text-lg font-bold text-gray-900 pt-2 border-t border-gray-200">
-                                    <span>Total Amount</span>
-                                    <span className="text-orange-500">
-                                        ₦{orderData.total ? parseFloat(orderData.total).toFixed(2) : '0.00'}
-                                    </span>
-                                </div>
+                                {(() => {
+                                    const subtotal = orderData.subtotal ? parseFloat(orderData.subtotal) : 0;
+                                    const tax = subtotal * 0.1;
+                                    const total = orderData.total ? parseFloat(orderData.total) : subtotal + tax;
+                                    
+                                    return (
+                                        <>
+                                            <div className="flex justify-between text-gray-600">
+                                                <span>Subtotal</span>
+                                                <span>₦{subtotal.toFixed(2)}</span>
+                                            </div>
+                                            <div className="flex justify-between text-gray-600">
+                                                <span>Tax (10%)</span>
+                                                <span>₦{tax.toFixed(2)}</span>
+                                            </div>
+                                            <div className="flex justify-between text-lg font-bold text-gray-900 pt-2 border-t border-gray-200">
+                                                <span>Total Amount</span>
+                                                <span className="text-orange-500">₦{total.toFixed(2)}</span>
+                                            </div>
+                                        </>
+                                    );
+                                })()}
                             </div>
                         </div>
 

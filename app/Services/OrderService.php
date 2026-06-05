@@ -57,7 +57,8 @@ class OrderService
                 $subtotal += (float) $cartItem['price'] * (int) $cartItem['quantity'];
             }
             $subtotal = round($subtotal, 2);
-            $total = $subtotal;
+            $tax = round($subtotal * 0.1, 2);
+            $total = round($subtotal + $tax, 2);
 
             // 4. Create Order record with payment_status = pending
             $order = Order::create([
@@ -143,7 +144,8 @@ class OrderService
             }
 
             $subtotal = round($subtotal, 2);
-            $total = $subtotal; // No tax/delivery fee for now
+            $tax = round($subtotal * 0.1, 2);
+            $total = round($subtotal + $tax, 2);
 
             // 4. Create the Order record
             $order = Order::create([

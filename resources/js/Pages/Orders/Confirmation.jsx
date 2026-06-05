@@ -1,11 +1,46 @@
 import { motion } from 'framer-motion';
-import { CheckCircle, Clock, MapPin, Phone, ArrowRight } from 'lucide-react';
-import { Link, router } from '@inertiajs/react';
+import { CheckCircle, Clock, MapPin, Phone, ArrowRight, RefreshCw } from 'lucide-react';
+import { Link, router, usePage } from '@inertiajs/react';
+import { useEffect, useState } from 'react';
 import CustomerLayout from '../../Layouts/CustomerLayout';
 import Button from '../../Components/UI/Button';
 
 export default function OrderConfirmation({ order = {} }) {
     const orderData = order.order || order;
+    const [liveStatus, setLiveStatus] = useState(orderData.status || 'pending');
+    const [isRefreshing, setIsRefreshing] = useState(false);
+
+    // Poll for status updates every 5 seconds
+    useEffect(() => {
+        const interval = setInterval(async () => {
+            try {
+                const response = await fetch(`/api/orders/${orderData.id}`);
+                const data = await response.json();
+                if (data.status) {
+                    setLiveStatus(data.order_status);
+                }
+            } catch (error) {
+                console.error('Error fetching order status:', error);
+            }
+        }, 5000);
+
+        return () => clearInterval(interval);
+    }, [orderData.id]);
+
+    const handleRefresh = async () => {
+        setIsRefreshing(true);
+        try {
+            const response = await fetch(`/api/orders/${orderData.id}`);
+            const data = await response.json();
+            if (data.status) {
+                setLiveStatus(data.order_status);
+            }
+        } catch (error) {
+            console.error('Error refreshing status:', error);
+        } finally {
+            setIsRefreshing(false);
+        }
+    };
 
     const containerVariants = {
         hidden: { opacity: 0, scale: 0.95 },
@@ -99,10 +134,24 @@ export default function OrderConfirmation({ order = {} }) {
                                     #{orderData.order_number || 'N/A'}
                                 </p>
                             </div>
-                            <div className={`px-4 py-2 rounded-full ${statusColors[orderData.status] || 'bg-gray-100'}`}>
-                                <p className="text-sm font-semibold capitalize">
-                                    {orderData.status || 'Processing'}
-                                </p>
+                            <div className="flex items-center space-x-3">
+                                <div className={`px-4 py-2 rounded-full ${statusColors[liveStatus] || 'bg-gray-100'}`}>
+                                    <p className="text-sm font-semibold capitalize">
+                                        {liveStatus || 'Processing'}
+                                    </p>
+                                </div>
+                                <motion.button
+                                    whileHover={{ rotate: 180 }}
+                                    onClick={handleRefresh}
+                                    disabled={isRefreshing}
+                                    className="p-2 rounded-full hover:bg-white hover:bg-opacity-20 transition-all disabled:opacity-50"
+                                >
+                                    <RefreshCw 
+                                        size={18} 
+                                        className="text-white" 
+                                        style={{ animation: isRefreshing ? 'spin 1s linear infinite' : 'none' }}
+                                    />
+                                </motion.button>
                             </div>
                         </div>
                     </div>
@@ -209,6 +258,12 @@ export default function OrderConfirmation({ order = {} }) {
                                     <span>Subtotal</span>
                                     <span>
                                         ₦{orderData.subtotal ? parseFloat(orderData.subtotal).toFixed(2) : '0.00'}
+                                    </span>
+                                </div>
+                                <div className="flex justify-between text-gray-600">
+                                    <span>Tax (10%)</span>
+                                    <span>
+                                        ₦{orderData.subtotal ? (parseFloat(orderData.subtotal) * 0.1).toFixed(2) : '0.00'}
                                     </span>
                                 </div>
                                 <div className="flex justify-between text-lg font-bold text-gray-900 pt-2 border-t border-gray-200">

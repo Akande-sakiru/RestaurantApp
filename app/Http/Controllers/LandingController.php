@@ -27,7 +27,7 @@ class LandingController extends Controller
                 'name' => $item->name,
                 'description' => $item->description,
                 'price' => (float) $item->price,
-                'image_url' => $item->image_url ?? $imageUrl,
+                'image_url' => $item->image_path ? '/storage/' . $item->image_path : $imageUrl,
                 'is_available' => (bool) $item->is_available,
                 'category' => [
                     'id' => $item->category->id,
@@ -43,6 +43,7 @@ class LandingController extends Controller
                 'id' => $category->id,
                 'name' => $category->name,
                 'slug' => $category->slug,
+                'image_path' => $category->image_path ? '/storage/' . $category->image_path : null,
                 'menu_items_count' => $category->menu_items_count,
             ]);
 

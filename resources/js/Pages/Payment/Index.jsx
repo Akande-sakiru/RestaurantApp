@@ -1,13 +1,15 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { AlertCircle, CheckCircle, Loader, ArrowLeft, CreditCard } from 'lucide-react';
-import { router, useForm } from '@inertiajs/react';
+import { router, useForm, usePage } from '@inertiajs/react';
 import CustomerLayout from '../../Layouts/CustomerLayout';
 import Button from '../../Components/UI/Button';
 import Select from '../../Components/UI/Select';
 import { Card, CardBody, CardHeader } from '../../Components/UI/Card';
 
 export default function PaymentIndex({ cartItems = [], subtotal = 0, publicKey = '' }) {
+    const { auth } = usePage().props;
+    const userEmail = auth?.user?.email || '';
     const items = Array.isArray(cartItems) ? cartItems : [];
     const [paymentMethod, setPaymentMethod] = useState('card');
     const [isInitializing, setIsInitializing] = useState(false);
@@ -86,7 +88,10 @@ export default function PaymentIndex({ cartItems = [], subtotal = 0, publicKey =
                     'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]')?.content || '',
                 },
                 body: JSON.stringify({
-                    ...data,
+                    type: data.type,
+                    delivery_address: data.delivery_address,
+                    table_number: data.table_number,
+                    notes: data.notes,
                     payment_method: paymentMethod,
                 }),
             });
@@ -104,7 +109,7 @@ export default function PaymentIndex({ cartItems = [], subtotal = 0, publicKey =
             // Open Paystack payment modal
             const handler = window.PaystackPop.setup({
                 key: publicKey,
-                email: document.querySelector('meta[name="user-email"]')?.content || '',
+                email: userEmail,
                 amount: Math.round(finalTotal * 100), // Convert to kobo
                 ref: paymentData.reference,
                 onClose: () => {

@@ -1,13 +1,14 @@
 import { Link, usePage, router } from "@inertiajs/react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Search, LogOut, User } from "lucide-react";
+import { Menu, X, Search, LogOut, User, ShoppingCart } from "lucide-react";
 import { useState } from "react";
 import Button from "../Components/UI/Button";
+import Badge from "../Components/UI/Badge";
 
 export default function GuestLayout({ children }) {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [profileMenuOpen, setProfileMenuOpen] = useState(false);
-    const { auth } = usePage().props;
+    const { auth, cart } = usePage().props;
 
     const getNavItems = () => {
         const baseItems = [
@@ -28,17 +29,6 @@ export default function GuestLayout({ children }) {
 
     const handleLogout = () => {
         router.post('/logout');
-    };
-
-    // Determine dashboard route based on user role
-    const getDashboardRoute = () => {
-        if (!auth.user) return '/menu';
-        return auth.user.role === 'admin' ? '/admin/dashboard' : '/';
-    };
-
-    const getDashboardLabel = () => {
-        if (!auth.user) return 'Order Now';
-        return auth.user.role === 'admin' ? 'Admin Dashboard' : 'Home';
     };
 
     return (
@@ -125,23 +115,44 @@ export default function GuestLayout({ children }) {
                                 <Search size={20} />
                             </button>
 
+                            {/* Cart Icon */}
+                            {auth.user && (
+                                <Link
+                                    href="/cart"
+                                    className="relative p-2 text-gray-700 hover:text-orange-500 transition-colors"
+                                >
+                                    <ShoppingCart size={20} />
+                                    {cart && cart.count > 0 && (
+                                        <Badge
+                                            variant="danger"
+                                            size="sm"
+                                            className="absolute -top-2 -right-2"
+                                        >
+                                            {cart.count}
+                                        </Badge>
+                                    )}
+                                </Link>
+                            )}
+
                             {/* Auth Section */}
                             {!auth.user ? (
                                 <>
-                                    <Link href="/login">
+                                    <Link href="/login" className="no-underline">
                                         <Button
                                             variant="secondary"
                                             size="md"
-                                            className="text-gray-700 hover:text-orange-500"
+                                            className="text-gray-700 hover:text-orange-500 cursor-pointer"
+                                            type="button"
                                         >
                                             Sign In
                                         </Button>
                                     </Link>
-                                    <Link href="/menu">
+                                    <Link href="/menu" className="no-underline">
                                         <Button
                                             variant="primary"
                                             size="md"
-                                            className="bg-orange-500 text-white hover:bg-orange-600 flex items-center space-x-1"
+                                            className="bg-orange-500 text-white hover:bg-orange-600 flex items-center space-x-1 cursor-pointer"
+                                            type="button"
                                         >
                                             <span>🛒</span>
                                             <span>Order Now</span>
@@ -150,17 +161,6 @@ export default function GuestLayout({ children }) {
                                 </>
                             ) : (
                                 <div className="flex items-center space-x-4">
-                                    {/* Dashboard Button */}
-                                    <Link href={getDashboardRoute()}>
-                                        <Button
-                                            variant="primary"
-                                            size="md"
-                                            className="bg-orange-500 text-white hover:bg-orange-600"
-                                        >
-                                            {getDashboardLabel()}
-                                        </Button>
-                                    </Link>
-
                                     {/* Profile Menu */}
                                     <div className="relative">
                                         <motion.button
@@ -253,23 +253,43 @@ export default function GuestLayout({ children }) {
                                     {item.label}
                                 </Link>
                             ))}
+                            
+                            {/* Mobile Cart Icon */}
+                            {auth.user && (
+                                <Link
+                                    href="/cart"
+                                    className="flex items-center space-x-2 px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                                    onClick={() => setMobileMenuOpen(false)}
+                                >
+                                    <ShoppingCart size={20} />
+                                    <span>Cart</span>
+                                    {cart && cart.count > 0 && (
+                                        <Badge variant="danger" size="sm">
+                                            {cart.count}
+                                        </Badge>
+                                    )}
+                                </Link>
+                            )}
+
                             <div className="px-4 py-2 space-y-2 border-t border-gray-100 mt-2 pt-2">
                                 {!auth.user ? (
                                     <>
-                                        <Link href="/login" className="w-full block">
+                                        <Link href="/login" className="w-full block no-underline">
                                             <Button
                                                 variant="secondary"
                                                 size="md"
-                                                className="w-full text-gray-700"
+                                                className="w-full text-gray-700 cursor-pointer"
+                                                type="button"
                                             >
                                                 Sign In
                                             </Button>
                                         </Link>
-                                        <Link href="/menu" className="w-full block">
+                                        <Link href="/menu" className="w-full block no-underline">
                                             <Button
                                                 variant="primary"
                                                 size="md"
-                                                className="w-full bg-orange-500 text-white hover:bg-orange-600"
+                                                className="w-full bg-orange-500 text-white hover:bg-orange-600 cursor-pointer"
+                                                type="button"
                                             >
                                                 Order Now
                                             </Button>
@@ -277,20 +297,12 @@ export default function GuestLayout({ children }) {
                                     </>
                                 ) : (
                                     <>
-                                        <Link href={getDashboardRoute()} className="w-full block">
-                                            <Button
-                                                variant="primary"
-                                                size="md"
-                                                className="w-full bg-orange-500 text-white hover:bg-orange-600"
-                                            >
-                                                {getDashboardLabel()}
-                                            </Button>
-                                        </Link>
-                                        <Link href="/profile" className="w-full block">
+                                        <Link href="/profile" className="w-full block no-underline">
                                             <Button
                                                 variant="secondary"
                                                 size="md"
-                                                className="w-full text-gray-700 flex items-center justify-center space-x-2"
+                                                className="w-full text-gray-700 flex items-center justify-center space-x-2 cursor-pointer"
+                                                type="button"
                                             >
                                                 <User size={16} />
                                                 <span>Profile</span>

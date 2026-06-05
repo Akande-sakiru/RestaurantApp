@@ -7,32 +7,22 @@ import Button from '../Components/UI/Button';
 import MenuItemCard from '../Components/Menu/MenuItemCard';
 import { mockMenuItems, mockCategories, mockRestaurantInfo } from '../mockData';
 
-// Mock carousel data
-const carouselItems = [
-    { id: 1, name: 'Fresh Wraps & Rolls' },
-    { id: 2, name: 'Loaded Fries' },
-    { id: 3, name: 'Ice Cream Shakes' },
-    { id: 4, name: 'Grilled Sandwiches' },
-    { id: 5, name: 'Crispy Fried Chicken' },
-    { id: 6, name: 'Gourmet Burgers' },
-    { id: 7, name: 'Artisan Pizzas' },
-    { id: 8, name: 'Fresh Wraps & Rolls' },
-    { id: 9, name: 'Loaded Fries' },
-];
-
 export default function Welcome({ 
     featuredItems = mockMenuItems, 
     restaurantInfo = mockRestaurantInfo,
     categories = mockCategories 
 }) {
     const [carouselPosition, setCarouselPosition] = useState(0);
+    
+    // Use featured items for carousel, with fallback if empty
+    const carouselItems = featuredItems && featuredItems.length > 0 ? featuredItems : mockMenuItems;
 
     useEffect(() => {
         const interval = setInterval(() => {
             setCarouselPosition((prev) => (prev + 1) % carouselItems.length);
         }, 3000);
         return () => clearInterval(interval);
-    }, []);
+    }, [carouselItems.length]);
 
     const handleAddToCart = (itemId) => {
         router.post('/cart', { menu_item_id: itemId, quantity: 1 });
@@ -438,7 +428,8 @@ export default function Welcome({
                         <motion.button
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
-                            className="px-6 py-2 bg-orange-500 text-white rounded-full font-semibold shadow-lg hover:shadow-xl transition-shadow"
+                            onClick={() => router.visit('/menu')}
+                            className="px-6 py-2 bg-orange-500 text-white rounded-full font-semibold shadow-lg hover:shadow-xl transition-shadow cursor-pointer"
                         >
                             All
                         </motion.button>
@@ -448,7 +439,8 @@ export default function Welcome({
                                     key={category.id}
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
-                                    className="px-6 py-2 bg-white text-gray-700 rounded-full font-semibold border-2 border-gray-200 hover:border-orange-500 hover:text-orange-500 transition-all"
+                                    onClick={() => router.visit(`/menu?category=${category.id}`)}
+                                    className="px-6 py-2 bg-white text-gray-700 rounded-full font-semibold border-2 border-gray-200 hover:border-orange-500 hover:text-orange-500 transition-all cursor-pointer"
                                 >
                                     {category.name}
                                 </motion.button>
@@ -459,7 +451,7 @@ export default function Welcome({
                                     key={category}
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
-                                    className="px-6 py-2 bg-white text-gray-700 rounded-full font-semibold border-2 border-gray-200 hover:border-orange-500 hover:text-orange-500 transition-all"
+                                    className="px-6 py-2 bg-white text-gray-700 rounded-full font-semibold border-2 border-gray-200 hover:border-orange-500 hover:text-orange-500 transition-all cursor-pointer"
                                 >
                                     {category}
                                 </motion.button>

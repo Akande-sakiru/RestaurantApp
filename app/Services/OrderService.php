@@ -20,6 +20,78 @@ class OrderService
     }
 
     /**
+     * Create a pending order (for payment initialization).
+     * Does NOT clear cart - only creates order record.
+     */
+    public function createPendingOrder(User $user, array $validated): Order
+    {
+        return DB::transaction(function () use ($user, $validated) {
+            // 1. Fetch cart items
+            $cartItems = $this->cartService->get($user);
+
+            if (empty($cartItems)) {
+                throw ValidationException::withMessages([
+                    'cart' => ['Your cart is empty.'],
+                ]);
+            }
+
+            // 2. Validate all menu items are still available
+            $menuItemIds = array_column($cartItems, 'id');
+            $menuItems = MenuItem::whereIn('id', $menuItemIds)->get()->keyBy('id');
+
+            foreach ($cartItems as $cartItem) {
+                $menuItem = $menuItems->get($cartItem['id']);
+
+                if ($menuItem === null || !$menuItem->is_available) {
+                    throw ValidationException::withMessages([
+                        'cart' => [
+                            "'{$cartItem['name']}' is no longer available and cannot be ordered.",
+                        ],
+                    ]);
+                }
+            }
+
+            // 3. Calculate subtotal/total
+            $subtotal = 0.0;
+            foreach ($cartItems as $cartItem) {
+                $subtotal += (float) $cartItem['price'] * (int) $cartItem['quantity'];
+            }
+            $subtotal = round($subtotal, 2);
+            $tax = round($subtotal * 0.1, 2);
+            $total = round($subtotal + $tax, 2);
+
+            // 4. Create Order record with payment_status = pending
+            $order = Order::create([
+                'user_id' => $user->id,
+                'order_number' => $this->generateOrderNumber(),
+                'type' => $validated['type'],
+                'status' => 'pending',
+                'payment_status' => 'pending', // Not paid yet
+                'delivery_address' => $validated['delivery_address'] ?? null,
+                'table_number' => $validated['table_number'] ?? null,
+                'subtotal' => $subtotal,
+                'total' => $total,
+                'notes' => $validated['notes'] ?? null,
+            ]);
+
+            // 5. Create OrderItem records
+            foreach ($cartItems as $cartItem) {
+                $menuItem = $menuItems->get($cartItem['id']);
+
+                $order->items()->create([
+                    'menu_item_id' => $menuItem->id,
+                    'menu_item_name' => $menuItem->name,
+                    'menu_item_price' => $menuItem->price,
+                    'quantity' => $cartItem['quantity'],
+                    'customization_notes' => $cartItem['notes'] ?? null,
+                ]);
+            }
+
+            return $order;
+        });
+    }
+
+    /**
      * Create an order from the authenticated user's cart.
      *
      * Wraps the entire process in a database transaction:
@@ -72,7 +144,8 @@ class OrderService
             }
 
             $subtotal = round($subtotal, 2);
-            $total = $subtotal; // No tax/delivery fee for now
+            $tax = round($subtotal * 0.1, 2);
+            $total = round($subtotal + $tax, 2);
 
             // 4. Create the Order record
             $order = Order::create([

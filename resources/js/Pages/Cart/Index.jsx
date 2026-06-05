@@ -58,7 +58,7 @@ export default function CartIndex({ cartItems = [], subtotal = 0 }) {
 
     const onSubmit = (data) => {
         setIsProcessing(true);
-        router.post("/orders", data, {
+        router.post("/payment", data, {
             onFinish: () => setIsProcessing(false),
         });
     };
@@ -336,7 +336,7 @@ export default function CartIndex({ cartItems = [], subtotal = 0 }) {
                                         isLoading={isProcessing}
                                         className="w-full"
                                     >
-                                        Place Order
+                                        Proceed to Payment
                                     </Button>
                                 </form>
                             </CardBody>

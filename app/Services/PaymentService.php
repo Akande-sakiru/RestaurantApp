@@ -109,11 +109,6 @@ class PaymentService
 
             // Check if payment was successful
             if ($transaction['status'] === 'success') {
-                // Order::where('id', $order_id)->update([
-                //     'payment_status' => 'paid',
-                //     'transaction_reference' => $transaction['reference'],
-                //     'paid_at' => now()
-                // ]);
                 return [
                     'status' => true,
                     'message' => 'Payment successful',

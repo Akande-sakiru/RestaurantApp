@@ -68,6 +68,7 @@ class OrderService
                 'status' => 'pending',
                 'payment_status' => 'pending', // Not paid yet
                 'delivery_address' => $validated['delivery_address'] ?? null,
+                'delivery_phone' => $validated['delivery_phone'] ?? null,
                 'table_number' => $validated['table_number'] ?? null,
                 'subtotal' => $subtotal,
                 'total' => $total,

@@ -20,6 +20,7 @@ export default function PaymentIndex({
     orderData = {
         type: "dine-in",
         delivery_address: null,
+        delivery_phone: null,
         table_number: null,
         notes: null,
     },
@@ -96,6 +97,7 @@ export default function PaymentIndex({
                 body: JSON.stringify({
                     type: orderData.type,
                     delivery_address: orderData.delivery_address,
+                    delivery_phone: orderData.delivery_phone,
                     table_number: orderData.table_number,
                     notes: orderData.notes,
                     payment_method: paymentMethod,

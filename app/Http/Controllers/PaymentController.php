@@ -28,6 +28,7 @@ class PaymentController extends Controller
         $validated = $request->validate([
             'type' => 'required|in:dine-in,takeaway,delivery',
             'delivery_address' => 'nullable|string',
+            'delivery_phone' => 'nullable|string|max:11|min:11',
             'table_number' => 'nullable|string',
             'notes' => 'nullable|string|max:1000',
         ]);
@@ -55,6 +56,7 @@ class PaymentController extends Controller
             $orderData = [
                 'type' => 'dine-in',
                 'delivery_address' => null,
+                'delivery_phone' => null,
                 'table_number' => null,
                 'notes' => null,
             ];
@@ -92,6 +94,7 @@ class PaymentController extends Controller
             $validated = $request->validate([
                 'type' => 'required|in:dine-in,takeaway,delivery',
                 'delivery_address' => 'nullable|string',
+                'delivery_phone' => 'nullable|string|max:11|min:11',
                 'table_number' => 'nullable|string',
                 'notes' => 'nullable|string|max:1000',
                 'payment_method' => 'required|string',
@@ -100,6 +103,7 @@ class PaymentController extends Controller
             $order = $this->orderService->createPendingOrder($user, [
                 'type' => $validated['type'],
                 'delivery_address' => $validated['delivery_address'] ?? "",
+                'delivery_phone' => $validated['delivery_phone'] ?? "",
                 'table_number' => $validated['table_number'] ?? "",
                 'notes' => $validated['notes'] ?? "",
             ]);

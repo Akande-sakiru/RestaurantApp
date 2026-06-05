@@ -16,6 +16,7 @@ import { getPendingCart, clearPendingCart } from "../../Utils/cartStorage";
 const checkoutSchema = z.object({
     type: z.enum(["dine-in", "takeaway", "delivery"]),
     delivery_address: z.string().optional(),
+    delivery_phone: z.string().optional(),
     table_number: z.string().optional(),
     notes: z.string().optional(),
 });
@@ -343,14 +344,24 @@ export default function CartIndex({ cartItems = [], subtotal = 0 }) {
                                     )}
 
                                     {selectedType === "delivery" && (
-                                        <Input
-                                            label="Delivery Address"
-                                            placeholder="Enter your address"
-                                            {...register("delivery_address")}
-                                            error={
-                                                errors.delivery_address?.message
-                                            }
-                                        />
+                                        <>
+                                            <Input
+                                                label="Delivery Address"
+                                                placeholder="Enter your address"
+                                                {...register("delivery_address")}
+                                                error={
+                                                    errors.delivery_address?.message
+                                                }
+                                            />
+                                            <Input
+                                                label="Delivery Phone Number"
+                                                placeholder="Enter your phone number (optional)"
+                                                {...register("delivery_phone")}
+                                                error={
+                                                    errors.delivery_phone?.message
+                                                }
+                                            />
+                                        </>
                                     )}
 
                                     {/* Notes */}

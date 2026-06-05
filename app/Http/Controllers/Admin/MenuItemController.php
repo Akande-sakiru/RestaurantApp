@@ -32,7 +32,7 @@ class MenuItemController extends Controller
     public function index()
     {
         $imageUrl = config('app.url') . '/images/amala.jpg';
-        
+
         $menuItems = MenuItem::with('category')
             ->orderBy('category_id')
             ->paginate(15)
@@ -67,7 +67,7 @@ class MenuItemController extends Controller
     public function edit(MenuItem $menuItem)
     {
         $imageUrl = config('app.url') . '/images/amala.jpg';
-        
+
         $categories = Category::all();
 
         return Inertia::render('Admin/MenuItems/Edit', [
@@ -109,7 +109,7 @@ class MenuItemController extends Controller
             'description' => $validated['description'],
             'price' => $validated['price'],
             'image_path' => $imagePath,
-            'is_available' => $validated['is_available'] ?? true,
+            'is_available' => $validated['is_available'] == true ? 'yes' : 'no',
             'sort_order' => $validated['sort_order'] ?? 0,
         ]);
 
@@ -125,7 +125,6 @@ class MenuItemController extends Controller
      */
     public function update(UpdateMenuItemRequest $request, MenuItem $menuItem)
     {
-        // dd($request->all());
         $validated = $request->validated();
 
         $imagePath = $menuItem->image_path;
@@ -144,7 +143,7 @@ class MenuItemController extends Controller
             'description' => $validated['description'],
             'price' => $validated['price'],
             'image_path' => $imagePath,
-            'is_available' => $validated['is_available'] ?? true,
+            'is_available' => $validated['is_available'] == true ? 'yes' : 'no',
             'sort_order' => $validated['sort_order'] ?? $request->sort_order,
         ]);
 

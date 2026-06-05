@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\ProcessMenuItemImage;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 
@@ -39,13 +41,20 @@ class CategoryController extends Controller
             'name' => 'required|string|unique:categories,name',
             'description' => 'nullable|string|max:500',
             'sort_order' => 'required|integer',
+            'image' => 'required|file',
         ]);
 
-        Category::create([
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('category-images', 'public');
+        }
+
+        $cat = Category::create([
             'name' => $validated['name'],
             'slug' => Str::slug($validated['name']),
             'description' => $validated['description'] ?? null,
             'sort_order' => $validated['sort_order'],
+            'image_path' => $imagePath
         ]);
 
         return redirect()->route('admin.categories.index')->with('success', 'Category created successfully');
@@ -60,14 +69,24 @@ class CategoryController extends Controller
             'name' => 'required|string|unique:categories,name,' . $category->id,
             'description' => 'nullable|string|max:500',
             'sort_order' => 'required|integer',
-
+            'image' => 'required|file'
         ]);
+
+        $imagePath = $category->image_path;
+        if ($request->hasFile('image')) {
+            // Delete old image if exists
+            if ($category->image_path) {
+                Storage::disk('public')->delete($category->image_path);
+            }
+            $imagePath = $request->file('image')->store('category-images', 'public');
+        }
 
         $category->update([
             'name' => $validated['name'],
             'slug' => Str::slug($validated['name']),
             'description' => $validated['description'] ?? null,
             'sort_order' => $validated['sort_order'],
+            'image_path' => $imagePath,
         ]);
 
         return redirect()->route('admin.categories.index')->with('success', 'Category updated successfully');

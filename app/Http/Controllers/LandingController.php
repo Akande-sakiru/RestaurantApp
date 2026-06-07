@@ -50,8 +50,8 @@ class LandingController extends Controller
         $restaurantInfo = [
             'name' => config('app.name', 'Restaurant'),
             'tagline' => 'Discover fine dining excellence',
-            'address' => '123 Main Street, City, State',
-            'phone' => '+1 (555) 123-4567',
+            'address' => '02 GRA conference road, Ijebu-Ode, Ogun State, Nigeria',
+            'phone' => '+2348057938850',
             'hours' => [
                 'monday' => '11:00 AM - 10:00 PM',
                 'tuesday' => '11:00 AM - 10:00 PM',

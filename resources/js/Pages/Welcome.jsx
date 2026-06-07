@@ -5,17 +5,17 @@ import { useState, useEffect } from 'react';
 import GuestLayout from '../Layouts/GuestLayout';
 import Button from '../Components/UI/Button';
 import MenuItemCard from '../Components/Menu/MenuItemCard';
-import { mockMenuItems, mockCategories, mockRestaurantInfo } from '../mockData';
+
 
 export default function Welcome({ 
-    featuredItems = mockMenuItems, 
-    restaurantInfo = mockRestaurantInfo,
-    categories = mockCategories 
+    featuredItems = [], 
+    restaurantInfo = {},
+    categories = [] 
 }) {
     const [carouselPosition, setCarouselPosition] = useState(0);
     
     // Use featured items for carousel, with fallback if empty
-    const carouselItems = featuredItems && featuredItems.length > 0 ? featuredItems : mockMenuItems;
+    const carouselItems = featuredItems && featuredItems.length > 0 ? featuredItems : [];
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -63,9 +63,9 @@ export default function Welcome({
     const defaultInfo = {
         name: 'Restaurant',
         tagline: 'Experience culinary excellence',
-        address: '123 Main Street, City, State 12345',
+        address: '02 GRA conference road, Ijebu-Ode, Ogun state',
         hours: 'Mon-Thu: 11am - 10pm | Fri-Sat: 11am - 11pm | Sun: 12pm - 9pm',
-        phone: '(555) 123-4567',
+        phone: '+234 805-793-8850',
         ...restaurantInfo,
     };
 
@@ -113,7 +113,7 @@ export default function Welcome({
                             >
                                 <Star size={16} fill="currentColor" />
                                 <span className="text-sm font-semibold">
-                                    #1 Rated Fast Food Restaurant in New York
+                                    #1 Rated Fast Food Restaurant in Ijebu-Ode
                                 </span>
                             </motion.div>
 
@@ -312,37 +312,37 @@ export default function Welcome({
                         initial="hidden"
                         whileInView="visible"
                         viewport={{ once: true }}
-                        className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6"
+                        className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4"
                     >
                         {/* All Items - Featured */}
                         <motion.div
                             variants={itemVariants}
-                            whileHover={{ scale: 1.05, y: -10 }}
+                            whileHover={{ scale: 1.05, y: -5 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={() => router.visit('/menu')}
                             className="cursor-pointer group"
                         >
-                            <div className="relative mb-4">
+                            <div className="relative mb-2">
                                 <motion.div
-                                    className="w-full aspect-square rounded-2xl bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center overflow-hidden border-4 border-orange-500 shadow-lg"
+                                    className="w-full aspect-square rounded-xl bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center overflow-hidden border-3 border-orange-500 shadow-md"
                                     whileHover={{ rotate: 5 }}
                                 >
-                                    <span className="text-6xl">🍽️</span>
+                                    <span className="text-4xl">🍽️</span>
                                 </motion.div>
                                 <motion.div
                                     initial={{ opacity: 0 }}
                                     whileHover={{ opacity: 1 }}
-                                    className="absolute inset-0 bg-black bg-opacity-20 rounded-2xl flex items-center justify-center"
+                                    className="absolute inset-0 bg-black bg-opacity-20 rounded-xl flex items-center justify-center"
                                 >
-                                    <span className="text-white font-bold">
+                                    <span className="text-white font-bold text-xs">
                                         View All
                                     </span>
                                 </motion.div>
                             </div>
-                            <h3 className="text-center font-bold text-gray-900 group-hover:text-orange-500 transition-colors">
+                            <h3 className="text-center font-bold text-gray-900 group-hover:text-orange-500 transition-colors text-sm">
                                 All Items
                             </h3>
-                            <p className="text-center text-sm text-gray-500">
+                            <p className="text-center text-xs text-gray-500">
                                 {featuredItems.length} items
                             </p>
                         </motion.div>
@@ -352,16 +352,16 @@ export default function Welcome({
                             <motion.div
                                 key={category.id}
                                 variants={itemVariants}
-                                whileHover={{ scale: 1.05, y: -10 }}
+                                whileHover={{ scale: 1.05, y: -5 }}
                                 whileTap={{ scale: 0.95 }}
                                 onClick={() =>
                                     router.visit(`/menu?category=${category.id}`)
                                 }
                                 className="cursor-pointer group"
                             >
-                                <div className="relative mb-4">
+                                <div className="relative mb-2">
                                     <motion.div
-                                        className="w-full aspect-square rounded-2xl bg-gradient-to-br from-orange-100 to-orange-50 flex items-center justify-center overflow-hidden shadow-md hover:shadow-lg transition-shadow"
+                                        className="w-full aspect-square rounded-xl bg-gradient-to-br from-orange-100 to-orange-50 flex items-center justify-center overflow-hidden shadow-md hover:shadow-lg transition-shadow border-2 border-gray-200"
                                         whileHover={{ rotate: -5 }}
                                     >
                                         {category.image_path ? (
@@ -371,23 +371,23 @@ export default function Welcome({
                                                 className="w-full h-full object-cover"
                                             />
                                         ) : (
-                                            <span className="text-5xl">🍽️</span>
+                                            <span className="text-3xl">🍽️</span>
                                         )}
                                     </motion.div>
                                     <motion.div
                                         initial={{ opacity: 0 }}
                                         whileHover={{ opacity: 1 }}
-                                        className="absolute inset-0 bg-black bg-opacity-20 rounded-2xl flex items-center justify-center"
+                                        className="absolute inset-0 bg-black bg-opacity-20 rounded-xl flex items-center justify-center"
                                     >
-                                        <span className="text-white font-bold text-sm">
+                                        <span className="text-white font-bold text-xs">
                                             View
                                         </span>
                                     </motion.div>
                                 </div>
-                                <h3 className="text-center font-bold text-gray-900 group-hover:text-orange-500 transition-colors">
+                                <h3 className="text-center font-bold text-gray-900 group-hover:text-orange-500 transition-colors text-sm">
                                     {category.name}
                                 </h3>
-                                <p className="text-center text-sm text-gray-500">
+                                <p className="text-center text-xs text-gray-500">
                                     {category.menu_items_count || 0} items
                                 </p>
                             </motion.div>
@@ -474,9 +474,9 @@ export default function Welcome({
                             initial="hidden"
                             whileInView="visible"
                             viewport={{ once: true }}
-                            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+                            className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4"
                         >
-                            {featuredItems.slice(0, 6).map((item, index) => (
+                            {featuredItems.slice(0, 8).map((item, index) => (
                                 <motion.div
                                     key={item.id}
                                     variants={itemVariants}
@@ -484,11 +484,11 @@ export default function Welcome({
                                 >
                                     {/* Card */}
                                     <motion.div
-                                        whileHover={{ y: -8 }}
-                                        className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300"
+                                        whileHover={{ y: -5 }}
+                                        className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 h-full flex flex-col"
                                     >
                                         {/* Image Container */}
-                                        <div className="relative h-56 bg-gray-200 overflow-hidden">
+                                        <div className="relative h-40 bg-gray-200 overflow-hidden">
                                             {item.image_url ? (
                                                 <img
                                                     src={item.image_url}
@@ -496,13 +496,13 @@ export default function Welcome({
                                                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                                                 />
                                             ) : (
-                                                <div className="w-full h-full bg-gradient-to-br from-orange-100 to-orange-50 flex items-center justify-center text-6xl">
+                                                <div className="w-full h-full bg-gradient-to-br from-orange-100 to-orange-50 flex items-center justify-center text-3xl">
                                                     🍽️
                                                 </div>
                                             )}
 
                                             {/* Badges */}
-                                            <div className="absolute top-4 left-4 flex gap-2">
+                                            <div className="absolute top-2 left-2 flex gap-1">
                                                 {index === 0 && (
                                                     <motion.div
                                                         animate={{ rotate: [0, 5, 0] }}
@@ -510,7 +510,7 @@ export default function Welcome({
                                                             duration: 2,
                                                             repeat: Infinity,
                                                         }}
-                                                        className="bg-orange-500 text-white px-3 py-1 rounded-full text-xs font-bold"
+                                                        className="bg-orange-500 text-white px-2 py-1 rounded-full text-xs font-bold"
                                                     >
                                                         🔥 Hot
                                                     </motion.div>
@@ -522,7 +522,7 @@ export default function Welcome({
                                                             duration: 2,
                                                             repeat: Infinity,
                                                         }}
-                                                        className="bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold"
+                                                        className="bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold"
                                                     >
                                                         ⭐ Best Seller
                                                     </motion.div>
@@ -533,38 +533,38 @@ export default function Welcome({
                                             <motion.button
                                                 whileHover={{ scale: 1.2 }}
                                                 whileTap={{ scale: 0.9 }}
-                                                className="absolute top-4 right-4 w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg hover:bg-orange-500 hover:text-white transition-all"
+                                                className="absolute top-2 right-2 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-md hover:bg-orange-500 hover:text-white transition-all text-sm"
                                             >
                                                 ♡
                                             </motion.button>
                                         </div>
 
                                         {/* Content */}
-                                        <div className="p-6">
+                                        <div className="p-2.5 flex-1 flex flex-col justify-between">
                                             {/* Category */}
-                                            <p className="text-orange-500 text-xs font-bold uppercase tracking-wider mb-2">
+                                            <p className="text-orange-500 text-xs font-bold uppercase tracking-wider mb-0.5">
                                                 {item.category?.name || 'Menu'}
                                             </p>
 
                                             {/* Title */}
-                                            <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-orange-500 transition-colors">
+                                            <h3 className="text-xs font-semibold text-gray-900 mb-0.5 group-hover:text-orange-500 transition-colors truncate">
                                                 {item.name}
                                             </h3>
 
                                             {/* Description */}
-                                            <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+                                            <p className="text-gray-600 text-xs mb-1.5 line-clamp-1">
                                                 {item.description}
                                             </p>
 
                                             {/* Footer */}
-                                            <div className="flex items-center justify-between">
+                                            <div className="flex items-center justify-between mt-auto">
                                                 <div>
-                                                    <p className="text-2xl font-bold text-orange-500">
+                                                    <p className="text-lg font-bold text-orange-500">
                                                         ₦{parseFloat(item.price).toFixed(2)}
                                                     </p>
-                                                    <div className="flex items-center space-x-1 mt-1">
-                                                        <span className="text-yellow-400">★</span>
-                                                        <span className="text-sm text-gray-600">
+                                                    <div className="flex items-center space-x-1 mt-0.5">
+                                                        <span className="text-yellow-400 text-xs">★</span>
+                                                        <span className="text-xs text-gray-600">
                                                             (50)
                                                         </span>
                                                     </div>
@@ -572,14 +572,14 @@ export default function Welcome({
 
                                                 {/* Add Button */}
                                                 <motion.button
-                                                    whileHover={{ scale: 1.1 }}
+                                                    whileHover={{ scale: 1.05 }}
                                                     whileTap={{ scale: 0.9 }}
                                                     onClick={() =>
                                                         handleAddToCart(item.id)
                                                     }
-                                                    className="w-12 h-12 bg-orange-500 text-white rounded-full flex items-center justify-center shadow-lg hover:bg-orange-600 transition-all"
+                                                    className="w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center shadow-md hover:bg-orange-600 transition-all text-sm"
                                                 >
-                                                    <span className="text-xl">+</span>
+                                                    <span>+</span>
                                                 </motion.button>
                                             </div>
                                         </div>
@@ -708,9 +708,9 @@ export default function Welcome({
                     >
                         <Link href="/menu">
                             <Button
-                                variant="primary"
+                                variant="outline"
                                 size="lg"
-                                className="bg-white text-orange-500 hover:bg-gray-100"
+                                className="border-white text-white hover:bg-white hover:text-orange-500"
                             >
                                 Order Now
                             </Button>
@@ -758,205 +758,75 @@ export default function Welcome({
                     </motion.div>
 
                     {/* Food Grid */}
-                    <motion.div
-                        className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-6"
-                    >
-                        {/* Large Featured Item - Top Left (Burger) */}
+                    {categories && categories.length > 0 ? (
                         <motion.div
-                            initial={{ opacity: 0, y: 40, scale: 0.9 }}
-                            whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                            transition={{ duration: 0.6, delay: 0 }}
-                            viewport={{ once: true }}
-                            whileHover={{ y: -10, boxShadow: "0 20px 40px rgba(0,0,0,0.2)" }}
-                            className="lg:row-span-2 cursor-pointer group"
+                            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-[300px]"
                         >
-                            <div className="relative h-full min-h-96 rounded-3xl overflow-hidden shadow-xl bg-gray-900">
-                                <div className="w-full h-full bg-gradient-to-br from-amber-700 to-amber-900 flex items-center justify-center text-9xl group-hover:scale-125 transition-transform duration-500">
-                                    🍔
-                                </div>
+                            {categories.slice(0, 6).map((category, index) => (
                                 <motion.div
-                                    initial={{ opacity: 0, y: 20 }}
-                                    whileHover={{ opacity: 1, y: 0 }}
-                                    transition={{ duration: 0.3 }}
-                                    className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent flex items-end justify-start p-6"
+                                    key={category.id}
+                                    initial={{ opacity: 0, y: 40, scale: 0.9 }}
+                                    whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                                    transition={{ duration: 0.6, delay: index * 0.1 }}
+                                    viewport={{ once: true }}
+                                    whileHover={{ y: -10, boxShadow: "0 20px 40px rgba(0,0,0,0.2)" }}
+                                    className={`cursor-pointer group rounded-3xl overflow-hidden shadow-xl bg-gray-900 ${
+                                        index === 0 ? 'md:col-span-1 lg:col-span-1 lg:row-span-2 auto-rows-[600px]' : ''
+                                    }`}
                                 >
-                                    <div className="text-white">
-                                        <motion.h3
-                                            initial={{ opacity: 0 }}
-                                            whileHover={{ opacity: 1 }}
-                                            transition={{ delay: 0.1 }}
-                                            className="text-3xl font-bold mb-2"
+                                    <div className="relative w-full h-full">
+                                        {category.image_path ? (
+                                            <img
+                                                src={category.image_path}
+                                                alt={category.name}
+                                                className="w-full h-full object-cover group-hover:scale-125 transition-transform duration-500"
+                                            />
+                                        ) : (
+                                            <div className="w-full h-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center">
+                                                {/* Empty state - no fallback emoji */}
+                                            </div>
+                                        )}
+                                        <motion.div
+                                            initial={{ opacity: 0, y: 20 }}
+                                            whileHover={{ opacity: 1, y: 0 }}
+                                            transition={{ duration: 0.3 }}
+                                            className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent flex items-end justify-start p-6"
                                         >
-                                            Classic Burger
-                                        </motion.h3>
-                                        <motion.p
-                                            initial={{ opacity: 0 }}
-                                            whileHover={{ opacity: 1 }}
-                                            transition={{ delay: 0.15 }}
-                                            className="text-sm text-gray-200"
-                                        >
-                                            Juicy & Delicious
-                                        </motion.p>
+                                            <div className="text-white">
+                                                <motion.h3
+                                                    initial={{ opacity: 0 }}
+                                                    whileHover={{ opacity: 1 }}
+                                                    transition={{ delay: 0.1 }}
+                                                    className="text-2xl font-bold mb-1"
+                                                >
+                                                    {category.name}
+                                                </motion.h3>
+                                                <motion.p
+                                                    initial={{ opacity: 0 }}
+                                                    whileHover={{ opacity: 1 }}
+                                                    transition={{ delay: 0.15 }}
+                                                    className="text-sm text-gray-200"
+                                                >
+                                                    {category.menu_items_count || 0} items
+                                                </motion.p>
+                                            </div>
+                                        </motion.div>
                                     </div>
                                 </motion.div>
-                            </div>
+                            ))}
                         </motion.div>
-
-                        {/* Top Right - Pizza */}
+                    ) : (
                         <motion.div
-                            initial={{ opacity: 0, y: 40, scale: 0.9 }}
-                            whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                            transition={{ duration: 0.6, delay: 0.1 }}
+                            initial={{ opacity: 0 }}
+                            whileInView={{ opacity: 1 }}
                             viewport={{ once: true }}
-                            whileHover={{ y: -10, boxShadow: "0 20px 40px rgba(0,0,0,0.2)" }}
-                            className="cursor-pointer group"
+                            className="text-center py-12"
                         >
-                            <div className="relative h-48 rounded-3xl overflow-hidden shadow-lg bg-gray-900">
-                                <div className="w-full h-full bg-gradient-to-br from-yellow-600 to-orange-700 flex items-center justify-center text-7xl group-hover:scale-125 transition-transform duration-500">
-                                    🍕
-                                </div>
-                                <motion.div
-                                    initial={{ opacity: 0, y: 20 }}
-                                    whileHover={{ opacity: 1, y: 0 }}
-                                    transition={{ duration: 0.3 }}
-                                    className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent flex items-end justify-start p-4"
-                                >
-                                    <motion.h3
-                                        initial={{ opacity: 0 }}
-                                        whileHover={{ opacity: 1 }}
-                                        transition={{ delay: 0.1 }}
-                                        className="text-xl font-bold text-white"
-                                    >
-                                        Gourmet Pizza
-                                    </motion.h3>
-                                </motion.div>
-                            </div>
+                            <p className="text-gray-600">
+                                Food showcase coming soon
+                            </p>
                         </motion.div>
-
-                        {/* Middle Right - Fried Chicken */}
-                        <motion.div
-                            initial={{ opacity: 0, y: 40, scale: 0.9 }}
-                            whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                            transition={{ duration: 0.6, delay: 0.2 }}
-                            viewport={{ once: true }}
-                            whileHover={{ y: -10, boxShadow: "0 20px 40px rgba(0,0,0,0.2)" }}
-                            className="cursor-pointer group"
-                        >
-                            <div className="relative h-48 rounded-3xl overflow-hidden shadow-lg bg-gray-900">
-                                <div className="w-full h-full bg-gradient-to-br from-orange-600 to-red-700 flex items-center justify-center text-7xl group-hover:scale-125 transition-transform duration-500">
-                                    🍗
-                                </div>
-                                <motion.div
-                                    initial={{ opacity: 0, y: 20 }}
-                                    whileHover={{ opacity: 1, y: 0 }}
-                                    transition={{ duration: 0.3 }}
-                                    className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent flex items-end justify-start p-4"
-                                >
-                                    <motion.h3
-                                        initial={{ opacity: 0 }}
-                                        whileHover={{ opacity: 1 }}
-                                        transition={{ delay: 0.1 }}
-                                        className="text-xl font-bold text-white"
-                                    >
-                                        Fried Chicken
-                                    </motion.h3>
-                                </motion.div>
-                            </div>
-                        </motion.div>
-
-                        {/* Bottom Left - Dessert */}
-                        <motion.div
-                            initial={{ opacity: 0, y: 40, scale: 0.9 }}
-                            whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                            transition={{ duration: 0.6, delay: 0.3 }}
-                            viewport={{ once: true }}
-                            whileHover={{ y: -10, boxShadow: "0 20px 40px rgba(0,0,0,0.2)" }}
-                            className="cursor-pointer group"
-                        >
-                            <div className="relative h-48 rounded-3xl overflow-hidden shadow-lg bg-gray-900">
-                                <div className="w-full h-full bg-gradient-to-br from-pink-600 to-purple-700 flex items-center justify-center text-7xl group-hover:scale-125 transition-transform duration-500">
-                                    🍰
-                                </div>
-                                <motion.div
-                                    initial={{ opacity: 0, y: 20 }}
-                                    whileHover={{ opacity: 1, y: 0 }}
-                                    transition={{ duration: 0.3 }}
-                                    className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent flex items-end justify-start p-4"
-                                >
-                                    <motion.h3
-                                        initial={{ opacity: 0 }}
-                                        whileHover={{ opacity: 1 }}
-                                        transition={{ delay: 0.1 }}
-                                        className="text-xl font-bold text-white"
-                                    >
-                                        Desserts
-                                    </motion.h3>
-                                </motion.div>
-                            </div>
-                        </motion.div>
-
-                        {/* Bottom Middle - Wrap */}
-                        <motion.div
-                            initial={{ opacity: 0, y: 40, scale: 0.9 }}
-                            whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                            transition={{ duration: 0.6, delay: 0.4 }}
-                            viewport={{ once: true }}
-                            whileHover={{ y: -10, boxShadow: "0 20px 40px rgba(0,0,0,0.2)" }}
-                            className="cursor-pointer group"
-                        >
-                            <div className="relative h-48 rounded-3xl overflow-hidden shadow-lg bg-gray-900">
-                                <div className="w-full h-full bg-gradient-to-br from-green-600 to-emerald-700 flex items-center justify-center text-7xl group-hover:scale-125 transition-transform duration-500">
-                                    🌯
-                                </div>
-                                <motion.div
-                                    initial={{ opacity: 0, y: 20 }}
-                                    whileHover={{ opacity: 1, y: 0 }}
-                                    transition={{ duration: 0.3 }}
-                                    className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent flex items-end justify-start p-4"
-                                >
-                                    <motion.h3
-                                        initial={{ opacity: 0 }}
-                                        whileHover={{ opacity: 1 }}
-                                        transition={{ delay: 0.1 }}
-                                        className="text-xl font-bold text-white"
-                                    >
-                                        Fresh Wraps
-                                    </motion.h3>
-                                </motion.div>
-                            </div>
-                        </motion.div>
-
-                        {/* Bottom Right - Pasta */}
-                        <motion.div
-                            initial={{ opacity: 0, y: 40, scale: 0.9 }}
-                            whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                            transition={{ duration: 0.6, delay: 0.5 }}
-                            viewport={{ once: true }}
-                            whileHover={{ y: -10, boxShadow: "0 20px 40px rgba(0,0,0,0.2)" }}
-                            className="cursor-pointer group"
-                        >
-                            <div className="relative h-48 rounded-3xl overflow-hidden shadow-lg bg-gray-900">
-                                <div className="w-full h-full bg-gradient-to-br from-red-600 to-orange-700 flex items-center justify-center text-7xl group-hover:scale-125 transition-transform duration-500">
-                                    🍝
-                                </div>
-                                <motion.div
-                                    initial={{ opacity: 0, y: 20 }}
-                                    whileHover={{ opacity: 1, y: 0 }}
-                                    transition={{ duration: 0.3 }}
-                                    className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent flex items-end justify-start p-4"
-                                >
-                                    <motion.h3
-                                        initial={{ opacity: 0 }}
-                                        whileHover={{ opacity: 1 }}
-                                        transition={{ delay: 0.1 }}
-                                        className="text-xl font-bold text-white"
-                                    >
-                                        Pasta
-                                    </motion.h3>
-                                </motion.div>
-                            </div>
-                        </motion.div>
-                    </motion.div>
+                    )}
                 </div>
             </motion.section>
         </GuestLayout>

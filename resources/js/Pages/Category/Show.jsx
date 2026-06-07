@@ -5,13 +5,11 @@ import { useState } from 'react';
 import GuestLayout from '../../Layouts/GuestLayout';
 import Button from '../../Components/UI/Button';
 import MenuItemCard from '../../Components/Menu/MenuItemCard';
-import { mockMenuItems } from '../../mockData';
+
 
 export default function CategoryShow({ category = {}, items = [] }) {
     // Use mock items filtered by category if no items provided
-    const displayItems = items.length > 0 
-        ? items 
-        : mockMenuItems.filter(item => item.category_id === category.id);
+    const displayItems = items.length > 0 ? items : [];
     const [viewMode, setViewMode] = useState('grid');
 
     const containerVariants = {

@@ -38,9 +38,9 @@ export default function GuestLayout({ children }) {
             <div className="bg-gray-900 text-white text-sm py-2 hidden md:block">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
                     <div className="flex items-center space-x-6">
-                        <span>📞 +1 (800) 123-4567</span>
-                        <span>✉️ hello@sarahfood.com</span>
-                        <span>📍 42 Flower Street, NY</span>
+                        <span>📞 +2348057938850</span>
+                        <span>✉️ hello@fortunatefood.com</span>
+                        <span>📍 02 GRA conference road, Ijebu-Ode, Ogun State, Nigeria</span>
                     </div>
                     <div className="flex items-center space-x-4">
                         <a
@@ -88,7 +88,7 @@ export default function GuestLayout({ children }) {
                             </motion.div>
                             <div>
                                 <h1 className="text-xl font-bold text-gray-900">
-                                    Sarah
+                                    Fortunate
                                 </h1>
                                 <p className="text-xs text-gray-500">
                                     Fast Food & Restaurant
@@ -343,7 +343,7 @@ export default function GuestLayout({ children }) {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                         <div>
-                            <h3 className="text-lg font-bold mb-4">Sarah</h3>
+                            <h3 className="text-lg font-bold mb-4">FortunateFood</h3>
                             <p className="text-gray-400">
                                 Experience fine dining at its best.
                             </p>
@@ -373,7 +373,7 @@ export default function GuestLayout({ children }) {
                             <h4 className="font-semibold mb-4">Contact</h4>
                             <ul className="space-y-2 text-gray-400">
                                 <li>📞 (555) 123-4567</li>
-                                <li>📧 info@sarah.com</li>
+                                <li>📧 info@fortunate.com</li>
                             </ul>
                         </div>
                         <div>
@@ -387,7 +387,7 @@ export default function GuestLayout({ children }) {
                     </div>
                     <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
                         <p>
-                            &copy; 2024 Sarah Restaurant. All rights reserved.
+                            &copy; 2026 FortunateFood Restaurant. All rights reserved.
                         </p>
                     </div>
                 </div>

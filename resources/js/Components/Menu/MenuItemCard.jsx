@@ -68,9 +68,9 @@ export default function MenuItemCard({ item, onAddToCart, isLoading = false }) {
             whileHover="hover"
             className="h-full"
         >
-            <div className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-100 hover:shadow-xl transition-shadow duration-300 h-full flex flex-col">
+            <div className="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-200 hover:shadow-lg transition-shadow duration-300 h-full flex flex-col max-w-xs">
                 {/* Image Container */}
-                <div className="relative h-56 bg-gray-200 overflow-hidden group">
+                <div className="relative h-40 bg-gray-200 overflow-hidden group">
                     <motion.div
                         variants={imageVariants}
                         initial="initial"
@@ -87,7 +87,7 @@ export default function MenuItemCard({ item, onAddToCart, isLoading = false }) {
                             />
                         ) : (
                             <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-orange-100 to-orange-50">
-                                <span className="text-6xl">🍽️</span>
+                                <span className="text-3xl">🍽️</span>
                             </div>
                         )}
                     </motion.div>
@@ -103,10 +103,10 @@ export default function MenuItemCard({ item, onAddToCart, isLoading = false }) {
                             >
                                 <div className="text-center">
                                     <AlertCircle
-                                        size={32}
+                                        size={28}
                                         className="text-white mx-auto mb-2"
                                     />
-                                    <Badge variant="danger" size="md">
+                                    <Badge variant="danger" size="sm">
                                         Unavailable
                                     </Badge>
                                 </div>
@@ -119,10 +119,10 @@ export default function MenuItemCard({ item, onAddToCart, isLoading = false }) {
                         <motion.div
                             initial={{ opacity: 0, scale: 0.8 }}
                             animate={{ opacity: 1, scale: 1 }}
-                            className="absolute top-3 right-3"
+                            className="absolute top-2 right-2"
                         >
                             <Badge variant="success" size="sm">
-                                <Check size={14} className="mr-1" />
+                                <Check size={13} className="mr-1" />
                                 Available
                             </Badge>
                         </motion.div>
@@ -130,13 +130,13 @@ export default function MenuItemCard({ item, onAddToCart, isLoading = false }) {
                 </div>
 
                 {/* Content */}
-                <div className="p-5 flex-1 flex flex-col">
+                <div className="p-2 flex-1 flex flex-col justify-between">
                     {/* Category Badge */}
                     {item.category && (
                         <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
-                            className="mb-3"
+                            className="mb-0.5"
                         >
                             <Badge variant="primary" size="sm">
                                 {item.category.name}
@@ -145,25 +145,20 @@ export default function MenuItemCard({ item, onAddToCart, isLoading = false }) {
                     )}
 
                     {/* Item Name */}
-                    <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-2">
+                    <h3 className="text-xs font-semibold text-gray-900 mb-0.5 line-clamp-1">
                         {item.name}
                     </h3>
 
                     {/* Description */}
-                    <p className="text-gray-600 text-sm mb-4 flex-grow line-clamp-3 leading-relaxed">
+                    <p className="text-gray-500 text-xs mb-1 line-clamp-1">
                         {item.description}
                     </p>
 
                     {/* Price Display */}
-                    <div className="mb-4">
-                        <div className="flex items-baseline gap-1">
-                            <span className="text-sm text-gray-500">
-                                Price:
-                            </span>
-                            <span className="text-3xl font-bold text-orange-500">
-                                ₦{parseFloat(item.price).toFixed(2)}
-                            </span>
-                        </div>
+                    <div className="mb-1.5">
+                        <span className="text-lg font-bold text-orange-500">
+                            ₦{parseFloat(item.price).toFixed(2)}
+                        </span>
                     </div>
 
                     {/* Action Section */}
@@ -178,16 +173,16 @@ export default function MenuItemCard({ item, onAddToCart, isLoading = false }) {
                             >
                                 <Button
                                     variant="primary"
-                                    size="md"
+                                    size="sm"
                                     disabled={!item.is_available || isLoading}
                                     isLoading={isLoading}
                                     onClick={() =>
                                         item.is_available && setIsExpanded(true)
                                     }
-                                    className="w-full flex items-center justify-center gap-2"
+                                    className="w-20 mx-auto flex items-center justify-center gap-0.5 text-xs"
                                 >
-                                    <ShoppingCart size={18} />
-                                    <span>Add to Cart</span>
+                                    <ShoppingCart size={12} />
+                                    <span>Add</span>
                                 </Button>
                             </motion.div>
                         ) : (
@@ -197,24 +192,24 @@ export default function MenuItemCard({ item, onAddToCart, isLoading = false }) {
                                 animate={{ opacity: 1, height: "auto" }}
                                 exit={{ opacity: 0, height: 0 }}
                                 transition={{ duration: 0.2 }}
-                                className="space-y-3"
+                                className="space-y-1"
                             >
                                 {/* Quantity Selector */}
-                                <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                                    <label className="block text-sm font-semibold text-gray-700 mb-3">
-                                        Quantity
+                                <div className="bg-gray-50 rounded p-1.5 border border-gray-200">
+                                    <label className="block text-xs font-semibold text-gray-700 mb-1">
+                                        Qty
                                     </label>
 
                                     {/* Quantity Display */}
-                                    <div className="flex items-center gap-3">
+                                    <div className="flex items-center gap-1">
                                         <motion.button
-                                            whileHover={{ scale: 1.1 }}
+                                            whileHover={{ scale: 1.05 }}
                                             whileTap={{ scale: 0.95 }}
                                             onClick={decrementQuantity}
                                             disabled={quantity === 1}
-                                            className="flex items-center justify-center w-10 h-10 rounded-lg bg-orange-100 text-orange-500 hover:bg-orange-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                            className="flex items-center justify-center w-6 h-6 rounded bg-orange-100 text-orange-500 hover:bg-orange-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                                         >
-                                            <Minus size={18} />
+                                            <Minus size={12} />
                                         </motion.button>
 
                                         <input
@@ -222,52 +217,45 @@ export default function MenuItemCard({ item, onAddToCart, isLoading = false }) {
                                             min="1"
                                             value={quantity}
                                             onChange={handleQuantityChange}
-                                            className="flex-1 h-10 text-center text-lg font-semibold border-2 border-orange-300 rounded-lg focus:border-orange-500 focus:outline-none transition-colors bg-white"
+                                            className="flex-1 h-6 text-center text-xs font-semibold border border-orange-300 rounded focus:border-orange-500 focus:outline-none transition-colors bg-white"
                                         />
 
                                         <motion.button
-                                            whileHover={{ scale: 1.1 }}
+                                            whileHover={{ scale: 1.05 }}
                                             whileTap={{ scale: 0.95 }}
                                             onClick={incrementQuantity}
-                                            className="flex items-center justify-center w-10 h-10 rounded-lg bg-orange-100 text-orange-500 hover:bg-orange-200 transition-colors"
+                                            className="flex items-center justify-center w-6 h-6 rounded bg-orange-100 text-orange-500 hover:bg-orange-200 transition-colors"
                                         >
-                                            <Plus size={18} />
+                                            <Plus size={12} />
                                         </motion.button>
                                     </div>
-
-                                    {/* Quantity Note */}
-                                    <p className="text-xs text-gray-500 mt-2 text-center">
-                                        {quantity === 1
-                                            ? "Just this one"
-                                            : `${quantity} items`}
-                                    </p>
                                 </div>
 
                                 {/* Action Buttons */}
-                                <div className="grid grid-cols-2 gap-3">
+                                <div className="grid grid-cols-2 gap-1">
                                     <Button
                                         variant="secondary"
-                                        size="md"
+                                        size="sm"
                                         onClick={() => {
                                             setIsExpanded(false);
                                             setQuantity(1);
                                         }}
-                                        className="w-full"
+                                        className="w-full text-xs"
                                     >
                                         Cancel
                                     </Button>
 
                                     <Button
                                         variant="primary"
-                                        size="md"
+                                        size="sm"
                                         disabled={
                                             !item.is_available || isLoading
                                         }
                                         isLoading={isLoading}
                                         onClick={handleAddToCart}
-                                        className="w-full flex items-center justify-center gap-2"
+                                        className="w-full flex items-center justify-center gap-0.5 text-xs"
                                     >
-                                        <Check size={18} />
+                                        <Check size={12} />
                                         <span>Add</span>
                                     </Button>
                                 </div>

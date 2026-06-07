@@ -37,10 +37,10 @@ export default function CartItem({
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
-            className="flex gap-4 py-4 border-b border-gray-100 last:border-b-0"
+            className="flex gap-3 py-3 border-b border-gray-100 last:border-b-0"
         >
             {/* Item Image */}
-            <div className="flex-shrink-0 w-20 h-20 bg-gray-100 rounded-lg overflow-hidden">
+            <div className="flex-shrink-0 w-16 h-16 bg-gray-100 rounded-lg overflow-hidden">
                 {item.image_url ? (
                     <img
                         src={item.image_url}
@@ -56,12 +56,12 @@ export default function CartItem({
 
             {/* Item Details */}
             <div className="flex-1 min-w-0">
-                <div className="flex justify-between items-start mb-2">
+                <div className="flex justify-between items-start mb-1">
                     <div>
-                        <h4 className="font-semibold text-gray-900 text-sm line-clamp-2">
+                        <h4 className="font-semibold text-gray-900 text-xs line-clamp-2">
                             {item.name}
                         </h4>
-                        <p className="text-xs text-gray-500 mt-1">
+                        <p className="text-xs text-gray-500 mt-0.5">
                             ₦{item.price} each
                         </p>
                     </div>

@@ -10,7 +10,7 @@ import Button from '../../Components/UI/Button';
 import Input from '../../Components/UI/Input';
 import Textarea from '../../Components/UI/Textarea';
 import { Card, CardBody, CardHeader } from '../../Components/UI/Card';
-import { mockRestaurantInfo } from '../../mockData';
+
 
 /**
  * Validation schema for reservation form
@@ -104,7 +104,7 @@ export default function ReservationCreate() {
         return 'Hours not available';
     };
 
-    const formattedHours = formatHours(mockRestaurantInfo.hours);
+    const formattedHours = '';
 
     // Animation variants
     const containerVariants = {
@@ -410,7 +410,7 @@ export default function ReservationCreate() {
                                                         Call Us
                                                     </h3>
                                                     <p className="text-sm text-gray-600">
-                                                        {mockRestaurantInfo.phone || '(555) 123-4567'}
+                                                        (555) 123-4567
                                                     </p>
                                                     <p className="text-xs text-gray-500 mt-1">
                                                         For immediate assistance

@@ -5,7 +5,7 @@ import CustomerLayout from '../../Layouts/CustomerLayout';
 import Badge from '../../Components/UI/Badge';
 import Button from '../../Components/UI/Button';
 import { Card, CardBody } from '../../Components/UI/Card';
-import { mockOrders } from '../../mockData';
+
 
 const statusColors = {
     pending: 'warning',
@@ -25,7 +25,7 @@ const statusLabels = {
     cancelled: 'Cancelled',
 };
 
-export default function OrdersIndex({ orders = mockOrders }) {
+export default function OrdersIndex({ orders = [] }) {
     const containerVariants = {
         hidden: { opacity: 0 },
         visible: {

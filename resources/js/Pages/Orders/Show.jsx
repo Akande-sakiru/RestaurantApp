@@ -10,7 +10,7 @@ import {
     CardHeader,
     CardFooter,
 } from "../../Components/UI/Card";
-import { mockOrders } from "../../mockData";
+
 
 const statusColors = {
     pending: "warning",

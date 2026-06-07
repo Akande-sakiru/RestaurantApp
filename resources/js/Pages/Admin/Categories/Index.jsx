@@ -7,17 +7,9 @@ import Button from '../../../Components/UI/Button';
 import Input from '../../../Components/UI/Input';
 import { Card, CardBody, CardHeader } from '../../../Components/UI/Card';
 
-// Mock data
-const mockCategories = [
-    { id: 1, name: 'Burgers', slug: 'burgers', items_count: 5, created_at: '2024-05-20' },
-    { id: 2, name: 'Pizza', slug: 'pizza', items_count: 4, created_at: '2024-05-21' },
-    { id: 3, name: 'Fried Chicken', slug: 'fried-chicken', items_count: 6, created_at: '2024-05-22' },
-    { id: 4, name: 'Wraps', slug: 'wraps', items_count: 3, created_at: '2024-05-23' },
-    { id: 5, name: 'Desserts', slug: 'desserts', items_count: 8, created_at: '2024-05-24' },
-    { id: 6, name: 'Pasta', slug: 'pasta', items_count: 4, created_at: '2024-05-25' },
-];
+// Mock data removed - using real data from server
 
-export default function CategoriesIndex({ categories = mockCategories }) {
+export default function CategoriesIndex({ categories = [] }) {
     const [searchTerm, setSearchTerm] = useState('');
 
     // Handle both paginated object and array formats

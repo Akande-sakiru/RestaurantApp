@@ -5,7 +5,7 @@ import CustomerLayout from '../../Layouts/CustomerLayout';
 import Badge from '../../Components/UI/Badge';
 import Button from '../../Components/UI/Button';
 import { Card, CardBody } from '../../Components/UI/Card';
-import { mockReservations } from '../../mockData';
+
 
 const statusColors = {
     pending: 'warning',
@@ -21,7 +21,7 @@ const statusLabels = {
     completed: 'Completed',
 };
 
-export default function ReservationsIndex({ reservations = mockReservations }) {
+export default function ReservationsIndex({ reservations = [] }) {
     const handleCancel = (reservationId) => {
         if (
             confirm(

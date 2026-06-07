@@ -8,65 +8,9 @@ import Input from "../../../Components/UI/Input";
 import { Card, CardBody, CardHeader } from "../../../Components/UI/Card";
 import Badge from "../../../Components/UI/Badge";
 
-// Mock data
-const mockMenuItems = [
-    {
-        id: 1,
-        name: "Classic Smash Burger",
-        category: "Burgers",
-        price: 14.99,
-        is_available: true,
-        image_path: null,
-        created_at: "2024-05-20",
-    },
-    {
-        id: 2,
-        name: "Margherita Royale",
-        category: "Pizza",
-        price: 19.99,
-        is_available: true,
-        image_path: null,
-        created_at: "2024-05-21",
-    },
-    {
-        id: 3,
-        name: "Nashville Hot Chicken",
-        category: "Fried Chicken",
-        price: 12.99,
-        is_available: false,
-        image_path: null,
-        created_at: "2024-05-22",
-    },
-    {
-        id: 4,
-        name: "Mediterranean Wrap",
-        category: "Wraps",
-        price: 11.99,
-        is_available: true,
-        image_path: null,
-        created_at: "2024-05-23",
-    },
-    {
-        id: 5,
-        name: "Chocolate Lava Cake",
-        category: "Desserts",
-        price: 8.99,
-        is_available: true,
-        image_path: null,
-        created_at: "2024-05-24",
-    },
-    {
-        id: 6,
-        name: "Carbonara Pasta",
-        category: "Pasta",
-        price: 15.99,
-        is_available: true,
-        image_path: null,
-        created_at: "2024-05-25",
-    },
-];
+// Mock data removed - using real data from server
 
-export default function MenuItemsIndex({ menuItems = mockMenuItems }) {
+export default function MenuItemsIndex({ menuItems = [] }) {
     const [searchTerm, setSearchTerm] = useState("");
     const [filterCategory, setFilterCategory] = useState("all");
 

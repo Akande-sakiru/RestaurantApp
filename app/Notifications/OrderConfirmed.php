@@ -24,7 +24,7 @@ class OrderConfirmed extends Notification implements ShouldQueue
      */
     public function via(object $notifiable): array
     {
-        return ['mail'];
+        return ['mail', 'database'];
     }
 
     /**
@@ -54,6 +54,7 @@ class OrderConfirmed extends Notification implements ShouldQueue
             'order_id' => $this->order->id,
             'order_number' => $this->order->order_number,
             'status' => $this->order->status,
+            'message' => "Your order {$this->order->order_number} has been confirmed!",
         ];
     }
 }

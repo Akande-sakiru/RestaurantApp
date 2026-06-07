@@ -2,6 +2,7 @@
 
 // use App\Http\Controllers\Admin\MenuItemController;
 use App\Http\Controllers\Api\OrderApiController;
+use App\Http\Controllers\Api\NotificationApiController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\MenuController;
@@ -56,6 +57,12 @@ Route::middleware(['auth', 'verified', 'role:customer|admin'])->group(function (
 
     // Cart sync API (for syncing pending cart after login)
     Route::post('/api/cart/sync', [\App\Http\Controllers\Api\CartApiController::class, 'syncPending'])->name('api.cart.sync');
+
+    // Notification API endpoints
+    Route::get('/api/notifications', [NotificationApiController::class, 'index'])->name('api.notifications.index');
+    Route::post('/api/notifications/{notification}/read', [NotificationApiController::class, 'markAsRead'])->name('api.notifications.mark-as-read');
+    Route::post('/api/notifications/mark-all-as-read', [NotificationApiController::class, 'markAllAsRead'])->name('api.notifications.mark-all-as-read');
+    Route::delete('/api/notifications/{notification}', [NotificationApiController::class, 'destroy'])->name('api.notifications.destroy');
 
     Route::get('/reservations', [ReservationController::class, 'index'])->name('reservations.index');
     Route::get('/reservations/create', [ReservationController::class, 'create'])->name('reservations.create');

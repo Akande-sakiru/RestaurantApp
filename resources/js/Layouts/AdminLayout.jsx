@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 import Badge from '../Components/UI/Badge';
+import NotificationBell from '../Components/Notifications/NotificationBell';
 
 export default function AdminLayout({ children }) {
     const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -122,8 +123,12 @@ export default function AdminLayout({ children }) {
                             Admin Dashboard
                         </h1>
 
-                        {/* Profile Menu */}
-                        <div className="relative">
+                        <div className="flex items-center space-x-4">
+                            {/* Notifications */}
+                            <NotificationBell />
+
+                            {/* Profile Menu */}
+                            <div className="relative">
                             <motion.button
                                 whileHover={{ scale: 1.05 }}
                                 onClick={() =>
@@ -174,6 +179,7 @@ export default function AdminLayout({ children }) {
                                     </motion.div>
                                 )}
                             </AnimatePresence>
+                        </div>
                         </div>
                     </div>
                 </nav>

@@ -26,7 +26,7 @@ class ReservationStatusUpdated extends Notification implements ShouldQueue
      */
     public function via(object $notifiable): array
     {
-        return ['mail'];
+        return ['mail', 'database'];
     }
 
     /**
@@ -61,10 +61,20 @@ class ReservationStatusUpdated extends Notification implements ShouldQueue
      */
     public function toArray(object $notifiable): array
     {
+        $statusMessages = [
+            'pending' => 'Your reservation is pending',
+            'confirmed' => 'Your reservation has been confirmed',
+            'cancelled' => 'Your reservation has been cancelled',
+            'completed' => 'Thank you for dining with us!',
+        ];
+
+        $message = $statusMessages[$this->reservation->status] ?? 'Your reservation status has been updated';
+
         return [
             'reservation_id' => $this->reservation->id,
             'reservation_number' => $this->reservation->reservation_number,
             'status' => $this->reservation->status,
+            'message' => $message,
         ];
     }
 }

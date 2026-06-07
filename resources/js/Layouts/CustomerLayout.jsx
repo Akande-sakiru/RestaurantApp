@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, ShoppingCart, LogOut, User } from 'lucide-react';
 import { useState } from 'react';
 import Badge from '../Components/UI/Badge';
+import NotificationBell from '../Components/Notifications/NotificationBell';
 
 export default function CustomerLayout({ children }) {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -54,6 +55,9 @@ export default function CustomerLayout({ children }) {
 
                         {/* Right Section */}
                         <div className="hidden md:flex items-center space-x-4">
+                            {/* Notifications */}
+                            <NotificationBell />
+
                             {/* Cart */}
                             <Link
                                 href="/cart"
@@ -153,18 +157,23 @@ export default function CustomerLayout({ children }) {
                                     {item.label}
                                 </Link>
                             ))}
-                            <Link
-                                href="/cart"
-                                className="flex items-center justify-between px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
-                                onClick={() => setMobileMenuOpen(false)}
-                            >
-                                <span>Cart</span>
-                                {cart.count > 0 && (
-                                    <Badge variant="danger" size="sm">
-                                        {cart.count}
-                                    </Badge>
-                                )}
-                            </Link>
+                            <div className="px-4 py-2">
+                                <div className="flex items-center space-x-4">
+                                    <NotificationBell />
+                                    <Link
+                                        href="/cart"
+                                        className="flex items-center justify-between flex-1 px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
+                                        onClick={() => setMobileMenuOpen(false)}
+                                    >
+                                        <span>Cart</span>
+                                        {cart.count > 0 && (
+                                            <Badge variant="danger" size="sm">
+                                                {cart.count}
+                                            </Badge>
+                                        )}
+                                    </Link>
+                                </div>
+                            </div>
                             <Link
                                 href="/profile"
                                 className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg border-t border-gray-100 mt-2 pt-2"

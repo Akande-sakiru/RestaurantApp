@@ -26,7 +26,7 @@ class ReservationConfirmed extends Notification implements ShouldQueue
      */
     public function via(object $notifiable): array
     {
-        return ['mail'];
+        return ['mail', 'database'];
     }
 
     /**
@@ -57,6 +57,7 @@ class ReservationConfirmed extends Notification implements ShouldQueue
             'reservation_id' => $this->reservation->id,
             'reservation_number' => $this->reservation->reservation_number,
             'status' => $this->reservation->status,
+            'message' => "Your reservation {$this->reservation->reservation_number} has been confirmed!",
         ];
     }
 }

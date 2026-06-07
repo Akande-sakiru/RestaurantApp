@@ -4,6 +4,7 @@ import { Menu, X, Search, LogOut, User, ShoppingCart } from "lucide-react";
 import { useState } from "react";
 import Button from "../Components/UI/Button";
 import Badge from "../Components/UI/Badge";
+import NotificationBell from "../Components/Notifications/NotificationBell";
 
 export default function GuestLayout({ children }) {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -114,6 +115,9 @@ export default function GuestLayout({ children }) {
                             <button className="p-2 text-gray-700 hover:text-orange-500 transition-colors">
                                 <Search size={20} />
                             </button>
+
+                            {/* Notifications - Show if logged in */}
+                            {auth.user && <NotificationBell />}
 
                             {/* Cart Icon */}
                             {auth.user && (
@@ -256,19 +260,24 @@ export default function GuestLayout({ children }) {
                             
                             {/* Mobile Cart Icon */}
                             {auth.user && (
-                                <Link
-                                    href="/cart"
-                                    className="flex items-center space-x-2 px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
-                                    onClick={() => setMobileMenuOpen(false)}
-                                >
-                                    <ShoppingCart size={20} />
-                                    <span>Cart</span>
-                                    {cart && cart.count > 0 && (
-                                        <Badge variant="danger" size="sm">
-                                            {cart.count}
-                                        </Badge>
-                                    )}
-                                </Link>
+                                <>
+                                    <div className="px-4 py-2">
+                                        <NotificationBell />
+                                    </div>
+                                    <Link
+                                        href="/cart"
+                                        className="flex items-center space-x-2 px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                                        onClick={() => setMobileMenuOpen(false)}
+                                    >
+                                        <ShoppingCart size={20} />
+                                        <span>Cart</span>
+                                        {cart && cart.count > 0 && (
+                                            <Badge variant="danger" size="sm">
+                                                {cart.count}
+                                            </Badge>
+                                        )}
+                                    </Link>
+                                </>
                             )}
 
                             <div className="px-4 py-2 space-y-2 border-t border-gray-100 mt-2 pt-2">

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bell, X, CheckCircle, AlertCircle, RotateCcw } from 'lucide-react';
+import { Bell, X, CheckCircle, AlertCircle, RotateCcw, Check } from 'lucide-react';
 import { usePage } from '@inertiajs/react';
 import Badge from '../UI/Badge';
 import Echo from 'laravel-echo';
@@ -165,6 +165,11 @@ export default function NotificationBell() {
     };
 
     const getNotificationIcon = (notification) => {
+        // If notification has been read, show check mark
+        if (notification.status === 'read') {
+            return <Check size={18} className="text-green-500" />;
+        }
+        
         // Handle notification_messages table structure
         const title = notification.title || '';
         const message = notification.message || '';

@@ -51,14 +51,16 @@ class OrderService
                 }
             }
 
-            // 3. Calculate subtotal/total
+            // 3. Calculate subtotal/total (including delivery fee if provided)
             $subtotal = 0.0;
             foreach ($cartItems as $cartItem) {
                 $subtotal += (float) $cartItem['price'] * (int) $cartItem['quantity'];
             }
             $subtotal = round($subtotal, 2);
-            $tax = round($subtotal * 0.1, 2);
-            $total = round($subtotal + $tax, 2);
+            
+            $deliveryFee = (int)($validated['delivery_fee'] ?? 0);
+            $tax = round(($subtotal + $deliveryFee) * 0.1, 2);
+            $total = round($subtotal + $deliveryFee + $tax, 2);
 
             // 4. Create Order record with payment_status = pending
             $order = Order::create([
@@ -70,6 +72,10 @@ class OrderService
                 'delivery_address' => $validated['delivery_address'] ?? null,
                 'delivery_phone' => $validated['delivery_phone'] ?? null,
                 'table_number' => $validated['table_number'] ?? null,
+                'customer_latitude' => $validated['customer_latitude'] ?? null,
+                'customer_longitude' => $validated['customer_longitude'] ?? null,
+                'delivery_distance_km' => $validated['delivery_distance_km'] ?? null,
+                'delivery_fee' => $deliveryFee,
                 'subtotal' => $subtotal,
                 'total' => $total,
                 'notes' => $validated['notes'] ?? null,
@@ -103,7 +109,7 @@ class OrderService
      * 5. Clear the cart.
      * 6. Dispatch OrderCreated broadcast event and SendOrderConfirmationEmail job.
      *
-     * @param  array{type: string, delivery_address: string|null, table_number: string|null, notes: string|null}  $validated
+     * @param  array{type: string, delivery_address: string|null, table_number: string|null, notes: string|null, delivery_fee: int|null, customer_latitude: float|null, customer_longitude: float|null, delivery_distance_km: float|null}  $validated
      *
      * @throws ValidationException if the cart is empty or any item is no longer available.
      */
@@ -137,7 +143,7 @@ class OrderService
                 }
             }
 
-            // 3. Calculate subtotal / total
+            // 3. Calculate subtotal / total (including delivery fee if provided)
             $subtotal = 0.0;
 
             foreach ($cartItems as $cartItem) {
@@ -145,8 +151,10 @@ class OrderService
             }
 
             $subtotal = round($subtotal, 2);
-            $tax = round($subtotal * 0.1, 2);
-            $total = round($subtotal + $tax, 2);
+            
+            $deliveryFee = (int)($validated['delivery_fee'] ?? 0);
+            $tax = round(($subtotal + $deliveryFee) * 0.1, 2);
+            $total = round($subtotal + $deliveryFee + $tax, 2);
 
             // 4. Create the Order record
             $order = Order::create([
@@ -157,6 +165,10 @@ class OrderService
                 'delivery_address' => $validated['delivery_address'] ?? null,
                 'delivery_phone' => $validated['delivery_phone'] ?? null,
                 'table_number' => $validated['table_number'] ?? null,
+                'customer_latitude' => $validated['customer_latitude'] ?? null,
+                'customer_longitude' => $validated['customer_longitude'] ?? null,
+                'delivery_distance_km' => $validated['delivery_distance_km'] ?? null,
+                'delivery_fee' => $deliveryFee,
                 'subtotal' => $subtotal,
                 'total' => $total,
                 'notes' => $validated['notes'] ?? null,

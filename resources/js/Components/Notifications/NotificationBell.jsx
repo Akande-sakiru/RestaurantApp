@@ -3,8 +3,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Bell, X, CheckCircle, AlertCircle, RotateCcw, Check } from 'lucide-react';
 import { usePage } from '@inertiajs/react';
 import Badge from '../UI/Badge';
-import Echo from 'laravel-echo';
-import Pusher from 'pusher-js';
 
 export default function NotificationBell() {
     const { auth } = usePage().props;
@@ -13,56 +11,20 @@ export default function NotificationBell() {
     const [unreadCount, setUnreadCount] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
     const [isRefreshing, setIsRefreshing] = useState(false);
-    const echoRef = useRef(null);
     const pollingIntervalRef = useRef(null);
 
-    // Initialize Reverb/Echo connection
+    // Polling-based notification fetching (no WebSocket required)
     useEffect(() => {
         if (auth?.user) {
-            try {
-                window.Pusher = Pusher;
-                
-                window.Echo = new Echo({
-                    broadcaster: 'reverb',
-                    key: import.meta.env.VITE_REVERB_APP_KEY,
-                    wsHost: import.meta.env.VITE_REVERB_HOST,
-                    wsPort: import.meta.env.VITE_REVERB_PORT,
-                    wssPort: import.meta.env.VITE_REVERB_PORT,
-                    forceTLS: import.meta.env.VITE_REVERB_SCHEME === 'https',
-                    enabledTransports: ['ws', 'wss'],
-                });
-
-                echoRef.current = window.Echo;
-
-                // Subscribe to user's notification channel
-                window.Echo.private(`users.${auth.user.id}`).listen('UserNotification', (data) => {
-                    console.log('Real-time notification received:', data);
-                    // Refresh notifications when real-time event arrives
-                    fetchNotifications();
-                }).error((error) => {
-                    console.error('Reverb connection error:', error);
-                });
-
-            } catch (error) {
-                console.error('Error initializing Echo:', error);
-            }
-
             // Initial fetch
             fetchNotifications();
 
-            // Set up polling as fallback (every 3 seconds)
+            // Set up polling every 3 seconds
             pollingIntervalRef.current = setInterval(fetchNotifications, 3000);
 
             return () => {
                 if (pollingIntervalRef.current) {
                     clearInterval(pollingIntervalRef.current);
-                }
-                if (echoRef.current) {
-                    try {
-                        echoRef.current.leaveChannel(`users.${auth.user.id}`);
-                    } catch (e) {
-                        console.error('Error leaving channel:', e);
-                    }
                 }
             };
         }

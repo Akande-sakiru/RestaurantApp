@@ -36,4 +36,8 @@ return [
         'secret_key' => env('PAYSTACK_SECRET_KEY'),
     ],
 
+    'google' => [
+        'maps_key' => env('GOOGLE_MAPS_API_KEY'),
+    ],
+
 ];

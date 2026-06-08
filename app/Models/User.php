@@ -29,6 +29,9 @@ class User extends Authenticatable
         'phone',
         'password',
         'is_active',
+        'latitude',
+        'longitude',
+        'max_delivery_radius_km',
     ];
 
     /**
@@ -52,6 +55,9 @@ class User extends Authenticatable
             'is_active' => 'boolean',
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'latitude' => 'float',
+            'longitude' => 'float',
+            'max_delivery_radius_km' => 'integer',
         ];
     }
 

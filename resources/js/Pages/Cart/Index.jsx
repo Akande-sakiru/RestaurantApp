@@ -10,6 +10,7 @@ import Button from "../../Components/UI/Button";
 import Input from "../../Components/UI/Input";
 import Select from "../../Components/UI/Select";
 import Textarea from "../../Components/UI/Textarea";
+import AddressAutocomplete from "../../Components/AddressAutocomplete/AddressAutocomplete";
 import { Card, CardBody, CardHeader } from "../../Components/UI/Card";
 import { getPendingCart, clearPendingCart } from "../../Utils/cartStorage";
 
@@ -19,6 +20,24 @@ const checkoutSchema = z.object({
     delivery_phone: z.string().optional(),
     table_number: z.string().optional(),
     notes: z.string().optional(),
+}).refine((data) => {
+    // Require table_number for dine-in
+    if (data.type === "dine-in") {
+        return data.table_number && data.table_number.trim().length > 0;
+    }
+    return true;
+}, {
+    message: "Table number is required for dine-in orders",
+    path: ["table_number"],
+}).refine((data) => {
+    // Require delivery_address for delivery
+    if (data.type === "delivery") {
+        return data.delivery_address && data.delivery_address.trim().length > 0;
+    }
+    return true;
+}, {
+    message: "Delivery address is required for delivery orders",
+    path: ["delivery_address"],
 });
 
 export default function CartIndex({ cartItems = [], subtotal = 0 }) {
@@ -26,18 +45,25 @@ export default function CartIndex({ cartItems = [], subtotal = 0 }) {
     const items = Array.isArray(cartItems) ? cartItems : [];
     const [isProcessing, setIsProcessing] = useState(false);
     const [syncedItems, setSyncedItems] = useState(false);
+    const [selectedAddress, setSelectedAddress] = useState(null);
 
     const {
         register,
         handleSubmit,
         formState: { errors },
         watch,
+        setValue,
     } = useForm({
         resolver: zodResolver(checkoutSchema),
         defaultValues: {
             type: "dine-in",
         },
     });
+
+    const handleAddressSelect = (addressData) => {
+        setSelectedAddress(addressData);
+        setValue('delivery_address', addressData.address);
+    };
 
     const selectedType = watch("type");
 
@@ -92,8 +118,28 @@ export default function CartIndex({ cartItems = [], subtotal = 0 }) {
     };
 
     const onSubmit = (data) => {
+        console.log('Form submitted with data:', data);
+        console.log('Form errors:', errors);
+        
+        // Validate required fields based on order type
+        if (data.type === 'dine-in' && !data.table_number) {
+            console.error('Table number is required for dine-in orders');
+            return;
+        }
+        
+        if (data.type === 'delivery' && !data.delivery_address) {
+            console.error('Delivery address is required for delivery orders');
+            return;
+        }
+        
         setIsProcessing(true);
         router.post("/payment", data, {
+            onSuccess: () => {
+                console.log('Payment page navigation successful');
+            },
+            onError: (errors) => {
+                console.error('Navigation error:', errors);
+            },
             onFinish: () => setIsProcessing(false),
         });
     };
@@ -345,14 +391,25 @@ export default function CartIndex({ cartItems = [], subtotal = 0 }) {
 
                                     {selectedType === "delivery" && (
                                         <>
-                                            <Input
-                                                label="Delivery Address"
-                                                placeholder="Enter your address"
-                                                {...register("delivery_address")}
-                                                error={
-                                                    errors.delivery_address?.message
-                                                }
-                                            />
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                                    Delivery Address
+                                                </label>
+                                                <AddressAutocomplete
+                                                    onAddressSelect={handleAddressSelect}
+                                                    placeholder="Enter your delivery address"
+                                                />
+                                                {selectedAddress && (
+                                                    <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded text-sm text-blue-800">
+                                                        <p><strong>Selected:</strong> {selectedAddress.address}</p>
+                                                    </div>
+                                                )}
+                                                {errors.delivery_address && (
+                                                    <p className="text-red-600 text-sm mt-1">
+                                                        {errors.delivery_address.message}
+                                                    </p>
+                                                )}
+                                            </div>
                                             <Input
                                                 label="Delivery Phone Number"
                                                 placeholder="Enter your phone number (optional)"

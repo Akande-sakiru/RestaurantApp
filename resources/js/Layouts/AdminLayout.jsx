@@ -10,6 +10,7 @@ import {
     ShoppingBag,
     Calendar,
     Users,
+    Settings,
 } from 'lucide-react';
 import { useState } from 'react';
 import Badge from '../Components/UI/Badge';
@@ -43,6 +44,7 @@ export default function AdminLayout({ children }) {
             icon: Calendar,
         },
         { label: 'Users', href: '/admin/users', icon: Users },
+        { label: 'Settings', href: '/admin/settings', icon: Settings },
     ];
 
     const handleLogout = () => {

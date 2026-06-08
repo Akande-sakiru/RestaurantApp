@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import {
     AlertCircle,
@@ -11,6 +11,7 @@ import { router, usePage } from "@inertiajs/react";
 import CustomerLayout from "../../Layouts/CustomerLayout";
 import Button from "../../Components/UI/Button";
 import { Card, CardBody, CardHeader } from "../../Components/UI/Card";
+import DeliveryFeeCalculator from "../../Components/Delivery/DeliveryFeeCalculator";
 // import PaystackPop from "@paystack/inline-js";
 
 export default function PaymentIndex({
@@ -24,6 +25,7 @@ export default function PaymentIndex({
         table_number: null,
         notes: null,
     },
+    restaurantUser = null,
 }) {
     const { auth } = usePage().props;
     const userEmail = auth?.user?.email || "";
@@ -32,6 +34,15 @@ export default function PaymentIndex({
     const [isInitializing, setIsInitializing] = useState(false);
     const [error, setError] = useState("");
     const [paystackLoaded, setPaystackLoaded] = useState(false);
+    const [deliveryFee, setDeliveryFee] = useState(0);
+    const [deliveryData, setDeliveryData] = useState(null);
+
+    // Debug: Log orderData
+    useEffect(() => {
+        console.log('Payment page loaded with orderData:', orderData);
+        console.log('Auth user:', auth?.user);
+        console.log('Restaurant user:', restaurantUser);
+    }, [orderData, auth, restaurantUser]);
 
     // Load Paystack script
     useEffect(() => {
@@ -64,9 +75,22 @@ export default function PaymentIndex({
         };
     }, [publicKey]);
 
-    const total = subtotal;
+    const total = subtotal + deliveryFee;
     const tax = total * 0.1;
     const finalTotal = total + tax;
+
+    /**
+     * Handle delivery data change from DeliveryFeeCalculator
+     */
+    const handleDeliveryDataChange = useCallback((data) => {
+        if (data && data.is_available) {
+            setDeliveryFee(data.delivery_fee);
+            setDeliveryData(data);
+        } else {
+            setDeliveryFee(0);
+            setDeliveryData(null);
+        }
+    }, []);
 
     const handlePayment = async (e) => {
         e.preventDefault();
@@ -101,6 +125,10 @@ export default function PaymentIndex({
                     table_number: orderData.table_number,
                     notes: orderData.notes,
                     payment_method: paymentMethod,
+                    delivery_fee: orderData.type === "delivery" ? deliveryFee : 0,
+                    customer_latitude: orderData.type === "delivery" && deliveryData ? deliveryData.customer_latitude : null,
+                    customer_longitude: orderData.type === "delivery" && deliveryData ? deliveryData.customer_longitude : null,
+                    delivery_distance_km: orderData.type === "delivery" && deliveryData ? deliveryData.distance_km : null,
                 }),
             });
 
@@ -484,6 +512,25 @@ export default function PaymentIndex({
                             </p>
                         </div>
                     </motion.div>
+
+                    {/* Delivery Fee Calculator (for delivery orders) */}
+                    {orderData.type === "delivery" && (
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.5 }}
+                            className="mt-8"
+                        >
+                            <DeliveryFeeCalculator
+                                restaurantId={restaurantUser?.restaurant_id}
+                                restaurantLatitude={restaurantUser?.latitude}
+                                restaurantLongitude={restaurantUser?.longitude}
+                                maxDeliveryRadius={restaurantUser?.max_delivery_radius_km || 20}
+                                onDeliveryDataChange={handleDeliveryDataChange}
+                                initialAddress={orderData.delivery_address || ""}
+                            />
+                        </motion.div>
+                    )}
                 </div>
 
                 {/* Order Summary Sidebar */}
@@ -508,6 +555,12 @@ export default function PaymentIndex({
                                         <span>Subtotal</span>
                                         <span>₦{subtotal.toFixed(2)}</span>
                                     </div>
+                                    {deliveryFee > 0 && (
+                                        <div className="flex justify-between text-gray-600">
+                                            <span>Delivery Fee</span>
+                                            <span>₦{deliveryFee.toFixed(2)}</span>
+                                        </div>
+                                    )}
                                     <div className="flex justify-between text-gray-600">
                                         <span>Tax (10%)</span>
                                         <span>₦{tax.toFixed(2)}</span>

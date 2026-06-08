@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Models\User;
 use App\Services\CartService;
 use App\Services\OrderService;
 use App\Services\PaymentService;
@@ -28,12 +29,19 @@ class PaymentController extends Controller
         $validated = $request->validate([
             'type' => 'required|in:dine-in,takeaway,delivery',
             'delivery_address' => 'nullable|string',
-            'delivery_phone' => 'nullable|string|max:11|min:11',
+            'delivery_phone' => 'nullable|string',
             'table_number' => 'nullable|string',
             'notes' => 'nullable|string|max:1000',
         ]);
 
+        Log::info('Payment create - form data received', $validated);
+        
         $request->session()->put('pending_order_data', $validated);
+        
+        Log::info('Payment create - session data stored', [
+            'session_key' => 'pending_order_data',
+            'data' => $validated,
+        ]);
 
         return redirect()->route('payment.show');
     }
@@ -52,7 +60,13 @@ class PaymentController extends Controller
         }
 
         $orderData = $request->session()->get('pending_order_data');
+        
+        Log::info('Payment show - retrieved session data', [
+            'orderData' => $orderData,
+        ]);
+        
         if (!$orderData) {
+            Log::info('Payment show - no session data, using default');
             $orderData = [
                 'type' => 'dine-in',
                 'delivery_address' => null,
@@ -74,11 +88,25 @@ class PaymentController extends Controller
 
         $publicKey = $this->paymentService->getPublicKey();
 
+        // Get admin user for restaurant configuration (delivery location)
+        $admin = User::where('id', 1)->first();
+        
+        // Merge admin restaurant data with user data for frontend
+        $userWithRestaurant = $user->toArray();
+        if ($admin) {
+            $userWithRestaurant['restaurant_id'] = $admin->id;
+            $userWithRestaurant['latitude'] = $admin->latitude;
+            $userWithRestaurant['longitude'] = $admin->longitude;
+            $userWithRestaurant['max_delivery_radius_km'] = $admin->max_delivery_radius_km ?? 20;
+        }
+        // dd($userWithRestaurant);
+
         return Inertia::render('Payment/Index', [
             'cartItems' => $transformedItems,
             'subtotal' => $subtotal,
             'publicKey' => $publicKey,
             'orderData' => $orderData,
+            'restaurantUser' => $userWithRestaurant,
         ]);
     }
 
@@ -94,10 +122,14 @@ class PaymentController extends Controller
             $validated = $request->validate([
                 'type' => 'required|in:dine-in,takeaway,delivery',
                 'delivery_address' => 'nullable|string',
-                'delivery_phone' => 'nullable|string|max:11|min:11',
+                'delivery_phone' => 'nullable|string',
                 'table_number' => 'nullable|string',
                 'notes' => 'nullable|string|max:1000',
                 'payment_method' => 'required|string',
+                'delivery_fee' => 'nullable|integer|min:0',
+                'customer_latitude' => 'nullable|numeric|between:-90,90',
+                'customer_longitude' => 'nullable|numeric|between:-180,180',
+                'delivery_distance_km' => 'nullable|numeric|min:0',
             ]);
 
             $order = $this->orderService->createPendingOrder($user, [
@@ -106,6 +138,10 @@ class PaymentController extends Controller
                 'delivery_phone' => $validated['delivery_phone'] ?? "",
                 'table_number' => $validated['table_number'] ?? "",
                 'notes' => $validated['notes'] ?? "",
+                'delivery_fee' => $validated['delivery_fee'] ?? 0,
+                'customer_latitude' => $validated['customer_latitude'] ?? null,
+                'customer_longitude' => $validated['customer_longitude'] ?? null,
+                'delivery_distance_km' => $validated['delivery_distance_km'] ?? null,
             ]);
 
             Log::info('Payment initialization', ['order_id' => $order->id, 'payment_method' => $validated['payment_method']]);

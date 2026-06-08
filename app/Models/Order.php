@@ -33,6 +33,10 @@ class Order extends Model
         'paid_at',
         'delivery_address',
         'delivery_phone',
+        'customer_latitude',
+        'customer_longitude',
+        'delivery_distance_km',
+        'delivery_fee',
         'table_number',
         'subtotal',
         'total',
@@ -50,6 +54,10 @@ class Order extends Model
             'subtotal' => 'decimal:2',
             'total' => 'decimal:2',
             'amount_paid' => 'decimal:2',
+            'customer_latitude' => 'float',
+            'customer_longitude' => 'float',
+            'delivery_distance_km' => 'float',
+            'delivery_fee' => 'integer',
             'paid_at' => 'datetime',
         ];
     }

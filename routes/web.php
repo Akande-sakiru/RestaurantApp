@@ -3,6 +3,8 @@
 // use App\Http\Controllers\Admin\MenuItemController;
 use App\Http\Controllers\Api\OrderApiController;
 use App\Http\Controllers\Api\NotificationApiController;
+use App\Http\Controllers\Api\DeliveryFeeApiController;
+use App\Http\Controllers\Api\GeocodingApiController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\MenuController;
@@ -64,6 +66,14 @@ Route::middleware(['auth', 'verified', 'role:customer|admin'])->group(function (
     Route::post('/api/notifications/mark-all-as-read', [NotificationApiController::class, 'markAllAsRead'])->name('api.notifications.mark-all-as-read');
     Route::delete('/api/notifications/{notification}', [NotificationApiController::class, 'destroy'])->name('api.notifications.destroy');
 
+    // Delivery Fee API endpoints
+    Route::post('/api/delivery-fee/calculate', [DeliveryFeeApiController::class, 'calculate'])->name('api.delivery-fee.calculate');
+    Route::get('/api/delivery-fee/pricing-tiers', [DeliveryFeeApiController::class, 'getPricingTiers'])->name('api.delivery-fee.pricing-tiers');
+
+    // Geocoding API endpoints
+    Route::post('/api/geocoding/address-to-coordinates', [GeocodingApiController::class, 'addressToCoordinates'])->name('api.geocoding.address-to-coordinates');
+    Route::post('/api/geocoding/coordinates-to-address', [GeocodingApiController::class, 'coordinatesToAddress'])->name('api.geocoding.coordinates-to-address');
+
     Route::get('/reservations', [ReservationController::class, 'index'])->name('reservations.index');
     Route::get('/reservations/create', [ReservationController::class, 'create'])->name('reservations.create');
     Route::post('/reservations', [ReservationController::class, 'store'])->name('reservations.store');
@@ -81,6 +91,10 @@ Route::middleware(['auth', 'verified', 'role:admin'])
     ->name('admin.')
     ->group(function () {
         Route::get('/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
+
+        // Settings
+        Route::get('/settings', [\App\Http\Controllers\Admin\SettingsController::class, 'index'])->name('settings.index');
+        Route::patch('/settings', [\App\Http\Controllers\Admin\SettingsController::class, 'update'])->name('settings.update');
 
         // Menu Items
         Route::get('/menu-items', [MenuItemController::class, 'index'])->name('menu-items.index');

@@ -34,8 +34,15 @@ export default function NotificationBell() {
         try {
             const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
             
-            const response = await fetch('/api/notifications', {
+            // Use admin endpoint if user is admin, otherwise use user endpoint
+            const isAdmin = auth?.user?.roles && Array.isArray(auth.user.roles) && auth.user.roles.includes('admin');
+            const endpoint = isAdmin ? '/admin/api/notifications' : '/api/notifications';
+            
+            console.log('Fetching notifications from:', endpoint, 'User roles:', auth?.user?.roles);
+            
+            const response = await fetch(endpoint, {
                 method: 'GET',
+                credentials: 'include', // Include cookies/session
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
@@ -44,7 +51,7 @@ export default function NotificationBell() {
             });
             
             if (!response.ok) {
-                console.error('Failed to fetch notifications:', response.status);
+                console.error('Failed to fetch notifications:', response.status, response.statusText);
                 return;
             }
             
@@ -71,9 +78,17 @@ export default function NotificationBell() {
     const markAsRead = async (notificationId) => {
         try {
             const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+            const isAdmin = auth?.user?.roles && Array.isArray(auth.user.roles) && auth.user.roles.includes('admin');
+            
+            console.log('Marking notification as read:', {
+                notificationId,
+                isAdmin,
+                userRoles: auth?.user?.roles
+            });
             
             const response = await fetch(`/api/notifications/${notificationId}/read`, {
                 method: 'POST',
+                credentials: 'include', // Include cookies/session
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
@@ -82,13 +97,39 @@ export default function NotificationBell() {
             });
             
             if (response.ok) {
-                console.log('Notification marked as read');
+                const data = await response.json();
+                console.log('Mark as read response:', data);
+                
                 // Update local state immediately
-                setNotifications(prev => 
-                    prev.map(n => n.id === notificationId ? { ...n, status: 'read' } : n)
-                );
+                if (isAdmin) {
+                    // For admin: update admin_read flag
+                    setNotifications(prev => {
+                        const updated = prev.map(n => 
+                            n.id === notificationId ? { ...n, admin_read: true } : n
+                        );
+                        console.log('Updated notifications (admin):', updated);
+                        return updated;
+                    });
+                } else {
+                    // For user: update status flag
+                    setNotifications(prev => {
+                        const updated = prev.map(n => 
+                            n.id === notificationId ? { ...n, status: 'read' } : n
+                        );
+                        console.log('Updated notifications (user):', updated);
+                        return updated;
+                    });
+                }
                 // Recalculate unread count
-                setUnreadCount(prev => Math.max(0, prev - 1));
+                setUnreadCount(prev => {
+                    const newCount = Math.max(0, prev - 1);
+                    console.log('New unread count:', newCount);
+                    return newCount;
+                });
+            } else {
+                console.error('Failed to mark as read:', response.status, response.statusText);
+                const errorData = await response.json();
+                console.error('Error response:', errorData);
             }
         } catch (error) {
             console.error('Error marking notification as read:', error);
@@ -101,6 +142,7 @@ export default function NotificationBell() {
             
             const response = await fetch(`/api/notifications/${notificationId}`, {
                 method: 'DELETE',
+                credentials: 'include', // Include cookies/session
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
@@ -127,9 +169,18 @@ export default function NotificationBell() {
     };
 
     const getNotificationIcon = (notification) => {
-        // If notification has been read, show check mark
-        if (notification.status === 'read') {
-            return <Check size={18} className="text-green-500" />;
+        const isAdmin = auth?.user?.roles && Array.isArray(auth.user.roles) && auth.user.roles.includes('admin');
+        
+        // For admin: check admin_read status
+        if (isAdmin) {
+            if (notification.admin_read) {
+                return <Check size={18} className="text-green-500" />;
+            }
+        } else {
+            // For user: check status field
+            if (notification.status === 'read') {
+                return <Check size={18} className="text-green-500" />;
+            }
         }
         
         // Handle notification_messages table structure
@@ -146,7 +197,14 @@ export default function NotificationBell() {
     };
 
     const getNotificationTitle = (notification) => {
-        // Handle notification_messages table structure
+        const isAdmin = auth?.user?.roles && Array.isArray(auth.user.roles) && auth.user.roles.includes('admin');
+        
+        if (isAdmin && notification.user) {
+            // For admin: show user name + action
+            return `${notification.user.name} - ${notification.title || 'Notification'}`;
+        }
+        
+        // For user: just show the title
         if (notification.title) {
             return notification.title;
         }
@@ -154,7 +212,7 @@ export default function NotificationBell() {
     };
 
     const getNotificationMessage = (notification) => {
-        // Handle notification_messages table structure
+        // Both admin and user see the same message
         if (notification.message) {
             return notification.message;
         }
@@ -223,14 +281,21 @@ export default function NotificationBell() {
                                 </div>
                             ) : (
                                 <div className="divide-y divide-gray-100">
-                                    {notifications.map((notification) => (
+                                    {notifications.map((notification) => {
+                                        const isAdmin = auth?.user?.roles && Array.isArray(auth.user.roles) && auth.user.roles.includes('admin');
+                                        // For admin: check admin_read property, for user: check status
+                                        const isRead = isAdmin 
+                                            ? notification.admin_read === true 
+                                            : notification.status === 'read';
+                                        
+                                        return (
                                         <motion.div
                                             key={notification.id}
                                             initial={{ opacity: 0, x: -10 }}
                                             animate={{ opacity: 1, x: 0 }}
                                             exit={{ opacity: 0, x: 10 }}
                                             className={`px-4 py-3 hover:bg-gray-50 transition-colors ${
-                                                notification.status === 'unread' ? 'bg-red-50' : 'bg-white'
+                                                isRead ? 'bg-white' : 'bg-red-50'
                                             }`}
                                         >
                                             <div className="flex items-start justify-between gap-3">
@@ -267,7 +332,8 @@ export default function NotificationBell() {
                                                 </button>
                                             </div>
                                         </motion.div>
-                                    ))}
+                                        );
+                                    })}
                                 </div>
                             )}
                         </div>

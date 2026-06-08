@@ -141,4 +141,11 @@ Route::middleware(['auth', 'verified', 'role:admin'])
         Route::get('/users', [UserController::class, 'index'])->name('users.index');
         Route::patch('/users/{user}/toggle-active', [UserController::class, 'toggleActive'])->name('users.toggle-active');
         Route::patch('/users/{user}/role', [UserController::class, 'updateRole'])->name('users.update-role');
+
+        // Notifications
+        Route::get('/api/notifications', [NotificationApiController::class, 'adminIndex'])->name('api.notifications.index');
+        Route::get('/api/notifications/status/{status}', [NotificationApiController::class, 'adminGetByStatus'])->name('api.notifications.by-status');
+        Route::post('/api/notifications/{notification}/read', [NotificationApiController::class, 'markAsRead'])->name('api.notifications.mark-as-read');
+        Route::post('/api/notifications/mark-all-as-read', [NotificationApiController::class, 'adminMarkAllAsRead'])->name('api.notifications.mark-all-as-read');
+        Route::delete('/api/notifications/{notification}', [NotificationApiController::class, 'destroy'])->name('api.notifications.destroy');
     });

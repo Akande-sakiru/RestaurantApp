@@ -38,11 +38,9 @@ export default function NotificationBell() {
             const isAdmin = auth?.user?.roles && Array.isArray(auth.user.roles) && auth.user.roles.includes('admin');
             const endpoint = isAdmin ? '/admin/api/notifications' : '/api/notifications';
             
-            console.log('Fetching notifications from:', endpoint, 'User roles:', auth?.user?.roles);
-            
             const response = await fetch(endpoint, {
                 method: 'GET',
-                credentials: 'include', // Include cookies/session
+                credentials: 'include',
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
@@ -51,12 +49,10 @@ export default function NotificationBell() {
             });
             
             if (!response.ok) {
-                console.error('Failed to fetch notifications:', response.status, response.statusText);
                 return;
             }
             
             const data = await response.json();
-            console.log('Notifications fetched:', data);
             
             if (Array.isArray(data.notifications)) {
                 setNotifications(data.notifications);
@@ -80,15 +76,9 @@ export default function NotificationBell() {
             const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
             const isAdmin = auth?.user?.roles && Array.isArray(auth.user.roles) && auth.user.roles.includes('admin');
             
-            console.log('Marking notification as read:', {
-                notificationId,
-                isAdmin,
-                userRoles: auth?.user?.roles
-            });
-            
             const response = await fetch(`/api/notifications/${notificationId}/read`, {
                 method: 'POST',
-                credentials: 'include', // Include cookies/session
+                credentials: 'include',
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
@@ -97,39 +87,20 @@ export default function NotificationBell() {
             });
             
             if (response.ok) {
-                const data = await response.json();
-                console.log('Mark as read response:', data);
-                
                 // Update local state immediately
                 if (isAdmin) {
                     // For admin: update admin_read flag
-                    setNotifications(prev => {
-                        const updated = prev.map(n => 
-                            n.id === notificationId ? { ...n, admin_read: true } : n
-                        );
-                        console.log('Updated notifications (admin):', updated);
-                        return updated;
-                    });
+                    setNotifications(prev => 
+                        prev.map(n => n.id === notificationId ? { ...n, admin_read: true } : n)
+                    );
                 } else {
                     // For user: update status flag
-                    setNotifications(prev => {
-                        const updated = prev.map(n => 
-                            n.id === notificationId ? { ...n, status: 'read' } : n
-                        );
-                        console.log('Updated notifications (user):', updated);
-                        return updated;
-                    });
+                    setNotifications(prev => 
+                        prev.map(n => n.id === notificationId ? { ...n, status: 'read' } : n)
+                    );
                 }
                 // Recalculate unread count
-                setUnreadCount(prev => {
-                    const newCount = Math.max(0, prev - 1);
-                    console.log('New unread count:', newCount);
-                    return newCount;
-                });
-            } else {
-                console.error('Failed to mark as read:', response.status, response.statusText);
-                const errorData = await response.json();
-                console.error('Error response:', errorData);
+                setUnreadCount(prev => Math.max(0, prev - 1));
             }
         } catch (error) {
             console.error('Error marking notification as read:', error);

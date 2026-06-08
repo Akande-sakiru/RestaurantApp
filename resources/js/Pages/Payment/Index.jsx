@@ -27,7 +27,7 @@ export default function PaymentIndex({
     },
     restaurantUser = null,
 }) {
-    const { auth } = usePage().props;
+    const { auth, csrf_token } = usePage().props;
     const userEmail = auth?.user?.email || "";
     const items = Array.isArray(cartItems) ? cartItems : [];
     const [paymentMethod, setPaymentMethod] = useState("card");
@@ -109,14 +109,16 @@ export default function PaymentIndex({
         try {
             setIsInitializing(true);
 
-            // Initialize payment on backend
+            // Get CSRF token from meta tag
+            const csrfTokenEl = document.querySelector('meta[name="csrf-token"]');
+            const csrfToken = csrfTokenEl ? csrfTokenEl.getAttribute('content') : '';
+
             const response = await fetch("/payment/initialize", {
                 method: "POST",
+                credentials: "same-origin",
                 headers: {
                     "Content-Type": "application/json",
-                    "X-CSRF-Token":
-                        document.querySelector('meta[name="csrf-token"]')
-                            ?.content || "",
+                    "X-CSRF-TOKEN": csrfToken,
                 },
                 body: JSON.stringify({
                     type: orderData.type,
@@ -133,7 +135,6 @@ export default function PaymentIndex({
             });
 
             const result = await response.json();
-            console.log("Initialize response:", result);
 
             if (!result.status) {
                 setError(result.message || "Failed to initialize payment");
@@ -143,132 +144,21 @@ export default function PaymentIndex({
 
             const paymentData = result.data;
 
-            // Open Paystack payment modal
-            console.log("Setting up Paystack with payment data:", paymentData);
-            // const handler = window.PaystackPop.setup({
-            //     key: publicKey,
-            //     email: userEmail,
-            //     amount: Math.round(finalTotal * 100), // Convert to kobo
-            //     ref: paymentData.reference,
-            //     onClose: () => {
-            //         setIsInitializing(false);
-            //         setError("Payment was cancelled");
-
-            //         // Notify backend that payment was cancelled (fire and forget)
-            //         fetch("/payment/fail", {
-            //             method: "POST",
-            //             headers: {
-            //                 "Content-Type": "application/json",
-            //                 "X-CSRF-Token":
-            //                     document.querySelector(
-            //                         'meta[name="csrf-token"]',
-            //                     )?.content || "",
-            //             },
-            //             body: JSON.stringify({
-            //                 reference: paymentData.reference,
-            //                 order_id: paymentData.order_id,
-            //                 reason: "User cancelled payment",
-            //             }),
-            //         }).catch((err) =>
-            //             console.error(
-            //                 "Error notifying payment cancellation:",
-            //                 err,
-            //             ),
-            //         );
-            //     },
-            //     onSuccess: async (response) => {
-            //         // Verify payment on backend
-            //         console.log("🎉 onSuccess callback triggered!", response);
-            //         console.log("Payment successful from Paystack:", response);
-            //         try {
-            //             const verifyResponse = await fetch("/payment/verify", {
-            //                 method: "POST",
-            //                 headers: {
-            //                     "Content-Type": "application/json",
-            //                     "X-CSRF-Token":
-            //                         document.querySelector(
-            //                             'meta[name="csrf-token"]',
-            //                         )?.content || "",
-            //                 },
-            //                 body: JSON.stringify({
-            //                     reference: response.reference,
-            //                     order_id: paymentData.order_id,
-            //                 }),
-            //             });
-
-            //             const verifyResult = await verifyResponse.json();
-            //             console.log("Verification result:", verifyResult);
-
-            //             if (verifyResult.status) {
-            //                 // Payment successful - redirect to confirmation
-            //                 console.log(
-            //                     "Payment verified, redirecting to:",
-            //                     `/orders/${paymentData.order_id}/confirmation`,
-            //                 );
-            //                 // Use setTimeout to ensure redirect happens after modal closes
-            //                 setTimeout(() => {
-            //                     console.log("Executing redirect...");
-            //                     window.location.href = `/orders/${paymentData.order_id}/confirmation`;
-            //                 }, 500);
-            //             } else {
-            //                 console.log("Verification failed:", verifyResult);
-            //                 setError(
-            //                     verifyResult.message ||
-            //                         "Payment verification failed",
-            //                 );
-            //                 setIsInitializing(false);
-
-            //                 // Notify backend of failed verification (fire and forget)
-            //                 fetch("/payment/fail", {
-            //                     method: "POST",
-            //                     headers: {
-            //                         "Content-Type": "application/json",
-            //                         "X-CSRF-Token":
-            //                             document.querySelector(
-            //                                 'meta[name="csrf-token"]',
-            //                             )?.content || "",
-            //                     },
-            //                     body: JSON.stringify({
-            //                         reference: response.reference,
-            //                         order_id: paymentData.order_id,
-            //                         reason:
-            //                             verifyResult.message ||
-            //                             "Payment verification failed",
-            //                     }),
-            //                 }).catch((err) =>
-            //                     console.error(
-            //                         "Error notifying payment failure:",
-            //                         err,
-            //                     ),
-            //                 );
-            //             }
-            //         } catch (err) {
-            //             console.error("Error during verification:", err);
-            //             setError("Error verifying payment: " + err.message);
-            //             setIsInitializing(false);
-            //         }
-            //     },
-            // });
-
             const handler = window.PaystackPop.setup({
                 key: publicKey,
                 email: userEmail,
                 amount: Math.round(finalTotal * 100),
                 ref: paymentData.reference,
-
-                callback: async function (response) {
-                    console.log("SUCCESS CALLBACK FIRED");
-                    console.log(response);
-                    console.log("🎉 PAYMENT SUCCESS", response);
-
+                onClose: function () {
+                    setIsInitializing(false);
+                },
+                onSuccess: async function (response) {
                     const verifyResponse = await fetch("/payment/verify", {
                         method: "POST",
+                        credentials: "same-origin",
                         headers: {
                             "Content-Type": "application/json",
-                            "X-CSRF-Token":
-                                document.querySelector(
-                                    'meta[name="csrf-token"]',
-                                )?.content || "",
+                            "X-CSRF-TOKEN": csrfToken,
                         },
                         body: JSON.stringify({
                             reference: response.reference,
@@ -278,21 +168,15 @@ export default function PaymentIndex({
 
                     const verifyResult = await verifyResponse.json();
 
-                    console.log("VERIFY RESULT", verifyResult);
-
                     if (verifyResult.status) {
                         window.location.href = `/orders/${paymentData.order_id}/confirmation`;
                     }
                 },
-
-                onClose: function () {
-                    console.log("Modal closed");
-                },
             });
             handler.openIframe();
-            console.log("Paystack iframe opened");
         } catch (err) {
             console.error("Error in handlePayment:", err);
+            setError("Payment error: " + err.message);
             setIsInitializing(false);
         }
     };
@@ -453,11 +337,7 @@ export default function PaymentIndex({
                                             label: "Bank Transfer",
                                             icon: "🏦",
                                         },
-                                        {
-                                            id: "mobile_money",
-                                            label: "Mobile Money",
-                                            icon: "📱",
-                                        },
+                                     
                                     ].map((method) => (
                                         <motion.button
                                             key={method.id}

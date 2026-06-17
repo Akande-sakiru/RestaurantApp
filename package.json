@@ -25,14 +25,20 @@
     "dependencies": {
         "@hookform/resolvers": "^5.4.0",
         "@inertiajs/react": "^3.2.0",
+        "@radix-ui/react-dialog": "^1.1.15",
+        "@radix-ui/react-slot": "^1.2.4",
         "@tanstack/react-query": "^5.100.11",
+        "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
         "framer-motion": "^12.40.0",
+        "laravel-echo": "^2.3.4",
         "lucide-react": "^1.16.0",
+        "pusher-js": "^8.5.0",
         "react": "^19.2.6",
         "react-dom": "^19.2.6",
         "react-hook-form": "^7.76.0",
         "react-hot-toast": "^2.6.0",
+        "react-places-autocomplete": "^7.3.0",
         "recharts": "^3.8.1",
         "zod": "^4.4.3"
     }

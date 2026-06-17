@@ -7,7 +7,7 @@ Full-stack restaurant SPA built on Laravel 12 + React 19 + Inertia.js v2. Implem
 ## Tasks
 
 - [ ] 1. Foundation — database, models, RBAC, and shared infrastructure
-  - [ ] 1.1 Publish Spatie Permission migrations and update the users migration
+  - [-] 1.1 Publish Spatie Permission migrations and update the users migration
     - Run `php artisan vendor:publish --provider="Spatie\LaravelPermission\PermissionServiceProvider"` to publish the permission tables migration
     - Add `is_active` (boolean, default true) and `deleted_at` (nullable timestamp) columns to the existing `create_users_table` migration
     - Add `phone` (nullable string) column to the users migration
@@ -21,7 +21,7 @@ Full-stack restaurant SPA built on Laravel 12 + React 19 + Inertia.js v2. Implem
     - Create `2024_01_01_000006_create_reservations_table.php`: `id`, `user_id` (FK → users), `reservation_number` (unique string), `reserved_date` (date), `reserved_time` (time), `party_size` (unsigned tinyint), `status` (enum: pending|confirmed|cancelled|completed, default pending), `special_requests` (nullable text), `timestamps`
     - _Requirements: 5.1, 6.1, 7.1, 9.1_
 
-  - [-] 1.3 Update the User model and create Category, MenuItem, Order, OrderItem, and Reservation models
+  - [x] 1.3 Update the User model and create Category, MenuItem, Order, OrderItem, and Reservation models
     - Update `app/Models/User.php`: add `HasRoles`, `SoftDeletes` traits; set `$fillable` to `['name', 'email', 'phone', 'password', 'is_active']`; add `is_active` and `email_verified_at` casts; add `orders()` HasMany and `reservations()` HasMany relationships
     - Create `app/Models/Category.php` with `HasFactory`; `$fillable = ['name', 'slug', 'sort_order']`; `menuItems()` HasMany relationship
     - Create `app/Models/MenuItem.php` with `HasFactory`, `SoftDeletes`; `$fillable` and `$casts` per design; `category()` BelongsTo, `orderItems()` HasMany; `getImageUrlAttribute()` accessor using `Storage::url()`
@@ -36,56 +36,56 @@ Full-stack restaurant SPA built on Laravel 12 + React 19 + Inertia.js v2. Implem
     - Update `DatabaseSeeder.php` to call `RolesAndPermissionsSeeder` and `AdminUserSeeder`
     - _Requirements: 3.1, 3.2, 3.3_
 
-  - [ ] 1.5 Register Spatie middleware aliases and configure bootstrap/app.php
+  - [x] 1.5 Register Spatie middleware aliases and configure bootstrap/app.php
     - In `bootstrap/app.php`, register `role` and `permission` middleware aliases pointing to Spatie's `RoleMiddleware` and `PermissionMiddleware`
     - Ensure `HandleInertiaRequests` middleware is registered in the web middleware stack
     - _Requirements: 3.2, 3.3, 3.4_
 
-  - [ ] 1.6 Create model factories for all new models
+  - [x] 1.6 Create model factories for all new models
     - Create `CategoryFactory.php`, `MenuItemFactory.php`, `OrderFactory.php`, `OrderItemFactory.php`, `ReservationFactory.php`
     - Update `UserFactory.php` to include `is_active`, `phone` fields
     - _Requirements: (testing infrastructure)_
 
 
-- [ ] 2. Backend services and route structure
-  - [ ] 2.1 Create CartService and bind it in AppServiceProvider
+- [x] 2. Backend services and route structure
+  - [x] 2.1 Create CartService and bind it in AppServiceProvider
     - Create `app/Services/CartService.php` implementing `get()`, `add()`, `update()`, `remove()`, `clear()`, `count()`, `subtotal()`, and `key()` methods as specified in the design
     - `add()` must increment quantity if item already exists in the Redis hash; `update()` with qty=0 must call `remove()`; cart TTL is 7 days, refreshed on each write
     - `subtotal()` iterates hash values and sums `price * quantity` accurate to two decimal places
     - Bind `CartService` as a singleton in `AppServiceProvider`
     - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 5.7_
 
-  - [ ] 2.2 Create OrderService
+  - [x] 2.2 Create OrderService
     - Create `app/Services/OrderService.php` with `createFromCart(User $user, array $validated): Order`
     - Wrap in `DB::transaction`: fetch cart items, validate all items are still available, create `Order` record with a unique `order_number` (e.g., `ORD-` + timestamp + random), create `OrderItem` records snapshotting `menu_item_name` and `menu_item_price`, clear the cart, dispatch `OrderCreated` event and `SendOrderConfirmationEmail` job
     - _Requirements: 6.5, 6.6, 15.1_
 
-  - [ ] 2.3 Define all web routes in routes/web.php
+  - [x] 2.3 Define all web routes in routes/web.php
     - Define public routes: `GET /` (LandingController), `GET /menu` (MenuController)
     - Define customer route group with `['auth', 'verified', 'role:customer|admin']` middleware: cart CRUD, orders index/show/store, reservations index/create/store/cancel, profile edit/update/password/destroy
     - Define admin route group with `['auth', 'verified', 'role:admin']` middleware, prefix `admin`, name `admin.`: dashboard, menu-items resource, categories resource, orders index/show/status, reservations index/status, users index/role/toggle-active
     - Ensure `require __DIR__.'/auth.php'` is present
     - _Requirements: 2.9, 3.2, 3.3, 3.4, 14.1_
 
-  - [ ] 2.4 Update HandleInertiaRequests middleware to share auth, cart, and flash props
+  - [x] 2.4 Update HandleInertiaRequests middleware to share auth, cart, and flash props
     - Update `share()` method to return `auth.user` with `id`, `name`, `email`, `roles` (via `getRoleNames()`), or null for guests
     - Add `cart.count` using `app(CartService::class)->count($request->user())` (0 for guests)
     - Add `flash.success` and `flash.error` from session
     - _Requirements: 3.5, 14.2, 14.3, 14.4_
 
 
-- [ ] 3. Auth controllers and RBAC enforcement
-  - [ ] 3.1 Update RegisteredUserController to assign the customer role and redirect correctly
+- [x] 3. Auth controllers and RBAC enforcement
+  - [x] 3.1 Update RegisteredUserController to assign the customer role and redirect correctly
     - After `User::create([...])`, call `$user->assignRole('customer')`
     - Change the post-registration redirect to `route('orders.index')` (customer dashboard)
     - _Requirements: 2.2, 3.1_
 
-  - [ ] 3.2 Update AuthenticatedSessionController for role-aware redirects
+  - [x] 3.2 Update AuthenticatedSessionController for role-aware redirects
     - After successful login, redirect `admin` role users to `route('admin.dashboard')` and `customer` role users to `route('orders.index')`
     - After logout, redirect to `route('home')`
     - _Requirements: 2.5, 2.7_
 
-  - [ ] 3.3 Add is_active check to LoginRequest or authentication guard
+  - [x] 3.3 Add is_active check to LoginRequest or authentication guard
     - In `LoginRequest::authenticate()` (or via a custom guard), after credentials are validated, check `$user->is_active`; if false, throw a `ValidationException` with an appropriate error message
     - _Requirements: 12.4_
 
@@ -109,49 +109,49 @@ Full-stack restaurant SPA built on Laravel 12 + React 19 + Inertia.js v2. Implem
     - **Validates: Requirements 3.5**
     - Tag with `#[Group('property')]`
 
-- [ ] 4. Checkpoint — run migrations, seeders, and auth tests
+- [x] 4. Checkpoint — run migrations, seeders, and auth tests
   - Run `php artisan migrate:fresh --seed` and verify roles/permissions are created
   - Ensure all tests pass, ask the user if questions arise.
 
 
 - [ ] 5. Backend controllers — public and customer features
-  - [ ] 5.1 Create LandingController
+  - [x] 5.1 Create LandingController
     - `index()` queries up to 6 active `MenuItem` records (with their category) to use as featured items
     - Returns `Inertia::render('Welcome', ['featuredItems' => ..., 'restaurantInfo' => [...]])` where `restaurantInfo` contains name, tagline, address, hours, and contact info (sourced from config or hardcoded constants)
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5_
 
-  - [ ]* 5.2 Write property test for featured items contain required fields (Property 1)
+  - [x]* 5.2 Write property test for featured items contain required fields (Property 1)
     - **Property 1: Featured menu items contain required fields**
     - **Validates: Requirements 1.3**
     - Tag with `#[Group('property')]`
 
-  - [ ] 5.3 Create MenuController
+  - [x] 5.3 Create MenuController
     - `index()` accepts optional `category` (ID) and `search` (string) query parameters
     - Queries active `MenuItem` records with their category; applies category filter when provided; applies case-insensitive `name` or `description` LIKE search when provided
     - Returns `Inertia::render('Menu/Index', ['menuItems' => ..., 'categories' => Category::orderBy('sort_order')->get(), 'filters' => compact('category', 'search')])`
     - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 4.7_
 
-  - [ ]* 5.4 Write property test for menu page groups all active items by category (Property 6)
+  - [x]* 5.4 Write property test for menu page groups all active items by category (Property 6)
     - **Property 6: Menu page groups all active items by category**
     - **Validates: Requirements 4.2**
     - Tag with `#[Group('property')]`
 
-  - [ ]* 5.5 Write property test for menu items contain required fields (Property 7)
+  - [x]* 5.5 Write property test for menu items contain required fields (Property 7)
     - **Property 7: Menu items in response contain all required fields**
     - **Validates: Requirements 4.3**
     - Tag with `#[Group('property')]`
 
-  - [ ]* 5.6 Write property test for category filter returns only matching items (Property 8)
+  - [x]* 5.6 Write property test for category filter returns only matching items (Property 8)
     - **Property 8: Category filter returns only items from that category**
     - **Validates: Requirements 4.5**
     - Tag with `#[Group('property')]`
 
-  - [ ]* 5.7 Write property test for menu search returns only matching items (Property 9)
+  - [x]* 5.7 Write property test for menu search returns only matching items (Property 9)
     - **Property 9: Menu search returns only matching items**
     - **Validates: Requirements 4.6**
     - Tag with `#[Group('property')]`
 
-  - [ ] 5.8 Create CartController
+  - [x] 5.8 Create CartController
     - `index()`: returns `Inertia::render('Cart/Index', ['cartItems' => $cartService->get($user), 'subtotal' => $cartService->subtotal($user)])`
     - `store(Request $request)`: validates `menu_item_id`, `quantity` (min 1), optional `notes`; checks item `is_available`; calls `$cartService->add()`; returns redirect back with success flash
     - `update(Request $request, MenuItem $menuItem)`: validates `quantity` (min 0); calls `$cartService->update()` (which removes if qty=0); returns redirect back
@@ -159,27 +159,27 @@ Full-stack restaurant SPA built on Laravel 12 + React 19 + Inertia.js v2. Implem
     - `clear()`: calls `$cartService->clear()`; returns redirect back
     - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.6, 5.7_
 
-  - [ ]* 5.9 Write property test for cart persistence across requests (Property 10)
+  - [x]* 5.9 Write property test for cart persistence across requests (Property 10)
     - **Property 10: Cart persists across requests within the same session**
     - **Validates: Requirements 5.1, 5.7**
     - Tag with `#[Group('property')]`
 
-  - [ ]* 5.10 Write property test for adding item stores all provided data (Property 11)
+  - [x]* 5.10 Write property test for adding item stores all provided data (Property 11)
     - **Property 11: Adding an item to the cart stores all provided data**
     - **Validates: Requirements 5.2**
     - Tag with `#[Group('property')]`
 
-  - [ ]* 5.11 Write property test for duplicate cart item increments quantity (Property 12)
+  - [x]* 5.11 Write property test for duplicate cart item increments quantity (Property 12)
     - **Property 12: Adding a duplicate cart item increments quantity**
     - **Validates: Requirements 5.3**
     - Tag with `#[Group('property')]`
 
-  - [ ]* 5.12 Write property test for cart subtotal equals sum of price times quantity (Property 13)
+  - [x]* 5.12 Write property test for cart subtotal equals sum of price times quantity (Property 13)
     - **Property 13: Cart subtotal equals sum of price times quantity**
     - **Validates: Requirements 5.5**
     - Tag with `#[Group('property')]`
 
-  - [ ]* 5.13 Write property test for unavailable items cannot be added to cart (Property 25)
+  - [x]* 5.13 Write property test for unavailable items cannot be added to cart (Property 25)
     - **Property 25: Unavailable items cannot be added to the cart**
     - **Validates: Requirements 9.4**
     - Tag with `#[Group('property')]`
@@ -364,15 +364,15 @@ Full-stack restaurant SPA built on Laravel 12 + React 19 + Inertia.js v2. Implem
   - Ensure all tests pass, ask the user if questions arise.
 
 
-- [ ] 8. Events, jobs, notifications, and broadcasting
-  - [ ] 8.1 Create broadcast events: OrderCreated, OrderStatusUpdated, ReservationStatusUpdated
+- [x] 8. Events, jobs, notifications, and broadcasting
+  - [x] 8.1 Create broadcast events: OrderCreated, OrderStatusUpdated, ReservationStatusUpdated
     - Create `app/Events/OrderCreated.php`: implements `ShouldBroadcast`; broadcasts on `private-orders.{userId}` and `private-admin.orders` channels; payload includes order summary
     - Create `app/Events/OrderStatusUpdated.php`: implements `ShouldBroadcast`; broadcasts on `private-orders.{userId}` and `private-admin.orders`; payload includes `order_id` and new `status`
     - Create `app/Events/ReservationStatusUpdated.php`: implements `ShouldBroadcast`; broadcasts on `private-reservations.{userId}`; payload includes `reservation_id` and new `status`
     - Define channel authorization in `routes/channels.php` for `orders.{userId}` (own user only) and `admin.orders` (admin role only)
     - _Requirements: 10.3, 11.3, 11.4_
 
-  - [ ] 8.2 Create queued email jobs and notification classes
+  - [x] 8.2 Create queued email jobs and notification classes
     - Create `app/Jobs/SendOrderConfirmationEmail.php` (implements `ShouldQueue`, dispatched to `notifications` queue)
     - Create `app/Jobs/SendOrderStatusUpdateEmail.php`
     - Create `app/Jobs/SendReservationConfirmationEmail.php`
@@ -381,18 +381,18 @@ Full-stack restaurant SPA built on Laravel 12 + React 19 + Inertia.js v2. Implem
     - Each job's `handle()` calls `$model->user->notify(new CorrespondingNotification($model))`
     - _Requirements: 15.1, 15.2, 15.3, 15.4, 15.5_
 
-  - [ ]* 8.3 Write property test for all email notifications dispatched as queued jobs (Property 38)
+  - [x]* 8.3 Write property test for all email notifications dispatched as queued jobs (Property 38)
     - **Property 38: All email notifications are dispatched as queued jobs**
     - Use `Queue::fake()` to assert jobs are pushed to the `notifications` queue for each triggering event
     - **Validates: Requirements 15.1, 15.2, 15.3, 15.4, 15.5**
     - Tag with `#[Group('property')]`
 
-  - [ ] 8.4 Create ProcessMenuItemImage queued job
+  - [x] 8.4 Create ProcessMenuItemImage queued job
     - Create `app/Jobs/ProcessMenuItemImage.php` (implements `ShouldQueue`, dispatched to `default` queue)
     - `handle()` uses GD or Imagick to resize the stored image to max 800×600 and re-save it in place
     - _Requirements: 9.8_
 
-  - [ ] 8.5 Create the PropertyTest support trait
+  - [x] 8.5 Create the PropertyTest support trait
     - Create `tests/Support/PropertyTest.php` with the `forAll(callable $generator, callable $assertion, int $iterations = 100): void` method using Faker as described in the design's testing strategy
     - _Requirements: (testing infrastructure)_
 

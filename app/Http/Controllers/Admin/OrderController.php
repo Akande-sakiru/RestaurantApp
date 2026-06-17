@@ -72,6 +72,7 @@ class OrderController extends Controller
                 'type' => $order->type,
                 'status' => $order->status,
                 'delivery_address' => $order->delivery_address,
+                'delivery_phone' => $order->delivery_phone,
                 'table_number' => $order->table_number,
                 'subtotal' => (float) $order->subtotal,
                 'total' => (float) $order->total,

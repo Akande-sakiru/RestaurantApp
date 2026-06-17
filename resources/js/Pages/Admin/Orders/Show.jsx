@@ -158,14 +158,14 @@ export default function ShowOrder({ order }) {
                                                     ₦
                                                     {(
                                                         parseFloat(
-                                                            item.menu_item_price
+                                                            item.menu_item_price,
                                                         ) * item.quantity
                                                     ).toFixed(2)}
                                                 </p>
                                                 <p className="text-xs text-gray-500">
                                                     ₦
                                                     {parseFloat(
-                                                        item.menu_item_price
+                                                        item.menu_item_price,
                                                     ).toFixed(2)}{" "}
                                                     each
                                                 </p>
@@ -183,6 +183,17 @@ export default function ShowOrder({ order }) {
                                     </h3>
                                     <p className="text-blue-800">
                                         {order.notes}
+                                    </p>
+                                </div>
+                            )}
+
+                            {order?.delivery_address && (
+                                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                                    <h3 className="font-semibold text-blue-900 mb-2">
+                                        Delivery Address
+                                    </h3>
+                                    <p className="text-blue-800">
+                                        {order?.delivery_address}
                                     </p>
                                 </div>
                             )}
@@ -222,7 +233,7 @@ export default function ShowOrder({ order }) {
                                             Phone
                                         </p>
                                         <p className="font-medium text-gray-900">
-                                            {order.user?.phone}
+                                            {order?.delivery_phone}
                                         </p>
                                     </div>
                                 </div>
@@ -241,7 +252,7 @@ export default function ShowOrder({ order }) {
                                         <span className="font-medium">
                                             ₦
                                             {parseFloat(order.subtotal).toFixed(
-                                                2
+                                                2,
                                             )}
                                         </span>
                                     </div>

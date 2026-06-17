@@ -153,23 +153,44 @@ export default function PaymentIndex({
                     setIsInitializing(false);
                 },
                 onSuccess: async function (response) {
-                    const verifyResponse = await fetch("/payment/verify", {
-                        method: "POST",
-                        credentials: "same-origin",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "X-CSRF-TOKEN": csrfToken,
-                        },
-                        body: JSON.stringify({
-                            reference: response.reference,
-                            order_id: paymentData.order_id,
-                        }),
-                    });
+                    try {
+                        // Get fresh CSRF token for the verify request
+                        const freshCsrfTokenEl = document.querySelector('meta[name="csrf-token"]');
+                        const freshCsrfToken = freshCsrfTokenEl ? freshCsrfTokenEl.getAttribute('content') : csrfToken;
 
-                    const verifyResult = await verifyResponse.json();
+                        const verifyResponse = await fetch("/payment/verify", {
+                            method: "POST",
+                            credentials: "same-origin",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "X-CSRF-TOKEN": freshCsrfToken,
+                            },
+                            body: JSON.stringify({
+                                reference: response.reference,
+                                order_id: paymentData.order_id,
+                            }),
+                        });
 
-                    if (verifyResult.status) {
-                        window.location.href = `/orders/${paymentData.order_id}/confirmation`;
+                        // Check if response is JSON
+                        const contentType = verifyResponse.headers.get("content-type");
+                        if (!contentType || !contentType.includes("application/json")) {
+                            const text = await verifyResponse.text();
+                            setError("Server error during payment verification. Please contact support.");
+                            setIsInitializing(false);
+                            return;
+                        }
+
+                        const verifyResult = await verifyResponse.json();
+
+                        if (verifyResult.status) {
+                            window.location.href = `/orders/${paymentData.order_id}/confirmation`;
+                        } else {
+                            setError(verifyResult.message || "Payment verification failed");
+                            setIsInitializing(false);
+                        }
+                    } catch (err) {
+                        setError("Error verifying payment: " + err.message);
+                        setIsInitializing(false);
                     }
                 },
             });

@@ -13,40 +13,35 @@ class ProcessMenuItemImage implements ShouldQueue
 {
     use Queueable;
 
-    /**
-     * Create a new job instance.
-     */
     public function __construct(public readonly MenuItem $menuItem)
     {
     }
 
-    /**
-     * Execute the job.
-     */
     public function handle(): void
     {
         if (!$this->menuItem->image_path) {
             return;
         }
 
-        $storagePath = Storage::path($this->menuItem->image_path);
+        $disk = Storage::disk('s3');
 
-        if (!file_exists($storagePath)) {
+        if (!$disk->exists($this->menuItem->image_path)) {
             return;
         }
 
         try {
-            // Create image manager with GD driver
             $manager = ImageManager::gd();
-            $image = $manager->read($storagePath);
 
-            // Resize to max 800x600 while maintaining aspect ratio
+            // Read file contents from S3 into memory
+            $contents = $disk->get($this->menuItem->image_path);
+            $image = $manager->read($contents);
+
             $image->scaleDown(width: 800, height: 600);
 
-            // Save back to storage
-            $image->save($storagePath, quality: 80);
+            // Encode and write back up to S3
+            $encoded = $image->encode(new \Intervention\Image\Encoders\AutoEncoder(quality: 80));
+            $disk->put($this->menuItem->image_path, (string) $encoded);
         } catch (\Exception $e) {
-            // Log the error but don't fail the job
             Log::error('Failed to process menu item image', [
                 'menu_item_id' => $this->menuItem->id,
                 'image_path' => $this->menuItem->image_path,

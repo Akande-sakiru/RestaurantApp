@@ -233,7 +233,7 @@ export default function CustomerLayout({ children }) {
                         <div>
                             <h4 className="font-semibold mb-4">Contact</h4>
                             <ul className="space-y-2 text-gray-400">
-                                <li>📞 (555) 123-4567</li>
+                                <li>📞 (+234)8057-938-850</li>
                                 <li>📧 info@restaurant.com</li>
                             </ul>
                         </div>

@@ -60,19 +60,19 @@ export default function CategoriesIndex({ categories = [] }) {
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
-                    className="flex items-center justify-between"
+                    className="flex items-center justify-between flex-col sm:flex-row gap-4 sm:gap-0"
                 >
                     <div>
-                        <h1 className="text-3xl font-bold text-gray-900">Categories</h1>
-                        <p className="text-gray-600 mt-1">Manage menu categories</p>
+                        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Categories</h1>
+                        <p className="text-gray-600 mt-1 text-sm sm:text-base">Manage menu categories</p>
                     </div>
-                    <Link href="/admin/categories/create">
+                    <Link href="/admin/categories/create" className="w-full sm:w-auto">
                         <Button
                             variant="primary"
                             size="lg"
-                            className="flex items-center space-x-2"
+                            className="flex items-center justify-center sm:justify-start space-x-2 w-full sm:w-auto px-4 sm:px-6 py-2 sm:py-3 text-base sm:text-lg"
                         >
-                            <Plus size={20} />
+                            <Plus size={18} className="sm:w-5 sm:h-5" />
                             <span>Add Category</span>
                         </Button>
                     </Link>

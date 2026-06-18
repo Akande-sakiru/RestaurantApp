@@ -5,66 +5,9 @@ import { useState, useEffect } from "react";
 import AdminLayout from "../../../Layouts/AdminLayout";
 import Button from "../../../Components/UI/Button";
 import Input from "../../../Components/UI/Input";
+import Select from "../../../Components/UI/Select";
 import { Card, CardBody, CardHeader } from "../../../Components/UI/Card";
 import Badge from "../../../Components/UI/Badge";
-
-// Mock data
-const mockOrders = [
-    {
-        id: 1,
-        order_number: "ORD-20240525-001",
-        customer_name: "John Doe",
-        type: "dine-in",
-        status: "completed",
-        total: 50.57,
-        table_number: "5",
-        created_at: "2024-05-25T10:30:00",
-        items_count: 2,
-    },
-    {
-        id: 2,
-        order_number: "ORD-20240525-002",
-        customer_name: "Jane Smith",
-        type: "delivery",
-        status: "ready",
-        total: 36.28,
-        delivery_address: "123 Main St",
-        created_at: "2024-05-25T14:15:00",
-        items_count: 2,
-    },
-    {
-        id: 3,
-        order_number: "ORD-20240525-003",
-        customer_name: "Mike Johnson",
-        type: "takeaway",
-        status: "preparing",
-        total: 27.48,
-        created_at: "2024-05-25T16:45:00",
-        items_count: 3,
-    },
-    {
-        id: 4,
-        order_number: "ORD-20240525-004",
-        customer_name: "Sarah Williams",
-        type: "dine-in",
-        status: "pending",
-        total: 65.3,
-        table_number: "8",
-        created_at: "2024-05-25T17:20:00",
-        items_count: 2,
-    },
-    {
-        id: 5,
-        order_number: "ORD-20240525-005",
-        customer_name: "Alex Brown",
-        type: "delivery",
-        status: "confirmed",
-        total: 42.87,
-        delivery_address: "456 Oak Ave",
-        created_at: "2024-05-25T18:00:00",
-        items_count: 1,
-    },
-];
 
 const statusColors = {
     pending: "warning",
@@ -93,7 +36,7 @@ const statusOptions = [
     "cancelled",
 ];
 
-export default function OrdersIndex({ orders = mockOrders }) {
+export default function OrdersIndex({ orders = [] }) {
     const [searchTerm, setSearchTerm] = useState("");
     const [filterStatus, setFilterStatus] = useState("all");
     const [filterType, setFilterType] = useState("all");
@@ -235,31 +178,29 @@ export default function OrdersIndex({ orders = mockOrders }) {
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
-                    <div className="flex items-center space-x-2">
-                        <Filter size={18} className="text-gray-400" />
-                        <select
-                            value={filterStatus}
-                            onChange={(e) => setFilterStatus(e.target.value)}
-                            className="flex-1 px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-                        >
-                            <option value="all">All Status</option>
-                            {statusOptions.map((status) => (
-                                <option key={status} value={status}>
-                                    {statusLabels[status]}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                    <select
+                    <Select
+                        value={filterStatus}
+                        onChange={(e) => setFilterStatus(e.target.value)}
+                        size="md"
+                        options={[
+                            { value: 'all', label: 'All Status' },
+                            ...statusOptions.map((s) => ({
+                                value: s,
+                                label: statusLabels[s],
+                            })),
+                        ]}
+                    />
+                    <Select
                         value={filterType}
                         onChange={(e) => setFilterType(e.target.value)}
-                        className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-                    >
-                        <option value="all">All Types</option>
-                        <option value="dine-in">Dine-in</option>
-                        <option value="takeaway">Takeaway</option>
-                        <option value="delivery">Delivery</option>
-                    </select>
+                        size="md"
+                        options={[
+                            { value: 'all', label: 'All Types' },
+                            { value: 'dine-in', label: 'Dine-in' },
+                            { value: 'takeaway', label: 'Takeaway' },
+                            { value: 'delivery', label: 'Delivery' },
+                        ]}
+                    />
                 </motion.div>
 
                 {/* Orders Table */}
@@ -363,7 +304,7 @@ export default function OrdersIndex({ orders = mockOrders }) {
                                                             </Badge>
                                                         </td>
                                                         <td className="py-4 px-4">
-                                                            <select
+                                                            <Select
                                                                 value={
                                                                     order.status
                                                                 }
@@ -374,29 +315,14 @@ export default function OrdersIndex({ orders = mockOrders }) {
                                                                             .value
                                                                     )
                                                                 }
-                                                                className="px-3 py-1 border border-gray-300 rounded-lg text-sm font-medium focus:outline-none focus:ring-2 focus:ring-orange-500 cursor-pointer"
-                                                            >
-                                                                {statusOptions.map(
-                                                                    (
-                                                                        status
-                                                                    ) => (
-                                                                        <option
-                                                                            key={
-                                                                                status
-                                                                            }
-                                                                            value={
-                                                                                status
-                                                                            }
-                                                                        >
-                                                                            {
-                                                                                statusLabels[
-                                                                                    status
-                                                                                ]
-                                                                            }
-                                                                        </option>
-                                                                    )
+                                                                size="sm"
+                                                                options={statusOptions.map(
+                                                                    (status) => ({
+                                                                        value: status,
+                                                                        label: statusLabels[status],
+                                                                    })
                                                                 )}
-                                                            </select>
+                                                            />
                                                         </td>
                                                         <td className="py-4 px-4">
                                                             <p className="font-bold text-orange-500">

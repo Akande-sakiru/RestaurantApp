@@ -68,7 +68,11 @@ export default function ReservationsIndex({ reservations = [] }) {
                         Book a table to secure your spot
                     </p>
                     <Link href="/reservations/create">
-                        <Button variant="primary" size="lg">
+                        <Button 
+                            variant="primary" 
+                            size="lg"
+                            className="px-4 sm:px-6 py-2 sm:py-3 text-base sm:text-lg w-full sm:w-auto"
+                        >
                             Make a Reservation
                         </Button>
                     </Link>
@@ -82,18 +86,22 @@ export default function ReservationsIndex({ reservations = [] }) {
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mb-8 flex items-center justify-between"
+                className="mb-8 flex items-center justify-between flex-col sm:flex-row gap-4 sm:gap-0"
             >
                 <div>
-                    <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
                         My Reservations
                     </h1>
-                    <p className="text-gray-600">
+                    <p className="text-gray-600 text-sm sm:text-base">
                         Manage your table reservations
                     </p>
                 </div>
-                <Link href="/reservations/create">
-                    <Button variant="primary" size="lg">
+                <Link href="/reservations/create" className="w-full sm:w-auto">
+                    <Button 
+                        variant="primary" 
+                        size="lg"
+                        className="px-4 sm:px-6 py-2 sm:py-3 text-base sm:text-lg w-full sm:w-auto"
+                    >
                         New Reservation
                     </Button>
                 </Link>
@@ -112,17 +120,17 @@ export default function ReservationsIndex({ reservations = [] }) {
                         layout
                     >
                         <Card>
-                            <CardBody className="flex items-center justify-between">
-                                <div className="flex-1">
-                                    <div className="flex items-center space-x-4">
-                                        <div className="text-3xl">📅</div>
-                                        <div>
-                                            <h3 className="font-semibold text-gray-900">
+                            <CardBody className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                                <div className="flex-1 min-w-0">
+                                    <div className="flex items-start space-x-2 sm:space-x-4">
+                                        <div className="text-2xl sm:text-3xl flex-shrink-0">📅</div>
+                                        <div className="min-w-0 flex-1">
+                                            <h3 className="font-semibold text-gray-900 break-words text-sm sm:text-base">
                                                 Reservation #{reservation.reservation_number}
                                             </h3>
-                                            <div className="flex items-center space-x-4 mt-2 text-sm text-gray-600">
+                                            <div className="flex flex-col sm:flex-row sm:items-center space-y-1 sm:space-y-0 sm:space-x-4 mt-2 text-xs sm:text-sm text-gray-600">
                                                 <div className="flex items-center space-x-1">
-                                                    <Calendar size={16} />
+                                                    <Calendar size={14} className="flex-shrink-0" />
                                                     <span>
                                                         {new Date(
                                                             reservation.reserved_date
@@ -130,13 +138,13 @@ export default function ReservationsIndex({ reservations = [] }) {
                                                     </span>
                                                 </div>
                                                 <div className="flex items-center space-x-1">
-                                                    <Clock size={16} />
+                                                    <Clock size={14} className="flex-shrink-0" />
                                                     <span>
                                                         {reservation.reserved_time}
                                                     </span>
                                                 </div>
                                                 <div className="flex items-center space-x-1">
-                                                    <Users size={16} />
+                                                    <Users size={14} className="flex-shrink-0" />
                                                     <span>
                                                         {reservation.party_size}{' '}
                                                         guest
@@ -148,7 +156,7 @@ export default function ReservationsIndex({ reservations = [] }) {
                                                 </div>
                                             </div>
                                             {reservation.special_requests && (
-                                                <p className="text-sm text-gray-600 mt-2">
+                                                <p className="text-xs sm:text-sm text-gray-600 mt-2 break-words">
                                                     Note:{' '}
                                                     {reservation.special_requests}
                                                 </p>
@@ -157,7 +165,7 @@ export default function ReservationsIndex({ reservations = [] }) {
                                     </div>
                                 </div>
 
-                                <div className="flex items-center space-x-4">
+                                <div className="flex items-center justify-between sm:flex-col sm:items-end sm:space-y-2 flex-shrink-0">
                                     <Badge
                                         variant={
                                             statusColors[reservation.status]
@@ -172,9 +180,9 @@ export default function ReservationsIndex({ reservations = [] }) {
                                             onClick={() =>
                                                 handleCancel(reservation.id)
                                             }
-                                            className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                            className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors flex-shrink-0"
                                         >
-                                            <X size={20} />
+                                            <X size={18} className="sm:w-5 sm:h-5" />
                                         </button>
                                     )}
                                 </div>

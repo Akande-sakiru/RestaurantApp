@@ -372,7 +372,7 @@ export default function GuestLayout({ children }) {
                         <div>
                             <h4 className="font-semibold mb-4">Contact</h4>
                             <ul className="space-y-2 text-gray-400">
-                                <li>📞 (555) 123-4567</li>
+                                <li>📞 (+234)80-5793-8850 </li>
                                 <li>📧 info@fortunate.com</li>
                             </ul>
                         </div>

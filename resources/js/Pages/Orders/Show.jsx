@@ -38,7 +38,7 @@ const statusSteps = [
     { key: "completed", label: "Completed" },
 ];
 
-export default function OrderShow({ order = mockOrders[0] }) {
+export default function OrderShow({ order = {} }) {
     const currentStepIndex = statusSteps.findIndex(
         (step) => step.key === order.status
     );

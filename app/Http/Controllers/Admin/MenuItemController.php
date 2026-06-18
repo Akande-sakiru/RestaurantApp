@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateMenuItemRequest;
 use App\Jobs\ProcessMenuItemImage;
 use App\Models\Category;
 use App\Models\MenuItem;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
@@ -99,7 +100,7 @@ class MenuItemController extends Controller
 
         $imagePath = null;
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('menu-images', 's3');
+            $imagePath = $request->file('image')->store('menu-images', 'public');
         }
 
         $menuItem = MenuItem::create([
@@ -125,6 +126,7 @@ class MenuItemController extends Controller
      */
     public function update(UpdateMenuItemRequest $request, MenuItem $menuItem)
     {
+        Log::info('kjhjoijhk');
         $validated = $request->validated();
 
         $imagePath = $menuItem->image_path;
@@ -133,7 +135,7 @@ class MenuItemController extends Controller
             if ($menuItem->image_path) {
                 Storage::disk('public')->delete($menuItem->image_path);
             }
-            $imagePath = $request->file('image')->store('menu-images', 's3');
+            $imagePath = $request->file('image')->store('menu-images', 'public');
         }
 
         $menuItem->update([

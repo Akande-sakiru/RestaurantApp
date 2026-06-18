@@ -58,9 +58,21 @@ return [
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
             'throw' => false,
             'report' => false,
-            'visibility' => 'public',
-
         ],
+
+        // 's3' => [
+        //     'driver' => 's3',
+        //     'key' => env('AWS_ACCESS_KEY_ID', '684a1e5ef13b243d3c1e8a4af1b3ea6d'),
+        //     'secret' => env('AWS_SECRET_ACCESS_KEY', '3b43481c9219c74eaf99afe205590ea23ef39f957f2752d3d9def6ac4afbd09d'),
+        //     'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
+        //     'bucket' => env('AWS_BUCKET', 'fls-a20dbe42-c5e6-41f1-affe-71e11f3a1ba0'),
+        //     'url' => env('AWS_URL', 'https://fls-a20dbe42-c5e6-41f1-affe-71e11f3a1ba0.laravel.cloud'),
+        //     'endpoint' => env('AWS_ENDPOINT', 'https://367be3a2035528943240074d0096e0cd.r2.cloudflarestorage.com'),
+        //     'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
+        //     'throw' => false,
+        //     'report' => false,
+        //     'visibility' => 'public',
+        // ],
 
     ],
 

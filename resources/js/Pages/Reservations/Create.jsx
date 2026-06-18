@@ -410,7 +410,7 @@ export default function ReservationCreate() {
                                                         Call Us
                                                     </h3>
                                                     <p className="text-sm text-gray-600">
-                                                        (555) 123-4567
+                                                        (+234)80-5793-8850
                                                     </p>
                                                     <p className="text-xs text-gray-500 mt-1">
                                                         For immediate assistance

@@ -131,7 +131,11 @@ export default function CategoryShow({ category = {}, items = [] }) {
                             This category doesn't have any items yet
                         </p>
                         <Link href="/menu">
-                            <Button variant="primary" size="lg">
+                            <Button 
+                                variant="primary" 
+                                size="lg"
+                                className="px-4 sm:px-6 py-2 sm:py-3 text-base sm:text-lg w-full sm:w-auto"
+                            >
                                 Browse All Menu
                             </Button>
                         </Link>

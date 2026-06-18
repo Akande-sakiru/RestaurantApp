@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Link, router } from '@inertiajs/react';
 import AdminLayout from '../../../Layouts/AdminLayout';
 import Input from '../../../Components/UI/Input';
+import Select from '../../../Components/UI/Select';
 import { Card, CardBody, CardHeader } from '../../../Components/UI/Card';
 import Badge from '../../../Components/UI/Badge';
 
@@ -149,30 +150,28 @@ export default function ReservationsIndex({ reservations = { data: [] }, pending
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
-                    <div className="flex items-center space-x-2">
-                        <Filter size={18} className="text-gray-400" />
-                        <select
-                            value={filterStatus}
-                            onChange={(e) => setFilterStatus(e.target.value)}
-                            className="flex-1 px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-                        >
-                            <option value="all">All Status</option>
-                            {statusOptions.map((status) => (
-                                <option key={status} value={status}>
-                                    {statusLabels[status]}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                    <select
+                    <Select
+                        value={filterStatus}
+                        onChange={(e) => setFilterStatus(e.target.value)}
+                        size="md"
+                        options={[
+                            { value: 'all', label: 'All Status' },
+                            ...statusOptions.map((s) => ({
+                                value: s,
+                                label: statusLabels[s],
+                            })),
+                        ]}
+                    />
+                    <Select
                         value={filterDate}
                         onChange={(e) => setFilterDate(e.target.value)}
-                        className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-                    >
-                        <option value="all">All Dates</option>
-                        <option value="upcoming">Upcoming</option>
-                        <option value="past">Past</option>
-                    </select>
+                        size="md"
+                        options={[
+                            { value: 'all', label: 'All Dates' },
+                            { value: 'upcoming', label: 'Upcoming' },
+                            { value: 'past', label: 'Past' },
+                        ]}
+                    />
                 </motion.div>
 
                 {/* Reservations Table */}
@@ -256,19 +255,17 @@ export default function ReservationsIndex({ reservations = { data: [] }, pending
 
                                                 {/* Right Section - Actions */}
                                                 <div className="flex flex-col items-end space-y-2">
-                                                    <select
+                                                    <Select
                                                         value={res.status}
                                                         onChange={(e) =>
                                                             handleStatusChange(res.id, e.target.value)
                                                         }
-                                                        className="px-3 py-1 border border-gray-300 rounded-lg text-sm font-medium focus:outline-none focus:ring-2 focus:ring-orange-500 cursor-pointer"
-                                                    >
-                                                        {statusOptions.map((status) => (
-                                                            <option key={status} value={status}>
-                                                                {statusLabels[status]}
-                                                            </option>
-                                                        ))}
-                                                    </select>
+                                                        size="sm"
+                                                        options={statusOptions.map((status) => ({
+                                                            value: status,
+                                                            label: statusLabels[status],
+                                                        }))}
+                                                    />
                                                     <Link href={`/admin/reservations/${res.id}`}>
                                                         <motion.button
                                                             whileHover={{ scale: 1.05 }}

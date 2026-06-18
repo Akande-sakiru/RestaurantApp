@@ -334,7 +334,7 @@ export default function OrderConfirmation({ order = {} }) {
                                 <p className="text-sm text-gray-600">
                                     Need help? Contact us at{' '}
                                     <span className="font-semibold text-blue-600">
-                                        (555) 123-4567
+                                        (+234)80-5793-8850 
                                     </span>
                                 </p>
                             </div>

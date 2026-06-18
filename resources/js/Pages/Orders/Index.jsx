@@ -62,7 +62,11 @@ export default function OrdersIndex({ orders = [] }) {
                         Start by placing your first order
                     </p>
                     <Link href="/menu">
-                        <Button variant="primary" size="lg">
+                        <Button 
+                            variant="primary" 
+                            size="lg"
+                            className="px-4 sm:px-6 py-2 sm:py-3 text-base sm:text-lg w-full sm:w-auto"
+                        >
                             Browse Menu
                         </Button>
                     </Link>
@@ -78,10 +82,10 @@ export default function OrdersIndex({ orders = [] }) {
                 animate={{ opacity: 1, y: 0 }}
                 className="mb-8"
             >
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
                     My Orders
                 </h1>
-                <p className="text-gray-600">
+                <p className="text-sm sm:text-base text-gray-600">
                     Track and manage your orders
                 </p>
             </motion.div>
@@ -100,44 +104,44 @@ export default function OrdersIndex({ orders = [] }) {
                     >
                         <Link href={`/orders/${order.id}`}>
                             <Card hover>
-                                <CardBody className="flex items-center justify-between">
-                                    <div className="flex-1">
-                                        <div className="flex items-center space-x-4">
-                                            <div className="text-3xl">
+                                <CardBody className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                                    <div className="flex-1 min-w-0">
+                                        <div className="flex items-start space-x-2 sm:space-x-4">
+                                            <div className="text-2xl sm:text-3xl flex-shrink-0">
                                                 {order.type === 'dine-in'
                                                     ? '🍽️'
                                                     : order.type === 'takeaway'
                                                       ? '📦'
                                                       : '🚗'}
                                             </div>
-                                            <div>
-                                                <h3 className="font-semibold text-gray-900">
+                                            <div className="min-w-0 flex-1">
+                                                <h3 className="font-semibold text-gray-900 break-words text-sm sm:text-base">
                                                     Order #{order.order_number}
                                                 </h3>
-                                                <p className="text-sm text-gray-600">
+                                                <p className="text-xs sm:text-sm text-gray-600 mt-1">
                                                     {new Date(
                                                         order.created_at
                                                     ).toLocaleDateString()}{' '}
                                                     at{' '}
                                                     {new Date(
                                                         order.created_at
-                                                    ).toLocaleTimeString()}
+                                                    ).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                                 </p>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div className="flex items-center space-x-6">
+                                    <div className="flex items-center justify-between sm:flex-col sm:items-end sm:space-y-2 flex-shrink-0">
                                         <div className="text-right">
-                                            <p className="text-sm text-gray-600">
+                                            <p className="text-xs sm:text-sm text-gray-600">
                                                 Total
                                             </p>
-                                            <p className="text-2xl font-bold text-orange-500">
+                                            <p className="text-lg sm:text-2xl font-bold text-orange-500">
                                                 ₦{parseFloat(order.total).toFixed(2)}
                                             </p>
                                         </div>
 
-                                        <div className="flex items-center space-x-3">
+                                        <div className="flex items-center space-x-2 sm:space-x-3">
                                             <Badge
                                                 variant={
                                                     statusColors[order.status]
@@ -146,8 +150,8 @@ export default function OrdersIndex({ orders = [] }) {
                                                 {statusLabels[order.status]}
                                             </Badge>
                                             <ChevronRight
-                                                size={20}
-                                                className="text-gray-400"
+                                                size={18}
+                                                className="text-gray-400 flex-shrink-0 hidden sm:block"
                                             />
                                         </div>
                                     </div>

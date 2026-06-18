@@ -174,8 +174,10 @@ export default function PaymentIndex({
                         // Check if response is JSON
                         const contentType = verifyResponse.headers.get("content-type");
                         if (!contentType || !contentType.includes("application/json")) {
+                            console.error('Non-JSON response received:', verifyResponse.status);
                             const text = await verifyResponse.text();
-                            setError("Server error during payment verification. Please contact support.");
+                            console.error('Response body:', text);
+                            setError("Server error during payment verification. Your order has been recorded. Please contact support with your reference: " + response.reference);
                             setIsInitializing(false);
                             return;
                         }
@@ -185,11 +187,12 @@ export default function PaymentIndex({
                         if (verifyResult.status) {
                             window.location.href = `/orders/${paymentData.order_id}/confirmation`;
                         } else {
-                            setError(verifyResult.message || "Payment verification failed");
+                            setError(verifyResult.message || "Payment verification failed. Your payment may still be processing. Please check your orders.");
                             setIsInitializing(false);
                         }
                     } catch (err) {
-                        setError("Error verifying payment: " + err.message);
+                        console.error('Payment verification error:', err);
+                        setError("Error verifying payment: " + err.message + ". Your order may still be processing. Please refresh the page.");
                         setIsInitializing(false);
                     }
                 },

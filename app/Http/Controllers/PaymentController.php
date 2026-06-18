@@ -246,8 +246,9 @@ class PaymentController extends Controller
      */
     public function verify(Request $request)
     {
-        Log::info('Payment verification started', ['request' => $request->all()]);
         try {
+            Log::info('Payment verification started', ['request_data' => $request->only(['reference', 'order_id'])]);
+            
             $validated = $request->validate([
                 'reference' => 'required|string',
                 'order_id' => 'required|integer|exists:orders,id',
@@ -256,7 +257,7 @@ class PaymentController extends Controller
             $reference = $validated['reference'];
             $order = Order::findOrFail($validated['order_id']);
 
-            Log::info('Payment verification - order found', ['order_id' => $order->id]);
+            Log::info('Payment verification - order found', ['order_id' => $order->id, 'order_status' => $order->payment_status]);
 
             if ($order->user_id !== $request->user()->id) {
                 Log::warning('Payment verification - unauthorized user', ['order_id' => $order->id, 'user_id' => $request->user()->id]);
@@ -266,8 +267,17 @@ class PaymentController extends Controller
                 ], 403);
             }
 
-            $paymentResult = $this->paymentService->verifyPayment($reference);
-            Log::info('Payment verification - Paystack response', ['result' => $paymentResult]);
+            try {
+                $paymentResult = $this->paymentService->verifyPayment($reference);
+                Log::info('Payment verification - Paystack response', ['result' => $paymentResult]);
+            } catch (\Exception $e) {
+                Log::error('Payment verification - Paystack API error', ['error' => $e->getMessage()]);
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Unable to verify payment with payment provider. Please try again.',
+                    'details' => $e->getMessage(),
+                ], 500);
+            }
 
             if (!$paymentResult['status']) {
                 Log::warning('Payment verification failed', ['reference' => $reference, 'result' => $paymentResult]);
@@ -312,10 +322,11 @@ class PaymentController extends Controller
                 'errors' => $e->errors(),
             ], 422);
         } catch (\Exception $e) {
-            Log::error('Payment verification exception', ['error' => $e->getMessage()]);
+            Log::error('Payment verification exception', ['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
             return response()->json([
                 'status' => false,
-                'message' => $e->getMessage(),
+                'message' => 'An error occurred during payment verification',
+                'details' => $e->getMessage(),
             ], 500);
         }
     }

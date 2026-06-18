@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { router } from '@inertiajs/react';
 import AdminLayout from '../../../Layouts/AdminLayout';
 import Input from '../../../Components/UI/Input';
+import Select from '../../../Components/UI/Select';
 import { Card, CardBody, CardHeader } from '../../../Components/UI/Card';
 import Badge from '../../../Components/UI/Badge';
 
@@ -125,27 +126,26 @@ export default function UsersIndex({ users = { data: [] } }) {
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
-                    <div className="flex items-center space-x-2">
-                        <Filter size={18} className="text-gray-400" />
-                        <select
-                            value={filterRole}
-                            onChange={(e) => setFilterRole(e.target.value)}
-                            className="flex-1 px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-                        >
-                            <option value="all">All Roles</option>
-                            <option value="customer">Customer</option>
-                            <option value="admin">Admin</option>
-                        </select>
-                    </div>
-                    <select
+                    <Select
+                        value={filterRole}
+                        onChange={(e) => setFilterRole(e.target.value)}
+                        size="md"
+                        options={[
+                            { value: 'all', label: 'All Roles' },
+                            { value: 'customer', label: 'Customer' },
+                            { value: 'admin', label: 'Admin' },
+                        ]}
+                    />
+                    <Select
                         value={filterStatus}
                         onChange={(e) => setFilterStatus(e.target.value)}
-                        className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-                    >
-                        <option value="all">All Status</option>
-                        <option value="active">Active</option>
-                        <option value="inactive">Inactive</option>
-                    </select>
+                        size="md"
+                        options={[
+                            { value: 'all', label: 'All Status' },
+                            { value: 'active', label: 'Active' },
+                            { value: 'inactive', label: 'Inactive' },
+                        ]}
+                    />
                 </motion.div>
 
                 {/* Users Table */}
@@ -224,16 +224,17 @@ export default function UsersIndex({ users = { data: [] } }) {
                                                         </div>
                                                     </td>
                                                     <td className="py-4 px-4">
-                                                        <select
+                                                        <Select
                                                             value={user.roles?.[0] || 'customer'}
                                                             onChange={(e) =>
                                                                 handleChangeRole(user.id, e.target.value)
                                                             }
-                                                            className="px-3 py-1 border border-gray-300 rounded-lg text-sm font-medium focus:outline-none focus:ring-2 focus:ring-orange-500 cursor-pointer"
-                                                        >
-                                                            <option value="customer">Customer</option>
-                                                            <option value="admin">Admin</option>
-                                                        </select>
+                                                            size="sm"
+                                                            options={[
+                                                                { value: 'customer', label: 'Customer' },
+                                                                { value: 'admin', label: 'Admin' },
+                                                            ]}
+                                                        />
                                                     </td>
                                                     <td className="py-4 px-4">
                                                         <Badge

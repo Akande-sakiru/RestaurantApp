@@ -99,7 +99,7 @@ class MenuItemController extends Controller
 
         $imagePath = null;
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('menu-images', 'public');
+            $imagePath = $request->file('image')->store('menu-images', 's3');
         }
 
         $menuItem = MenuItem::create([
@@ -133,7 +133,7 @@ class MenuItemController extends Controller
             if ($menuItem->image_path) {
                 Storage::disk('public')->delete($menuItem->image_path);
             }
-            $imagePath = $request->file('image')->store('menu-images', 'public');
+            $imagePath = $request->file('image')->store('menu-images', 's3');
         }
 
         $menuItem->update([

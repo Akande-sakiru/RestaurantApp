@@ -126,6 +126,23 @@ export default function CustomerLayout({ children }) {
                             </div>
                         </div>
 
+                        {/* Mobile Cart Icon Only */}
+                        <Link
+                            href="/cart"
+                            className="md:hidden relative p-2 text-gray-700 hover:text-orange-500 transition-colors"
+                        >
+                            <ShoppingCart size={24} />
+                            {cart.count > 0 && (
+                                <Badge
+                                    variant="danger"
+                                    size="sm"
+                                    className="absolute -top-2 -right-2"
+                                >
+                                    {cart.count}
+                                </Badge>
+                            )}
+                        </Link>
+
                         {/* Mobile Menu Button */}
                         <button
                             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -145,7 +162,7 @@ export default function CustomerLayout({ children }) {
                             initial={{ opacity: 0, y: -10 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -10 }}
-                            className="md:hidden pb-4 space-y-2"
+                            className="md:hidden pb-4 space-y-2 border-t border-gray-100"
                         >
                             {navItems.map((item) => (
                                 <Link
@@ -157,39 +174,49 @@ export default function CustomerLayout({ children }) {
                                     {item.label}
                                 </Link>
                             ))}
-                            <div className="px-4 py-2">
-                                <div className="flex items-center space-x-4">
+                            
+                            {/* Mobile Actions */}
+                            <div className="px-4 py-3 space-y-3 border-t border-gray-100 mt-2">
+                                {/* Notifications */}
+                                <div className="flex items-center justify-between">
+                                    <span className="text-sm font-medium text-gray-700">Notifications</span>
                                     <NotificationBell />
-                                    <Link
-                                        href="/cart"
-                                        className="flex items-center justify-between flex-1 px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
-                                        onClick={() => setMobileMenuOpen(false)}
-                                    >
-                                        <span>Cart</span>
-                                        {cart.count > 0 && (
-                                            <Badge variant="danger" size="sm">
-                                                {cart.count}
-                                            </Badge>
-                                        )}
-                                    </Link>
                                 </div>
+                                
+                                {/* Cart */}
+                                <Link
+                                    href="/cart"
+                                    className="flex items-center justify-between px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
+                                    onClick={() => setMobileMenuOpen(false)}
+                                >
+                                    <span className="text-sm font-medium">Cart</span>
+                                    {cart.count > 0 && (
+                                        <Badge variant="danger" size="sm">
+                                            {cart.count}
+                                        </Badge>
+                                    )}
+                                </Link>
                             </div>
-                            <Link
-                                href="/profile"
-                                className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg border-t border-gray-100 mt-2 pt-2"
-                                onClick={() => setMobileMenuOpen(false)}
-                            >
-                                Profile
-                            </Link>
-                            <button
-                                onClick={() => {
-                                    setMobileMenuOpen(false);
-                                    handleLogout();
-                                }}
-                                className="w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg"
-                            >
-                                Logout
-                            </button>
+
+                            {/* Profile Section */}
+                            <div className="px-4 py-3 space-y-2 border-t border-gray-100 mt-2">
+                                <Link
+                                    href="/profile"
+                                    className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg"
+                                    onClick={() => setMobileMenuOpen(false)}
+                                >
+                                    👤 Profile
+                                </Link>
+                                <button
+                                    onClick={() => {
+                                        setMobileMenuOpen(false);
+                                        handleLogout();
+                                    }}
+                                    className="w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg"
+                                >
+                                    🚪 Logout
+                                </button>
+                            </div>
                         </motion.div>
                     )}
                 </div>

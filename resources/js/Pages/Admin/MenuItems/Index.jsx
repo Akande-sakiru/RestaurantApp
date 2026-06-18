@@ -5,6 +5,7 @@ import { useState } from "react";
 import AdminLayout from "../../../Layouts/AdminLayout";
 import Button from "../../../Components/UI/Button";
 import Input from "../../../Components/UI/Input";
+import Select from "../../../Components/UI/Select";
 import { Card, CardBody, CardHeader } from "../../../Components/UI/Card";
 import Badge from "../../../Components/UI/Badge";
 
@@ -69,23 +70,23 @@ export default function MenuItemsIndex({ menuItems = [] }) {
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
-                    className="flex items-center justify-between"
+                    className="flex items-center justify-between flex-col sm:flex-row gap-4 sm:gap-0"
                 >
                     <div>
-                        <h1 className="text-3xl font-bold text-gray-900">
+                        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
                             Menu Items
                         </h1>
-                        <p className="text-gray-600 mt-1">
+                        <p className="text-gray-600 mt-1 text-sm sm:text-base">
                             Manage your restaurant menu and items
                         </p>
                     </div>
-                    <Link href="/admin/menu-items/create">
+                    <Link href="/admin/menu-items/create" className="w-full sm:w-auto">
                         <Button
                             variant="primary"
                             size="lg"
-                            className="flex items-center space-x-2"
+                            className="flex items-center justify-center sm:justify-start space-x-2 w-full sm:w-auto px-4 sm:px-6 py-2 sm:py-3 text-base sm:text-lg"
                         >
-                            <Plus size={20} />
+                            <Plus size={18} className="sm:w-5 sm:h-5" />
                             <span>Add Item</span>
                         </Button>
                     </Link>
@@ -154,20 +155,15 @@ export default function MenuItemsIndex({ menuItems = [] }) {
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
-                    <div className="flex items-center space-x-2">
-                        <Filter size={18} className="text-gray-400" />
-                        <select
-                            value={filterCategory}
-                            onChange={(e) => setFilterCategory(e.target.value)}
-                            className="flex-1 px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-                        >
-                            {categories.map((cat) => (
-                                <option key={cat} value={cat}>
-                                    {cat === "all" ? "All Categories" : cat}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
+                    <Select
+                        value={filterCategory}
+                        onChange={(e) => setFilterCategory(e.target.value)}
+                        size="md"
+                        options={categories.map((cat) => ({
+                            value: cat,
+                            label: cat === "all" ? "All Categories" : cat,
+                        }))}
+                    />
                 </motion.div>
 
                 {/* Items Table */}

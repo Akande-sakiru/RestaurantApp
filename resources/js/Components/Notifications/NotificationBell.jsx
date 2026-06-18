@@ -218,118 +218,128 @@ export default function NotificationBell() {
             {/* Notifications Dropdown */}
             <AnimatePresence>
                 {isOpen && (
-                    <motion.div
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        className="absolute right-0 mt-2 w-96 bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden z-50"
-                        style={{ maxHeight: '600px' }}
-                    >
-                        {/* Header */}
-                        <div className="bg-gradient-to-r from-orange-500 to-orange-600 px-4 py-3 flex justify-between items-center">
-                            <h3 className="text-white font-semibold">Notifications</h3>
-                            <button
-                                onClick={() => setIsOpen(false)}
-                                className="text-white hover:bg-orange-700 p-1 rounded transition-colors"
-                            >
-                                <X size={20} />
-                            </button>
-                        </div>
+                    <>
+                        {/* Mobile Backdrop */}
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setIsOpen(false)}
+                            className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+                        />
+                        
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: 20 }}
+                            className="fixed bottom-0 left-0 right-0 md:absolute md:bottom-auto md:left-auto md:right-0 md:top-full md:mt-2 w-full md:w-80 lg:w-96 bg-white rounded-t-2xl md:rounded-lg shadow-2xl border border-gray-200 overflow-hidden z-50 max-h-[80vh] md:max-h-96"
+                        >
+                            {/* Header */}
+                            <div className="bg-gradient-to-r from-orange-500 to-orange-600 px-4 py-3 flex justify-between items-center gap-2 sticky top-0">
+                                <h3 className="text-white font-semibold text-sm md:text-base">Notifications</h3>
+                                <button
+                                    onClick={() => setIsOpen(false)}
+                                    className="text-white hover:bg-orange-700 p-1 rounded transition-colors flex-shrink-0"
+                                >
+                                    <X size={20} />
+                                </button>
+                            </div>
 
-                        {/* Notifications List */}
-                        <div className="max-h-96 overflow-y-auto">
-                            {isLoading ? (
-                                <div className="px-4 py-8 text-center text-gray-500">
-                                    <div className="inline-block animate-spin">
-                                        <Bell size={24} className="text-orange-500" />
+                            {/* Notifications List */}
+                            <div className="overflow-y-auto">
+                                {isLoading ? (
+                                    <div className="px-4 py-8 text-center text-gray-500">
+                                        <div className="inline-block animate-spin">
+                                            <Bell size={24} className="text-orange-500" />
+                                        </div>
+                                        <p className="mt-2 text-xs md:text-sm">Loading...</p>
                                     </div>
-                                    <p className="mt-2">Loading...</p>
-                                </div>
-                            ) : notifications.length === 0 ? (
-                                <div className="px-4 py-8 text-center text-gray-500">
-                                    <Bell size={32} className="mx-auto mb-2 text-gray-300" />
-                                    <p>No notifications yet</p>
-                                </div>
-                            ) : (
-                                <div className="divide-y divide-gray-100">
-                                    {notifications.map((notification) => {
-                                        const isAdmin = auth?.user?.roles && Array.isArray(auth.user.roles) && auth.user.roles.includes('admin');
-                                        // For admin: check admin_read property, for user: check status
-                                        const isRead = isAdmin 
-                                            ? notification.admin_read === true 
-                                            : notification.status === 'read';
-                                        
-                                        return (
-                                        <motion.div
-                                            key={notification.id}
-                                            initial={{ opacity: 0, x: -10 }}
-                                            animate={{ opacity: 1, x: 0 }}
-                                            exit={{ opacity: 0, x: 10 }}
-                                            className={`px-4 py-3 hover:bg-gray-50 transition-colors ${
-                                                isRead ? 'bg-white' : 'bg-red-50'
-                                            }`}
-                                        >
-                                            <div className="flex items-start justify-between gap-3">
-                                                <div 
-                                                    className="flex items-start space-x-3 flex-1 min-w-0 cursor-pointer"
-                                                    onClick={() => markAsRead(notification.id)}
-                                                >
-                                                    <div className="mt-1 flex-shrink-0">
-                                                        {getNotificationIcon(notification)}
+                                ) : notifications.length === 0 ? (
+                                    <div className="px-4 py-8 text-center text-gray-500">
+                                        <Bell size={32} className="mx-auto mb-2 text-gray-300" />
+                                        <p className="text-xs md:text-sm">No notifications yet</p>
+                                    </div>
+                                ) : (
+                                    <div className="divide-y divide-gray-100">
+                                        {notifications.map((notification) => {
+                                            const isAdmin = auth?.user?.roles && Array.isArray(auth.user.roles) && auth.user.roles.includes('admin');
+                                            // For admin: check admin_read property, for user: check status
+                                            const isRead = isAdmin 
+                                                ? notification.admin_read === true 
+                                                : notification.status === 'read';
+                                            
+                                            return (
+                                            <motion.div
+                                                key={notification.id}
+                                                initial={{ opacity: 0, x: -10 }}
+                                                animate={{ opacity: 1, x: 0 }}
+                                                exit={{ opacity: 0, x: 10 }}
+                                                className={`px-4 py-3 hover:bg-gray-50 transition-colors ${
+                                                    isRead ? 'bg-white' : 'bg-red-50'
+                                                }`}
+                                            >
+                                                <div className="flex items-start justify-between gap-3">
+                                                    <div 
+                                                        className="flex items-start space-x-3 flex-1 min-w-0 cursor-pointer"
+                                                        onClick={() => markAsRead(notification.id)}
+                                                    >
+                                                        <div className="mt-1 flex-shrink-0">
+                                                            {getNotificationIcon(notification)}
+                                                        </div>
+                                                        <div className="flex-1 min-w-0">
+                                                            <h4 className="text-xs md:text-sm font-semibold text-gray-900 break-words">
+                                                                {getNotificationTitle(notification)}
+                                                            </h4>
+                                                            <p className="text-xs md:text-sm text-gray-600 mt-1 break-words">
+                                                                {getNotificationMessage(notification)}
+                                                            </p>
+                                                            <p className="text-xs text-gray-500 mt-1">
+                                                                {new Date(notification.created_at).toLocaleDateString()} at {new Date(notification.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                            </p>
+                                                        </div>
                                                     </div>
-                                                    <div className="flex-1 min-w-0">
-                                                        <h4 className="text-sm font-semibold text-gray-900">
-                                                            {getNotificationTitle(notification)}
-                                                        </h4>
-                                                        <p className="text-sm text-gray-600 mt-1 break-words">
-                                                            {getNotificationMessage(notification)}
-                                                        </p>
-                                                        <p className="text-xs text-gray-500 mt-1">
-                                                            {new Date(notification.created_at).toLocaleDateString()} at {new Date(notification.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                                        </p>
-                                                    </div>
+                                                    <button
+                                                        type="button"
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            e.stopPropagation();
+                                                            deleteNotification(notification.id);
+                                                        }}
+                                                        className="flex-shrink-0 text-gray-400 hover:text-red-500 hover:bg-red-50 p-1 rounded transition-colors"
+                                                        title="Delete notification"
+                                                    >
+                                                        <X size={18} />
+                                                    </button>
                                                 </div>
-                                                <button
-                                                    type="button"
-                                                    onClick={(e) => {
-                                                        e.preventDefault();
-                                                        e.stopPropagation();
-                                                        deleteNotification(notification.id);
-                                                    }}
-                                                    className="flex-shrink-0 text-gray-400 hover:text-red-500 hover:bg-red-50 p-1 rounded transition-colors"
-                                                    title="Delete notification"
-                                                >
-                                                    <X size={18} />
-                                                </button>
-                                            </div>
+                                            </motion.div>
+                                            );
+                                        })}
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Footer */}
+                            {notifications.length > 0 && (
+                                <div className="border-t border-gray-100 px-4 py-2 bg-gray-50 sticky bottom-0">
+                                    <motion.button
+                                        onClick={handleRefresh}
+                                        disabled={isRefreshing}
+                                        whileHover={{ scale: isRefreshing ? 1 : 1.05 }}
+                                        whileTap={{ scale: isRefreshing ? 1 : 0.95 }}
+                                        className="text-xs md:text-sm text-orange-500 hover:text-orange-600 font-medium w-full py-2 px-3 rounded hover:bg-orange-50 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        <motion.div
+                                            animate={isRefreshing ? { rotate: 360 } : { rotate: 0 }}
+                                            transition={isRefreshing ? { duration: 1, repeat: Infinity, ease: 'linear' } : { duration: 0.3 }}
+                                        >
+                                            <RotateCcw size={16} />
                                         </motion.div>
-                                        );
-                                    })}
+                                        {isRefreshing ? 'Refreshing...' : 'Refresh'}
+                                    </motion.button>
                                 </div>
                             )}
-                        </div>
-
-                        {/* Footer */}
-                        {notifications.length > 0 && (
-                            <div className="border-t border-gray-100 px-4 py-2 bg-gray-50">
-                                <motion.button
-                                    onClick={handleRefresh}
-                                    disabled={isRefreshing}
-                                    whileHover={{ scale: isRefreshing ? 1 : 1.05 }}
-                                    whileTap={{ scale: isRefreshing ? 1 : 0.95 }}
-                                    className="text-sm text-orange-500 hover:text-orange-600 font-medium w-full py-2 px-3 rounded hover:bg-orange-50 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                                >
-                                    <motion.div
-                                        animate={isRefreshing ? { rotate: 360 } : { rotate: 0 }}
-                                        transition={isRefreshing ? { duration: 1, repeat: Infinity, ease: 'linear' } : { duration: 0.3 }}
-                                    >
-                                        <RotateCcw size={16} />
-                                    </motion.div>
-                                    {isRefreshing ? 'Refreshing...' : 'Refresh'}
-                                </motion.button>
-                            </div>
-                        )}
-                    </motion.div>
+                        </motion.div>
+                    </>
                 )}
             </AnimatePresence>
         </div>

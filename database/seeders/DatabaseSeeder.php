@@ -23,12 +23,12 @@ class DatabaseSeeder extends Seeder
 
         // User::factory(10)->create();
 
-        $testUser = User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        // $testUser = User::factory()->create([
+        //     'name' => 'Test User',
+        //     'email' => 'test@example.com',
+        // ]);
 
-        // Assign customer role to test user
-        $testUser->assignRole('customer');
+        // // Assign customer role to test user
+        // $testUser->assignRole('customer');
     }
 }

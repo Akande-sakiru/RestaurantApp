@@ -70,6 +70,7 @@ class MenuItem extends Model
             return null;
         }
 
-        return Storage::url($this->image_path);
+        // return Storage::url($this->image_path);
+        return Storage::disk('uploads')->url($this->image_path);
     }
 }

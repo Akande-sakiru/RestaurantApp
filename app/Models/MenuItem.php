@@ -33,6 +33,9 @@ class MenuItem extends Model
         'sort_order',
     ];
 
+    protected $appends = ['image_url'];
+
+
     /**
      * Get the attributes that should be cast.
      *
@@ -70,7 +73,7 @@ class MenuItem extends Model
             return null;
         }
 
-        // return Storage::url($this->image_path);
-        return Storage::disk('uploads')->url($this->image_path);
+        $disk = Storage::disk('uploads');
+        return $disk->url($this->image_path);
     }
 }

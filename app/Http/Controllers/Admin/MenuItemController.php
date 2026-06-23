@@ -132,7 +132,7 @@ class MenuItemController extends Controller
 
         $imagePath = $menuItem->image_path;
         if ($menuItem->image_path) {
-            Storage::disk('uploads')->delete($menuItem->image_path);
+            Storage::delete($menuItem->image_path);
         }
         $imagePath = $request->file('image')->store('menu-images', );
 

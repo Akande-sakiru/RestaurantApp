@@ -62,20 +62,20 @@ class ProcessMenuItemImage implements ShouldQueue
             return;
         }
 
-        if (!Storage::disk('uploads')->exists($this->menuItem->image_path)) {
+        if (!Storage::exists($this->menuItem->image_path)) {
             return;
         }
 
         try {
             $manager = ImageManager::gd();
-            $contents = Storage::disk('uploads')->get($this->menuItem->image_path);
+            $contents = Storage::get($this->menuItem->image_path);
             $image = $manager->read($contents);
 
             $image->scaleDown(width: 800, height: 600);
 
             // encode and write back to the disk (no local path involved)
             $encoded = $image->toJpeg(quality: 80); // adjust encoder to match your file's extension
-            Storage::disk('uploads')->put($this->menuItem->image_path, (string) $encoded);
+            Storage::put($this->menuItem->image_path, (string) $encoded);
         } catch (\Exception $e) {
             Log::error('Failed to process menu item image', [
                 'menu_item_id' => $this->menuItem->id,

@@ -33,7 +33,7 @@ class MenuItem extends Model
         'sort_order',
     ];
 
-    protected $appends = ['image_url'];
+    // protected $appends = ['image_url'];
 
 
     /**
@@ -73,7 +73,6 @@ class MenuItem extends Model
             return null;
         }
 
-        $disk = Storage::disk('uploads');
-        return $disk->url($this->image_path);
+        return Storage::url($this->image_path);
     }
 }

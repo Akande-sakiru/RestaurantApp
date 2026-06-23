@@ -44,7 +44,7 @@ class LandingController extends Controller
                 'id' => $category->id,
                 'name' => $category->name,
                 'slug' => $category->slug,
-                'image_path' => $category->image_path ? Storage::url($category->image_path) : $imageUrl,
+                'image_url' => $category->image_path ? Storage::url($category->image_path) : $imageUrl,
                 'menu_items_count' => $category->menu_items_count,
             ]);
 

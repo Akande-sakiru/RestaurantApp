@@ -1,21 +1,21 @@
-import { Link, router } from '@inertiajs/react';
-import { motion } from 'framer-motion';
-import { Play, Star } from 'lucide-react';
-import { useState, useEffect } from 'react';
-import GuestLayout from '../Layouts/GuestLayout';
-import Button from '../Components/UI/Button';
-import MenuItemCard from '../Components/Menu/MenuItemCard';
+import { Link, router } from "@inertiajs/react";
+import { motion } from "framer-motion";
+import { Play, Star } from "lucide-react";
+import { useState, useEffect } from "react";
+import GuestLayout from "../Layouts/GuestLayout";
+import Button from "../Components/UI/Button";
+import MenuItemCard from "../Components/Menu/MenuItemCard";
 
-
-export default function Welcome({ 
-    featuredItems = [], 
+export default function Welcome({
+    featuredItems = [],
     restaurantInfo = {},
-    categories = [] 
+    categories = [],
 }) {
     const [carouselPosition, setCarouselPosition] = useState(0);
-    
+
     // Use featured items for carousel, with fallback if empty
-    const carouselItems = featuredItems && featuredItems.length > 0 ? featuredItems : [];
+    const carouselItems =
+        featuredItems && featuredItems.length > 0 ? featuredItems : [];
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -25,7 +25,7 @@ export default function Welcome({
     }, [carouselItems.length]);
 
     const handleAddToCart = (itemId) => {
-        router.post('/cart', { menu_item_id: itemId, quantity: 1 });
+        router.post("/cart", { menu_item_id: itemId, quantity: 1 });
     };
     const containerVariants = {
         hidden: { opacity: 0 },
@@ -49,28 +49,31 @@ export default function Welcome({
 
     // Format hours object to string if needed
     const formatHours = (hours) => {
-        if (typeof hours === 'string') {
+        if (typeof hours === "string") {
             return hours;
         }
-        if (typeof hours === 'object' && hours !== null) {
+        if (typeof hours === "object" && hours !== null) {
             return Object.entries(hours)
-                .map(([day, time]) => `${day.charAt(0).toUpperCase() + day.slice(1)}: ${time}`)
-                .join(' | ');
+                .map(
+                    ([day, time]) =>
+                        `${day.charAt(0).toUpperCase() + day.slice(1)}: ${time}`,
+                )
+                .join(" | ");
         }
-        return 'Hours not available';
+        return "Hours not available";
     };
 
     const defaultInfo = {
-        name: 'Restaurant',
-        tagline: 'Experience culinary excellence',
-        address: '02 GRA conference road, Ijebu-Ode, Ogun state',
-        hours: 'Mon-Thu: 11am - 10pm | Fri-Sat: 11am - 11pm | Sun: 12pm - 9pm',
-        phone: '+234 805-793-8850',
+        name: "Restaurant",
+        tagline: "Experience culinary excellence",
+        address: "02 GRA conference road, Ijebu-Ode, Ogun state",
+        hours: "Mon-Thu: 11am - 10pm | Fri-Sat: 11am - 11pm | Sun: 12pm - 9pm",
+        phone: "+234 805-793-8850",
         ...restaurantInfo,
     };
 
     // Format hours if it's an object
-    if (defaultInfo.hours && typeof defaultInfo.hours === 'object') {
+    if (defaultInfo.hours && typeof defaultInfo.hours === "object") {
         defaultInfo.hours = formatHours(defaultInfo.hours);
     }
 
@@ -86,12 +89,20 @@ export default function Welcome({
                 {/* Decorative Background Elements */}
                 <motion.div
                     animate={{ rotate: 360 }}
-                    transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
+                    transition={{
+                        duration: 30,
+                        repeat: Infinity,
+                        ease: "linear",
+                    }}
                     className="absolute top-20 left-10 w-72 h-72 bg-orange-100 opacity-20 rounded-full blur-3xl"
                 />
                 <motion.div
                     animate={{ rotate: -360 }}
-                    transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
+                    transition={{
+                        duration: 40,
+                        repeat: Infinity,
+                        ease: "linear",
+                    }}
                     className="absolute bottom-0 right-0 w-96 h-96 bg-orange-100 opacity-15 rounded-full blur-3xl"
                 />
 
@@ -126,7 +137,9 @@ export default function Welcome({
                                 <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 mb-4 leading-tight">
                                     Delicious
                                     <br />
-                                    <span className="text-orange-500">Fast Food</span>
+                                    <span className="text-orange-500">
+                                        Fast Food
+                                    </span>
                                     <br />
                                     for Every
                                     <br />
@@ -141,7 +154,10 @@ export default function Welcome({
                                 transition={{ duration: 0.6, delay: 0.4 }}
                                 className="text-gray-600 text-lg mb-8 max-w-md"
                             >
-                                Experience bold flavors crafted from premium ingredients. From crispy burgers to gourmet pizzas – every bite is an adventure worth savoring.
+                                Experience bold flavors crafted from premium
+                                ingredients. From crispy burgers to gourmet
+                                pizzas – every bite is an adventure worth
+                                savoring.
                             </motion.p>
 
                             {/* CTA Buttons */}
@@ -177,13 +193,17 @@ export default function Welcome({
                             {/* Main Food Image Circle */}
                             <motion.div
                                 animate={{ y: [0, -20, 0] }}
-                                transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+                                transition={{
+                                    duration: 4,
+                                    repeat: Infinity,
+                                    ease: "easeInOut",
+                                }}
                                 className="relative w-80 h-80 lg:w-96 lg:h-96"
                             >
                                 <div className="absolute inset-0 bg-gradient-to-br from-gray-800 to-gray-900 rounded-full shadow-2xl overflow-hidden">
-                                    <img 
-                                        src="/images/recipe.jpg" 
-                                        alt="Delicious Food" 
+                                    <img
+                                        src="/images/recipe.jpg"
+                                        alt="Delicious Food"
                                         className="w-full h-full object-cover"
                                     />
                                 </div>
@@ -191,12 +211,18 @@ export default function Welcome({
                                 {/* Hot Deal Card */}
                                 <motion.div
                                     animate={{ rotate: [0, 5, 0] }}
-                                    transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+                                    transition={{
+                                        duration: 3,
+                                        repeat: Infinity,
+                                        ease: "easeInOut",
+                                    }}
                                     className="absolute -top-8 -right-8 bg-white rounded-2xl shadow-xl p-4 w-48"
                                 >
                                     <div className="flex items-center space-x-2 mb-2">
                                         <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
-                                        <span className="text-sm font-bold text-orange-500">Hot Deal</span>
+                                        <span className="text-sm font-bold text-orange-500">
+                                            Hot Deal
+                                        </span>
                                     </div>
                                     <p className="text-gray-700 text-sm font-semibold">
                                         50% off on all burgers
@@ -206,12 +232,19 @@ export default function Welcome({
                                 {/* Delivery Time Card */}
                                 <motion.div
                                     animate={{ rotate: [0, -5, 0] }}
-                                    transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
+                                    transition={{
+                                        duration: 3.5,
+                                        repeat: Infinity,
+                                        ease: "easeInOut",
+                                        delay: 0.5,
+                                    }}
                                     className="absolute -bottom-8 -right-12 bg-white rounded-2xl shadow-xl p-4 w-40"
                                 >
                                     <div className="flex items-center space-x-2 mb-2">
                                         <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                                        <span className="text-sm font-bold text-green-600">20 min</span>
+                                        <span className="text-sm font-bold text-green-600">
+                                            20 min
+                                        </span>
                                     </div>
                                     <p className="text-gray-700 text-sm font-semibold">
                                         Fast delivery
@@ -221,12 +254,19 @@ export default function Welcome({
                                 {/* Rating Card */}
                                 <motion.div
                                     animate={{ rotate: [0, 5, 0] }}
-                                    transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+                                    transition={{
+                                        duration: 4,
+                                        repeat: Infinity,
+                                        ease: "easeInOut",
+                                        delay: 1,
+                                    }}
                                     className="absolute -bottom-4 -left-12 bg-white rounded-2xl shadow-xl p-4 w-40"
                                 >
                                     <div className="flex items-center space-x-2 mb-2">
                                         <div className="w-3 h-3 bg-yellow-400 rounded-full"></div>
-                                        <span className="text-sm font-bold text-yellow-600">4.8/5</span>
+                                        <span className="text-sm font-bold text-yellow-600">
+                                            4.8/5
+                                        </span>
                                     </div>
                                     <p className="text-gray-700 text-sm font-semibold">
                                         Customer rating
@@ -255,7 +295,7 @@ export default function Welcome({
                                 x: -carouselPosition * 160,
                             }}
                             transition={{
-                                type: 'spring',
+                                type: "spring",
                                 stiffness: 300,
                                 damping: 30,
                             }}
@@ -297,12 +337,12 @@ export default function Welcome({
                             What We Offer
                         </p>
                         <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-                            Browse by{' '}
+                            Browse by{" "}
                             <span className="text-orange-500">Category</span>
                         </h2>
                         <p className="text-gray-600 max-w-2xl mx-auto">
-                            From sizzling burgers to exotic world cuisines – find
-                            your favourite in our menu
+                            From sizzling burgers to exotic world cuisines –
+                            find your favourite in our menu
                         </p>
                     </motion.div>
 
@@ -319,7 +359,7 @@ export default function Welcome({
                             variants={itemVariants}
                             whileHover={{ scale: 1.05, y: -5 }}
                             whileTap={{ scale: 0.95 }}
-                            onClick={() => router.visit('/menu')}
+                            onClick={() => router.visit("/menu")}
                             className="cursor-pointer group"
                         >
                             <div className="relative mb-2">
@@ -348,50 +388,56 @@ export default function Welcome({
                         </motion.div>
 
                         {/* Other Categories - Display real categories from database */}
-                        {categories && categories.length > 0 && categories.map((category) => (
-                            <motion.div
-                                key={category.id}
-                                variants={itemVariants}
-                                whileHover={{ scale: 1.05, y: -5 }}
-                                whileTap={{ scale: 0.95 }}
-                                onClick={() =>
-                                    router.visit(`/menu?category=${category.id}`)
-                                }
-                                className="cursor-pointer group"
-                            >
-                                <div className="relative mb-2">
-                                    <motion.div
-                                        className="w-full aspect-square rounded-xl bg-gradient-to-br from-orange-100 to-orange-50 flex items-center justify-center overflow-hidden shadow-md hover:shadow-lg transition-shadow border-2 border-gray-200"
-                                        whileHover={{ rotate: -5 }}
-                                    >
-                                        {category.image_path ? (
-                                            <img
-                                                src={category.image_path}
-                                                alt={category.name}
-                                                className="w-full h-full object-cover"
-                                            />
-                                        ) : (
-                                            <span className="text-3xl">🍽️</span>
-                                        )}
-                                    </motion.div>
-                                    <motion.div
-                                        initial={{ opacity: 0 }}
-                                        whileHover={{ opacity: 1 }}
-                                        className="absolute inset-0 bg-black bg-opacity-20 rounded-xl flex items-center justify-center"
-                                    >
-                                        <span className="text-white font-bold text-xs">
-                                            View
-                                        </span>
-                                    </motion.div>
-                                </div>
-                                <h3 className="text-center font-bold text-gray-900 group-hover:text-orange-500 transition-colors text-sm">
-                                    {category.name}
-                                </h3>
-                                <p className="text-center text-xs text-gray-500">
-                                    {category.menu_items_count || 0} items
-                                </p>
-                            </motion.div>
-                        ))}
+                        {categories &&
+                            categories.length > 0 &&
+                            categories.map((category) => (
+                                <motion.div
+                                    key={category.id}
+                                    variants={itemVariants}
+                                    whileHover={{ scale: 1.05, y: -5 }}
+                                    whileTap={{ scale: 0.95 }}
+                                    onClick={() =>
+                                        router.visit(
+                                            `/menu?category=${category.id}`,
+                                        )
+                                    }
+                                    className="cursor-pointer group"
+                                >
+                                    <div className="relative mb-2">
+                                        <motion.div
+                                            className="w-full aspect-square rounded-xl bg-gradient-to-br from-orange-100 to-orange-50 flex items-center justify-center overflow-hidden shadow-md hover:shadow-lg transition-shadow border-2 border-gray-200"
+                                            whileHover={{ rotate: -5 }}
+                                        >
+                                            {category.image_url ? (
+                                                <img
+                                                    src={category.image_url}
+                                                    alt={category.name}
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            ) : (
+                                                <span className="text-3xl">
+                                                    🍽️
+                                                </span>
+                                            )}
+                                        </motion.div>
+                                        <motion.div
+                                            initial={{ opacity: 0 }}
+                                            whileHover={{ opacity: 1 }}
+                                            className="absolute inset-0 bg-black bg-opacity-20 rounded-xl flex items-center justify-center"
+                                        >
+                                            <span className="text-white font-bold text-xs">
+                                                View
+                                            </span>
+                                        </motion.div>
+                                    </div>
+                                    <h3 className="text-center font-bold text-gray-900 group-hover:text-orange-500 transition-colors text-sm">
+                                        {category.name}
+                                    </h3>
+                                    <p className="text-center text-xs text-gray-500">
+                                        {category.menu_items_count || 0} items
+                                    </p>
+                                </motion.div>
+                            ))}
                     </motion.div>
                 </div>
             </motion.section>
@@ -417,7 +463,7 @@ export default function Welcome({
                             What's Cooking
                         </p>
                         <h2 className="text-5xl md:text-6xl font-bold text-gray-900 mb-4">
-                            Our Delicious{' '}
+                            Our Delicious{" "}
                             <span className="text-orange-500">Menu</span>
                         </h2>
                         <div className="flex justify-center mb-6">
@@ -436,35 +482,44 @@ export default function Welcome({
                         <motion.button
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
-                            onClick={() => router.visit('/menu')}
+                            onClick={() => router.visit("/menu")}
                             className="px-6 py-2 bg-orange-500 text-white rounded-full font-semibold shadow-lg hover:shadow-xl transition-shadow cursor-pointer"
                         >
                             All
                         </motion.button>
-                        {categories && categories.length > 0 ? (
-                            categories.map((category) => (
-                                <motion.button
-                                    key={category.id}
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
-                                    onClick={() => router.visit(`/menu?category=${category.id}`)}
-                                    className="px-6 py-2 bg-white text-gray-700 rounded-full font-semibold border-2 border-gray-200 hover:border-orange-500 hover:text-orange-500 transition-all cursor-pointer"
-                                >
-                                    {category.name}
-                                </motion.button>
-                            ))
-                        ) : (
-                            ['Burgers', 'Pizza', 'Fried Chicken', 'Wraps', 'Desserts', 'Pasta'].map((category) => (
-                                <motion.button
-                                    key={category}
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
-                                    className="px-6 py-2 bg-white text-gray-700 rounded-full font-semibold border-2 border-gray-200 hover:border-orange-500 hover:text-orange-500 transition-all cursor-pointer"
-                                >
-                                    {category}
-                                </motion.button>
-                            ))
-                        )}
+                        {categories && categories.length > 0
+                            ? categories.map((category) => (
+                                  <motion.button
+                                      key={category.id}
+                                      whileHover={{ scale: 1.05 }}
+                                      whileTap={{ scale: 0.95 }}
+                                      onClick={() =>
+                                          router.visit(
+                                              `/menu?category=${category.id}`,
+                                          )
+                                      }
+                                      className="px-6 py-2 bg-white text-gray-700 rounded-full font-semibold border-2 border-gray-200 hover:border-orange-500 hover:text-orange-500 transition-all cursor-pointer"
+                                  >
+                                      {category.name}
+                                  </motion.button>
+                              ))
+                            : [
+                                  "Burgers",
+                                  "Pizza",
+                                  "Fried Chicken",
+                                  "Wraps",
+                                  "Desserts",
+                                  "Pasta",
+                              ].map((category) => (
+                                  <motion.button
+                                      key={category}
+                                      whileHover={{ scale: 1.05 }}
+                                      whileTap={{ scale: 0.95 }}
+                                      className="px-6 py-2 bg-white text-gray-700 rounded-full font-semibold border-2 border-gray-200 hover:border-orange-500 hover:text-orange-500 transition-all cursor-pointer"
+                                  >
+                                      {category}
+                                  </motion.button>
+                              ))}
                     </motion.div>
 
                     {/* Featured Items Grid */}
@@ -505,7 +560,9 @@ export default function Welcome({
                                             <div className="absolute top-2 left-2 flex gap-1">
                                                 {index === 0 && (
                                                     <motion.div
-                                                        animate={{ rotate: [0, 5, 0] }}
+                                                        animate={{
+                                                            rotate: [0, 5, 0],
+                                                        }}
                                                         transition={{
                                                             duration: 2,
                                                             repeat: Infinity,
@@ -517,7 +574,9 @@ export default function Welcome({
                                                 )}
                                                 {index === 2 && (
                                                     <motion.div
-                                                        animate={{ rotate: [0, -5, 0] }}
+                                                        animate={{
+                                                            rotate: [0, -5, 0],
+                                                        }}
                                                         transition={{
                                                             duration: 2,
                                                             repeat: Infinity,
@@ -543,7 +602,7 @@ export default function Welcome({
                                         <div className="p-2.5 flex-1 flex flex-col justify-between">
                                             {/* Category */}
                                             <p className="text-orange-500 text-xs font-bold uppercase tracking-wider mb-0.5">
-                                                {item.category?.name || 'Menu'}
+                                                {item.category?.name || "Menu"}
                                             </p>
 
                                             {/* Title */}
@@ -560,10 +619,15 @@ export default function Welcome({
                                             <div className="flex items-center justify-between mt-auto">
                                                 <div>
                                                     <p className="text-lg font-bold text-orange-500">
-                                                        ₦{parseFloat(item.price).toFixed(2)}
+                                                        ₦
+                                                        {parseFloat(
+                                                            item.price,
+                                                        ).toFixed(2)}
                                                     </p>
                                                     <div className="flex items-center space-x-1 mt-0.5">
-                                                        <span className="text-yellow-400 text-xs">★</span>
+                                                        <span className="text-yellow-400 text-xs">
+                                                            ★
+                                                        </span>
                                                         <span className="text-xs text-gray-600">
                                                             (50)
                                                         </span>
@@ -670,9 +734,7 @@ export default function Welcome({
                             <h3 className="text-xl font-bold text-gray-900 mb-2">
                                 Contact
                             </h3>
-                            <p className="text-gray-600">
-                                {defaultInfo.phone}
-                            </p>
+                            <p className="text-gray-600">{defaultInfo.phone}</p>
                         </motion.div>
                     </motion.div>
                 </div>
@@ -749,7 +811,7 @@ export default function Welcome({
                             Food Showcase
                         </p>
                         <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-                            Let's See Our{' '}
+                            Let's See Our{" "}
                             <span className="text-orange-500">Fast Food</span>
                         </h2>
                         <div className="flex justify-center">
@@ -759,25 +821,32 @@ export default function Welcome({
 
                     {/* Food Grid */}
                     {categories && categories.length > 0 ? (
-                        <motion.div
-                            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-[300px]"
-                        >
+                        <motion.div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-[300px]">
                             {categories.slice(0, 6).map((category, index) => (
                                 <motion.div
                                     key={category.id}
                                     initial={{ opacity: 0, y: 40, scale: 0.9 }}
                                     whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                                    transition={{ duration: 0.6, delay: index * 0.1 }}
+                                    transition={{
+                                        duration: 0.6,
+                                        delay: index * 0.1,
+                                    }}
                                     viewport={{ once: true }}
-                                    whileHover={{ y: -10, boxShadow: "0 20px 40px rgba(0,0,0,0.2)" }}
+                                    whileHover={{
+                                        y: -10,
+                                        boxShadow:
+                                            "0 20px 40px rgba(0,0,0,0.2)",
+                                    }}
                                     className={`cursor-pointer group rounded-3xl overflow-hidden shadow-xl bg-gray-900 ${
-                                        index === 0 ? 'md:col-span-1 lg:col-span-1 lg:row-span-2 auto-rows-[600px]' : ''
+                                        index === 0
+                                            ? "md:col-span-1 lg:col-span-1 lg:row-span-2 auto-rows-[600px]"
+                                            : ""
                                     }`}
                                 >
                                     <div className="relative w-full h-full">
-                                        {category.image_path ? (
+                                        {category.image_url ? (
                                             <img
-                                                src={category.image_path}
+                                                src={category.image_url}
                                                 alt={category.name}
                                                 className="w-full h-full object-cover group-hover:scale-125 transition-transform duration-500"
                                             />
@@ -807,7 +876,9 @@ export default function Welcome({
                                                     transition={{ delay: 0.15 }}
                                                     className="text-sm text-gray-200"
                                                 >
-                                                    {category.menu_items_count || 0} items
+                                                    {category.menu_items_count ||
+                                                        0}{" "}
+                                                    items
                                                 </motion.p>
                                             </div>
                                         </motion.div>

@@ -44,7 +44,7 @@ class MenuItemController extends Controller
                 'slug' => $item->slug,
                 'description' => $item->description,
                 'price' => (float) $item->price,
-                'image_url' => $item->image_url,
+                'image_url' => $item->image_path ? Storage::url($item->image_path) : $imageUrl,
                 'is_available' => $item->is_available === 'yes',
                 'sort_order' => $item->sort_order,
                 'created_at' => $item->created_at,
@@ -79,7 +79,7 @@ class MenuItemController extends Controller
                 'slug' => $menuItem->slug,
                 'description' => $menuItem->description,
                 'price' => (float) $menuItem->price,
-                'image_url' => $menuItem->image_url,
+                'image_url' => $menuItem->image_path ? Storage::url($menuItem->image_path) : $imageUrl,
                 'is_available' => $menuItem->is_available === 'yes',
                 'sort_order' => $menuItem->sort_order,
                 'category' => [

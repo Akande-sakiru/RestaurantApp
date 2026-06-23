@@ -44,8 +44,7 @@ class MenuItemController extends Controller
                 'slug' => $item->slug,
                 'description' => $item->description,
                 'price' => (float) $item->price,
-                // 'image_url' => $item->image_path ? config('app.url') . '/storage/' . $item->image_path : $imageUrl,
-                'image_url' => $item->image_path ? asset('storage/' . $item->image_path) : $imageUrl,
+                'image_url' => $item->image_url,
                 'is_available' => $item->is_available === 'yes',
                 'sort_order' => $item->sort_order,
                 'created_at' => $item->created_at,
@@ -80,8 +79,7 @@ class MenuItemController extends Controller
                 'slug' => $menuItem->slug,
                 'description' => $menuItem->description,
                 'price' => (float) $menuItem->price,
-                // 'image_url' => $menuItem->image_path ? config('app.url') .'/storage/' . $menuItem->image_path : $imageUrl,
-                'image_url' => $menuItem->image_path ? asset('storage/' . $menuItem->image_path) : $imageUrl,
+                'image_url' => $menuItem->image_url,
                 'is_available' => $menuItem->is_available === 'yes',
                 'sort_order' => $menuItem->sort_order,
                 'category' => [
@@ -102,7 +100,8 @@ class MenuItemController extends Controller
 
         $imagePath = null;
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('menu-images', 'public');
+            // $imagePath = $request->file('image')->store('menu-images', 'public');
+            $imagePath = $request->file('image')->store('menu-images', 'uploads');
         }
 
         $menuItem = MenuItem::create([
@@ -132,13 +131,10 @@ class MenuItemController extends Controller
         $validated = $request->validated();
 
         $imagePath = $menuItem->image_path;
-        if ($request->hasFile('image')) {
-            // Delete old image if exists
-            if ($menuItem->image_path) {
-                Storage::disk('public')->delete($menuItem->image_path);
-            }
-            $imagePath = $request->file('image')->store('menu-images', 'public');
+        if ($menuItem->image_path) {
+            Storage::disk('uploads')->delete($menuItem->image_path);
         }
+        $imagePath = $request->file('image')->store('menu-images', 'uploads');
 
         $menuItem->update([
             'category_id' => $validated['category_id'],

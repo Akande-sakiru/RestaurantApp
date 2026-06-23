@@ -101,7 +101,7 @@ class MenuItemController extends Controller
         $imagePath = null;
         if ($request->hasFile('image')) {
             // $imagePath = $request->file('image')->store('menu-images', 'public');
-            $imagePath = $request->file('image')->store('menu-images', 'uploads');
+            $imagePath = $request->file('image')->store('menu-images');
         }
 
         $menuItem = MenuItem::create([
@@ -134,7 +134,7 @@ class MenuItemController extends Controller
         if ($menuItem->image_path) {
             Storage::disk('uploads')->delete($menuItem->image_path);
         }
-        $imagePath = $request->file('image')->store('menu-images', 'uploads');
+        $imagePath = $request->file('image')->store('menu-images', );
 
         $menuItem->update([
             'category_id' => $validated['category_id'],

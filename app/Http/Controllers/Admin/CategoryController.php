@@ -46,7 +46,8 @@ class CategoryController extends Controller
 
         $imagePath = null;
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('category-images', 'public');
+            $imagePath = $request->file('image')->store('category-images', 'uploads');
+
         }
 
         $cat = Category::create([
@@ -76,9 +77,9 @@ class CategoryController extends Controller
         if ($request->hasFile('image')) {
             // Delete old image if exists
             if ($category->image_path) {
-                Storage::disk('public')->delete($category->image_path);
+                Storage::disk('uploads')->delete($category->image_path);
             }
-            $imagePath = $request->file('image')->store('category-images', 'public');
+            $imagePath = $request->file('image')->store('category-images', 'uploads');
         }
 
         $category->update([

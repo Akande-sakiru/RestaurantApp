@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\MenuItem;
 use App\Models\Category;
+use App\Models\MenuItem;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class LandingController extends Controller
@@ -15,7 +16,7 @@ class LandingController extends Controller
     public function index()
     {
         $imageUrl = config('app.url') . '/images/amala.jpg';
-        
+
         $featuredItems = MenuItem::query()
             ->where('is_available', true)
             ->with('category')
@@ -27,7 +28,7 @@ class LandingController extends Controller
                 'name' => $item->name,
                 'description' => $item->description,
                 'price' => (float) $item->price,
-                'image_url' => $item->image_path ? '/storage/' . $item->image_path : $imageUrl,
+                'image_url' => $item->image_path ? Storage::url($item->image_path) : $imageUrl,
                 'is_available' => (bool) $item->is_available,
                 'category' => [
                     'id' => $item->category->id,
@@ -43,7 +44,7 @@ class LandingController extends Controller
                 'id' => $category->id,
                 'name' => $category->name,
                 'slug' => $category->slug,
-                'image_path' => $category->image_path ? '/storage/' . $category->image_path : null,
+                'image_path' => $category->image_path ? Storage::url($category->image_path) : $imageUrl,
                 'menu_items_count' => $category->menu_items_count,
             ]);
 

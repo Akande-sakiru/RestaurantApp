@@ -7,6 +7,7 @@ use Database\Factories\CategoryFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Storage;
 
 class Category extends Model
 {
@@ -32,5 +33,14 @@ class Category extends Model
     public function menuItems(): HasMany
     {
         return $this->hasMany(MenuItem::class);
+    }
+
+    public function getImageUrlAttribute(): ?string
+    {
+        if (!$this->image_path) {
+            return null;
+        }
+
+        return Storage::url($this->image_path);
     }
 }
